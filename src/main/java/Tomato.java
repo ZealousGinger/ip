@@ -7,15 +7,23 @@ public class Tomato {
         System.out.println(spacer);
 
         Scanner sc = new Scanner(System.in);
-        String input;
-
+        String[] input = new String[100];
+        int inputIdx = 0;
         // loop logic until exiting
         while(sc.hasNextLine()) {
-            input = sc.nextLine();
-            if(input.equals("bye")) break;
+            input[inputIdx++] = sc.nextLine();
+            if(input[inputIdx - 1].equals("bye")) break;
 
             System.out.println(spacer);
-            System.out.println("    " + input);
+
+            if(input[inputIdx - 1].equals("list")) {
+                for(int i = 0; i < inputIdx -1; ++i) {
+                    System.out.println(i+1 + ". " + input[i]);
+                }
+            } else {
+                System.out.println("    added: " + input[inputIdx - 1]);
+            }
+
             System.out.println(spacer);
         }
         System.out.println(spacer);
