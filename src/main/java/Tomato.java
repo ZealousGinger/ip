@@ -11,6 +11,7 @@ public class Tomato {
         tomato.init();
     }
 
+    // main initialization
     private void init() {
         printStartMessage();
 
@@ -30,10 +31,8 @@ public class Tomato {
                 printTasks();
             } else if (cmd.contains("mark")) {
                 markTask(splitInput);
-            } else {
-                Task t = new Task(input);
-                tasks.add(t);
-                System.out.println(tab + "added: " + input);
+            } else { // add the task
+                createTask(input);
             }
 
             System.out.println(spacer);
@@ -51,12 +50,14 @@ public class Tomato {
         System.out.println(spacer);
     }
 
+    // print all tasks
     private void printTasks() {
         for(int i = 0; i < this.tasks.size(); ++i) {
             System.out.println(tab + (i+1) + "." + this.tasks.get(i));
         }
     }
 
+    // handles mark and unmark command
     private void markTask(String[] splitInput) {
         int taskNum = Integer.parseInt(splitInput[1]) - 1;
         if (taskNum >= tasks.size()) {
@@ -71,5 +72,11 @@ public class Tomato {
             System.out.println(tab + "OK! I've marked this task as not done yet: ");
         }
         System.out.println(tab + t);
+    }
+
+    private void createTask(String input) {
+        Task t = new Task(input);
+        this.tasks.add(t);
+        System.out.println(tab + "added: " + input);
     }
 }
