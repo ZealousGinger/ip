@@ -45,7 +45,7 @@ public class Tomato {
 
     private void printStartMessage() {
         System.out.println(spacer);
-        System.out.println(tab + "Hello! I'm Tomato \uD83C\uDF45 ! \n" + tab + "What can I do for you?");
+        System.out.println(tab + "Hello! I'm Tomato \uD83C\uDF45 !\n" + tab + "What can I do for you?");
         System.out.println(spacer);
     }
 
@@ -56,7 +56,7 @@ public class Tomato {
 
     // print all tasks
     private void printTasks() {
-        System.out.println("Here are the tasks in your list: ");
+        System.out.println(tab + "Here are the tasks in your list:");
         for(int i = 0; i < this.tasks.size(); ++i) {
             System.out.println(tab + (i+1) + "." + this.tasks.get(i));
         }
@@ -71,17 +71,17 @@ public class Tomato {
         Task t = tasks.get(taskNum);
         if(splitInput[0].equals("mark")) {
             t.markAsDone();
-            System.out.println(tab + "Nice! I've marked this task as done: ");
+            System.out.println(tab + "Nice! I've marked this task as done:");
         } else if(splitInput[0].equals("unmark")) {
             t.markAsNotdone();
-            System.out.println(tab + "OK! I've marked this task as not done yet: ");
+            System.out.println(tab + "OK! I've marked this task as not done yet:");
         }
         System.out.println(tab + t);
     }
 
     private void AddTask(Task t) {
         this.tasks.add(t);
-        System.out.println(tab + "Got it. I've added this task: \n" + tab + t.toString());
+        System.out.println(tab + "Got it. I've added this task:\n" + tab + t.toString());
         System.out.println(numOfTasks());
     }
 
