@@ -15,7 +15,7 @@ public class Task {
         this.isDone = true;
     }
 
-    public void markAsUndone() {
+    public void markAsNotdone() {
         this.isDone = false;
     }
 
