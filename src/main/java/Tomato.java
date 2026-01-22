@@ -48,6 +48,8 @@ public class Tomato {
                         throw new TomatoException("event arguments is required! Please provide it.");
                     }
                     createEvent(splitInput[1]);
+                } else if (cmd.equals("delete")) {
+                    deleteTask(splitInput[1]);
                 } else {
                     throw new TomatoException("Unknown command given, please try a given command: [bye, list, mark, todo, deadline, event]. ");
                 }
@@ -80,11 +82,16 @@ public class Tomato {
 
     // handles mark and unmark command
     private void markTask(String[] splitInput) throws TomatoException {
-        int taskNum = Integer.parseInt(splitInput[1]) - 1;
-        if (taskNum >= tasks.size()) {
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(splitInput[1]) - 1;
+        } catch (Exception e) {
+            throw new TomatoException("You must provide a task number!");
+        }
+        if (taskNum >= this.tasks.size()) {
             throw new TomatoException("That task number doesn't exist!");
         }
-        Task t = tasks.get(taskNum);
+        Task t = this.tasks.get(taskNum);
         if(splitInput[0].equals("mark")) {
             t.markAsDone();
             System.out.println(tab + "Nice! I've marked this task as done:");
@@ -95,28 +102,53 @@ public class Tomato {
         System.out.println(tab + t);
     }
 
+    private void deleteTask(String args) throws TomatoException {
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(args) - 1;
+        } catch (Exception e) {
+            throw new TomatoException("You must provide a task number!");
+        }
+
+        if (taskNum >= this.tasks.size()) {
+            throw new TomatoException("That task number doesn't exist!");
+        }
+        Task t = this.tasks.get(taskNum);
+        String taskName = t.toString();
+        if(this.tasks.remove(t)) {
+            System.out.println(tab + "Noted. I've removed this task:");
+            System.out.println(tab + taskName);
+            System.out.println(numOfTasks());
+        } else {
+            throw new TomatoException("This task cannot be removed, it doesn't exist!");
+        }
+
+
+
+    }
+
     private void AddTask(Task t) {
         this.tasks.add(t);
         System.out.println(tab + "Got it. I've added this task:\n" + tab + t.toString());
         System.out.println(numOfTasks());
     }
 
-    private void createTodo(String input) {
-        Task t = new Todo(input);
+    private void createTodo(String args) {
+        Task t = new Todo(args);
         AddTask(t);
     }
 
-    private void createDeadline(String input) throws TomatoException {
-        String[] splitInput = input.split("/by");
-        if(splitInput.length < 2) throw new TomatoException("deadline requires more arguments! Please provide them.");
-        Task t = new Deadline(splitInput[0], splitInput[1]);
+    private void createDeadline(String args) throws TomatoException {
+        String[] splitArgs = args.split("/by");
+        if(splitArgs.length < 2) throw new TomatoException("deadline requires more arguments! Please provide them.");
+        Task t = new Deadline(splitArgs[0], splitArgs[1]);
         AddTask(t);
     }
 
-    private void createEvent(String input) throws TomatoException {
-        String[] splitInput = input.split("/from|\\/to");
-        if(splitInput.length < 3) throw new TomatoException("event requires more arguments! Please provide them.");
-        Task t = new Event(splitInput[0], splitInput[1], splitInput[2]);
+    private void createEvent(String args) throws TomatoException {
+        String[] splitArgs = args.split("/from|\\/to");
+        if(splitArgs.length < 3) throw new TomatoException("event requires more arguments! Please provide them.");
+        Task t = new Event(splitArgs[0], splitArgs[1], splitArgs[2]);
         AddTask(t);
     }
 
