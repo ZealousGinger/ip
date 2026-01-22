@@ -25,18 +25,34 @@ public class Tomato {
             String cmd = splitInput[0];
             System.out.println(spacer);
 
-            if(cmd.equals("bye")) {
-                printExitMessage(); break;
-            } else if (cmd.equals("list")) {
-                printTasks();
-            } else if (cmd.contains("mark")) {
-                markTask(splitInput);
-            } else if (cmd.equals("todo")) {
-                createTodo(splitInput[1]);
-            } else if (cmd.equals("deadline")) {
-                createDeadline(splitInput[1]);
-            } else if (cmd.equals("event")) {
-                createEvent(splitInput[1]);
+            try {
+                if (cmd.equals("bye")) {
+                    printExitMessage();
+                    break;
+                } else if (cmd.equals("list")) {
+                    printTasks();
+                } else if (cmd.equals("mark") || cmd.equals("unmark")) {
+                    markTask(splitInput);
+                } else if (cmd.equals("todo")) {
+                    if (splitInput.length == 1) {
+                        throw new TomatoException("Todo description is required! Please provide it.");
+                    }
+                    createTodo(splitInput[1]);
+                } else if (cmd.equals("deadline")) {
+                    if (splitInput.length == 1) {
+                        throw new TomatoException("Deadline arguments is required! Please provide it.");
+                    }
+                    createDeadline(splitInput[1]);
+                } else if (cmd.equals("event")) {
+                    if (splitInput.length == 1) {
+                        throw new TomatoException("event arguments is required! Please provide it.");
+                    }
+                    createEvent(splitInput[1]);
+                } else {
+                    throw new TomatoException("Unknown command given, please try a given command: [bye, list, mark, todo, deadline, event]. ");
+                }
+            } catch (TomatoException e) {
+                System.out.println(e);
             }
 
             System.out.println(spacer);
@@ -63,10 +79,10 @@ public class Tomato {
     }
 
     // handles mark and unmark command
-    private void markTask(String[] splitInput) {
+    private void markTask(String[] splitInput) throws TomatoException {
         int taskNum = Integer.parseInt(splitInput[1]) - 1;
         if (taskNum >= tasks.size()) {
-            System.out.println("That task doesn't exist!"); return;
+            throw new TomatoException("That task number doesn't exist!");
         }
         Task t = tasks.get(taskNum);
         if(splitInput[0].equals("mark")) {
@@ -90,14 +106,16 @@ public class Tomato {
         AddTask(t);
     }
 
-    private void createDeadline(String input) {
+    private void createDeadline(String input) throws TomatoException {
         String[] splitInput = input.split("/by");
+        if(splitInput.length < 2) throw new TomatoException("deadline requires more arguments! Please provide them.");
         Task t = new Deadline(splitInput[0], splitInput[1]);
         AddTask(t);
     }
 
-    private void createEvent(String input) {
+    private void createEvent(String input) throws TomatoException {
         String[] splitInput = input.split("/from|\\/to");
+        if(splitInput.length < 3) throw new TomatoException("event requires more arguments! Please provide them.");
         Task t = new Event(splitInput[0], splitInput[1], splitInput[2]);
         AddTask(t);
     }
