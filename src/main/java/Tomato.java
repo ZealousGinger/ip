@@ -5,6 +5,18 @@ public class Tomato {
     private static final String spacer = "   ____________________________________________________________";
     private static final String tab = "    ";
     private ArrayList<Task> tasks = new ArrayList<>();
+    private boolean toExit = false;
+
+    private enum Command {
+        BYE,
+        LIST,
+        MARK,
+        UNMARK,
+        TODO,
+        DEADLINE,
+        EVENT,
+        DELETE
+    }
 
     public static void main(String[] args) {
         Tomato tomato = new Tomato();
@@ -19,45 +31,59 @@ public class Tomato {
         String input;
 
         // loop logic
-        while(sc.hasNextLine()) {
+        while(!toExit) {
             input = sc.nextLine();
-            String[] splitInput = input.split(" ", 2);
-            String cmd = splitInput[0];
-            System.out.println(spacer);
-
             try {
-                if (cmd.equals("bye")) {
-                    printExitMessage();
-                    break;
-                } else if (cmd.equals("list")) {
-                    printTasks();
-                } else if (cmd.equals("mark") || cmd.equals("unmark")) {
-                    markTask(splitInput);
-                } else if (cmd.equals("todo")) {
-                    if (splitInput.length == 1) {
-                        throw new TomatoException("Todo description is required! Please provide it.");
-                    }
-                    createTodo(splitInput[1]);
-                } else if (cmd.equals("deadline")) {
-                    if (splitInput.length == 1) {
-                        throw new TomatoException("Deadline arguments is required! Please provide it.");
-                    }
-                    createDeadline(splitInput[1]);
-                } else if (cmd.equals("event")) {
-                    if (splitInput.length == 1) {
-                        throw new TomatoException("event arguments is required! Please provide it.");
-                    }
-                    createEvent(splitInput[1]);
-                } else if (cmd.equals("delete")) {
-                    deleteTask(splitInput[1]);
-                } else {
-                    throw new TomatoException("Unknown command given, please try a given command: [bye, list, mark, todo, deadline, event]. ");
-                }
+                preParse(input);
             } catch (TomatoException e) {
                 System.out.println(e);
             }
-
             System.out.println(spacer);
+        }
+    }
+
+    private void preParse(String input) throws TomatoException {
+        String[] splitInput = input.split(" ", 2);
+        String cmd = splitInput[0];
+        Command enumCmd;
+        try {
+            enumCmd = Command.valueOf(cmd.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new TomatoException("Unknown command given, please try a given command: [bye, list, mark, todo, deadline, event, delete]. ");
+        }
+        switch (enumCmd) {
+            case BYE:
+                printExitMessage();
+                this.toExit = true;
+                break;
+            case LIST:
+                printTasks();
+                break;
+            case MARK:
+            case UNMARK:
+                markTask(splitInput);
+                break;
+            case TODO:
+                if (splitInput.length == 1) {
+                    throw new TomatoException("Todo description is required! Please provide it.");
+                }
+                createTodo(splitInput[1]);
+                break;
+            case DEADLINE:
+                if (splitInput.length == 1) {
+                    throw new TomatoException("Deadline arguments is required! Please provide it.");
+                }
+                createDeadline(splitInput[1]);
+                break;
+            case EVENT:
+                if (splitInput.length == 1) {
+                    throw new TomatoException("event arguments is required! Please provide it.");
+                }
+                createEvent(splitInput[1]);
+                break;
+            case DELETE:
+                deleteTask(splitInput[1]);
+                break;
         }
     }
 
