@@ -1,11 +1,17 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 
 public class Tomato {
     private static final String spacer = "   ____________________________________________________________";
     private static final String tab = "    ";
     private ArrayList<Task> tasks = new ArrayList<>();
     private boolean toExit = false;
+    private File taskFile;
+    private boolean isLoadingTask;
 
     private enum Command {
         BYE,
@@ -26,6 +32,21 @@ public class Tomato {
     // main initialization
     private void init() {
         printStartMessage();
+        try {
+            this.taskFile = loadTaskFile();
+            loadTasks();
+        } catch (FileNotFoundException | TomatoException e) {
+            if(e instanceof TomatoException) {
+                System.out.println("Unable to load tasks due to corrupted/improper format.");
+            }
+            System.out.println("creating a new file: " + e);
+            try {
+                this.taskFile = createTaskFile();
+            } catch (IOException e2) {
+                System.out.println("Error creating file: " + e2);
+            }
+        }
+
 
         Scanner sc = new Scanner(System.in);
         String input;
@@ -40,6 +61,50 @@ public class Tomato {
             }
             System.out.println(spacer);
         }
+    }
+
+    private File loadTaskFile() throws FileNotFoundException {
+        String root = System.getProperty("user.dir");
+        java.nio.file.Path path = java.nio.file.Paths.get(root, "data", "TaskList.txt");
+        boolean fileExists = java.nio.file.Files.exists(path);
+        if(fileExists) {
+            return path.toFile();
+        } else {
+            throw new FileNotFoundException();
+        }
+    }
+
+    private File createTaskFile() throws IOException {
+        String root = System.getProperty("user.dir");
+        java.nio.file.Path dataDir = java.nio.file.Paths.get(root, "data");
+        if (!java.nio.file.Files.exists(dataDir)) {
+            java.nio.file.Files.createDirectories(dataDir);
+        }
+        java.nio.file.Path taskListPath = java.nio.file.Paths.get(root, "data", "TaskList.txt");
+        if (!java.nio.file.Files.exists(taskListPath)) {
+            java.nio.file.Files.createFile(taskListPath);
+            System.out.println("Created file: " + taskListPath.toAbsolutePath() + " true");
+        }
+
+        return taskListPath.toFile();
+    }
+
+    private void loadTasks() throws FileNotFoundException, TomatoException {
+        this.isLoadingTask = true;
+        System.out.println(tab + "Loading tasks from storage......................");
+        Scanner fileScanner = new Scanner(this.taskFile);
+        while (fileScanner.hasNextLine()) {
+            String data = fileScanner.nextLine();
+            String[] args = data.split("|", 2);
+            if(args[0].equals("T")) {
+                createTodo(args[1]);
+            } else if (args[0].equals("D")) {
+                createDeadline(args[1]);
+            } else if (args[0].equals("E")) {
+                createEvent(args[1]);
+            }
+        }
+        this.isLoadingTask = false;
     }
 
     private void preParse(String input) throws TomatoException {
@@ -126,6 +191,7 @@ public class Tomato {
             System.out.println(tab + "OK! I've marked this task as not done yet:");
         }
         System.out.println(tab + t);
+        saveToDisk();
     }
 
     private void deleteTask(String args) throws TomatoException {
@@ -145,6 +211,7 @@ public class Tomato {
             System.out.println(tab + "Noted. I've removed this task:");
             System.out.println(tab + taskName);
             System.out.println(numOfTasks());
+            saveToDisk();
         } else {
             throw new TomatoException("This task cannot be removed, it doesn't exist!");
         }
@@ -153,28 +220,61 @@ public class Tomato {
 
     }
 
+    private void saveToDisk() {
+        try {
+            FileWriter taskWriter = new FileWriter(this.taskFile);
+            for (Task task : this.tasks) {
+                taskWriter.write(task.toSave() + "\n");
+            }
+            taskWriter.close();
+            taskWriter.close();
+        } catch (IOException e) {
+            System.out.println("unable to save to file");
+            throw new RuntimeException(e);
+        }
+    }
+
     private void AddTask(Task t) {
         this.tasks.add(t);
         System.out.println(tab + "Got it. I've added this task:\n" + tab + t.toString());
         System.out.println(numOfTasks());
+        if(!this.isLoadingTask) {
+            saveToDisk();
+        }
     }
 
     private void createTodo(String args) {
-        Task t = new Todo(args);
+        String[] splitArgs = args.split("\\|");
+        Task t;
+        if(splitArgs.length > 1) {
+            t = new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
+        } else {
+            t = new Todo(args);
+        }
         AddTask(t);
     }
 
     private void createDeadline(String args) throws TomatoException {
-        String[] splitArgs = args.split("/by");
+        String[] splitArgs = args.split("/by|\\|");
         if(splitArgs.length < 2) throw new TomatoException("deadline requires more arguments! Please provide them.");
-        Task t = new Deadline(splitArgs[0], splitArgs[1]);
+        Task t;
+        if(splitArgs.length > 2) {
+            t = new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), splitArgs[3]);
+        } else {
+            t = new Deadline(splitArgs[0], splitArgs[1]);
+        }
         AddTask(t);
     }
 
     private void createEvent(String args) throws TomatoException {
-        String[] splitArgs = args.split("/from|\\/to");
+        String[] splitArgs = args.split("/from|\\/to|\\|");
         if(splitArgs.length < 3) throw new TomatoException("event requires more arguments! Please provide them.");
-        Task t = new Event(splitArgs[0], splitArgs[1], splitArgs[2]);
+        Task t;
+        if(splitArgs.length > 3) {
+            t = new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), splitArgs[3], splitArgs[4]);
+        } else {
+            t = new Event(splitArgs[0], splitArgs[1], splitArgs[2]);
+        }
         AddTask(t);
     }
 
