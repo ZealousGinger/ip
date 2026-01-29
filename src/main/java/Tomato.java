@@ -2,9 +2,9 @@ import java.util.Scanner;
 
 public class Tomato {
     private static final String SPACER = "   ____________________________________________________________";
-    private static final String TAB = "    ";
     private boolean isExit = false;
     private TaskList tasks;
+    private Ui ui;
 
     private enum Command {
         BYE,
@@ -23,8 +23,10 @@ public class Tomato {
     }
 
     public void run() {
-        printStartMessage();
-        tasks = new TaskList();
+        this.tasks = new TaskList();
+        this.ui = new Ui();
+        this.ui.printStartMessage();
+
 
         Scanner sc = new Scanner(System.in);
         String input;
@@ -34,7 +36,7 @@ public class Tomato {
             try {
                 preParse(input);
             } catch (TomatoException | TaskListException e) {
-                System.out.println(e);
+                this.ui.showLoadingError(e);
             }
             System.out.println(SPACER);
         }
@@ -51,7 +53,7 @@ public class Tomato {
         }
         switch (enumCmd) {
         case BYE:
-            printExitMessage();
+            this.ui.printExitMessage();
             this.isExit = true;
             break;
         case LIST:
@@ -83,16 +85,5 @@ public class Tomato {
             this.tasks.deleteTask(splitInput[1]);
             break;
         }
-    }
-
-    private void printStartMessage() {
-        System.out.println(SPACER);
-        System.out.println(TAB + "Hello! I'm Tomato \uD83C\uDF45 !\n" + TAB + "What can I do for you?");
-        System.out.println(SPACER);
-    }
-
-    private void printExitMessage() {
-        System.out.println(TAB + "Bye. Hope to see you again soon!");
-        System.out.println(SPACER);
     }
 }
