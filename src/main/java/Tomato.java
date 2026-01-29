@@ -1,5 +1,6 @@
-import java.io.IOException;
 import java.util.ArrayList;
+
+import java.io.IOException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,7 +10,7 @@ public class Tomato {
     private static final String SPACER = "   ____________________________________________________________";
     private static final String TAB = "    ";
     private ArrayList<Task> tasks = new ArrayList<>();
-    private boolean toExit = false;
+    private boolean isExit = false;
     private File taskFile;
     private boolean isLoadingTask;
 
@@ -51,8 +52,9 @@ public class Tomato {
         Scanner sc = new Scanner(System.in);
         String input;
 
-        // loop logic
-        while(!toExit) {
+
+        while(!isExit) {
+            // handle chat input
             input = sc.nextLine();
             try {
                 preParse(input);
@@ -117,38 +119,38 @@ public class Tomato {
             throw new TomatoException("Unknown command given, please try a given command: [bye, list, mark, todo, deadline, event, delete]. ");
         }
         switch (enumCmd) {
-            case BYE:
-                printExitMessage();
-                this.toExit = true;
-                break;
-            case LIST:
-                printTasks();
-                break;
-            case MARK:
-            case UNMARK:
-                markTask(splitInput);
-                break;
-            case TODO:
-                if (splitInput.length == 1) {
-                    throw new TomatoException("Todo description is required! Please provide it.");
-                }
-                createTodo(splitInput[1]);
-                break;
-            case DEADLINE:
-                if (splitInput.length == 1) {
-                    throw new TomatoException("Deadline arguments is required! Please provide it.");
-                }
-                createDeadline(splitInput[1]);
-                break;
-            case EVENT:
-                if (splitInput.length == 1) {
-                    throw new TomatoException("event arguments is required! Please provide it.");
-                }
-                createEvent(splitInput[1]);
-                break;
-            case DELETE:
-                deleteTask(splitInput[1]);
-                break;
+        case BYE:
+            printExitMessage();
+            this.isExit = true;
+            break;
+        case LIST:
+            printTasks();
+            break;
+        case MARK:
+        case UNMARK:
+            markTask(splitInput);
+            break;
+        case TODO:
+            if (splitInput.length == 1) {
+                throw new TomatoException("Todo description is required! Please provide it.");
+            }
+            createTodo(splitInput[1]);
+            break;
+        case DEADLINE:
+            if (splitInput.length == 1) {
+                throw new TomatoException("Deadline arguments is required! Please provide it.");
+            }
+            createDeadline(splitInput[1]);
+            break;
+        case EVENT:
+            if (splitInput.length == 1) {
+                throw new TomatoException("event arguments is required! Please provide it.");
+            }
+            createEvent(splitInput[1]);
+            break;
+        case DELETE:
+            deleteTask(splitInput[1]);
+            break;
         }
     }
 
