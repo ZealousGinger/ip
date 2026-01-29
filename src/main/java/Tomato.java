@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 
 public class Tomato {
-    private static final String spacer = "   ____________________________________________________________";
-    private static final String tab = "    ";
+    private static final String SPACER = "   ____________________________________________________________";
+    private static final String TAB = "    ";
     private ArrayList<Task> tasks = new ArrayList<>();
     private boolean toExit = false;
     private File taskFile;
@@ -59,7 +59,7 @@ public class Tomato {
             } catch (TomatoException e) {
                 System.out.println(e);
             }
-            System.out.println(spacer);
+            System.out.println(SPACER);
         }
     }
 
@@ -91,7 +91,7 @@ public class Tomato {
 
     private void loadTasks() throws FileNotFoundException, TomatoException {
         this.isLoadingTask = true;
-        System.out.println(tab + "Loading tasks from storage......................");
+        System.out.println(TAB + "Loading tasks from storage......................");
         Scanner fileScanner = new Scanner(this.taskFile);
         while (fileScanner.hasNextLine()) {
             String data = fileScanner.nextLine();
@@ -153,21 +153,21 @@ public class Tomato {
     }
 
     private void printStartMessage() {
-        System.out.println(spacer);
-        System.out.println(tab + "Hello! I'm Tomato \uD83C\uDF45 !\n" + tab + "What can I do for you?");
-        System.out.println(spacer);
+        System.out.println(SPACER);
+        System.out.println(TAB + "Hello! I'm Tomato \uD83C\uDF45 !\n" + TAB + "What can I do for you?");
+        System.out.println(SPACER);
     }
 
     private void printExitMessage() {
-        System.out.println(tab + "Bye. Hope to see you again soon!");
-        System.out.println(spacer);
+        System.out.println(TAB + "Bye. Hope to see you again soon!");
+        System.out.println(SPACER);
     }
 
     // print all tasks
     private void printTasks() {
-        System.out.println(tab + "Here are the tasks in your list:");
+        System.out.println(TAB + "Here are the tasks in your list:");
         for(int i = 0; i < this.tasks.size(); ++i) {
-            System.out.println(tab + (i+1) + "." + this.tasks.get(i));
+            System.out.println(TAB + (i+1) + "." + this.tasks.get(i));
         }
     }
 
@@ -185,12 +185,12 @@ public class Tomato {
         Task t = this.tasks.get(taskNum);
         if(splitInput[0].equals("mark")) {
             t.markAsDone();
-            System.out.println(tab + "Nice! I've marked this task as done:");
+            System.out.println(TAB + "Nice! I've marked this task as done:");
         } else if(splitInput[0].equals("unmark")) {
             t.markAsNotdone();
-            System.out.println(tab + "OK! I've marked this task as not done yet:");
+            System.out.println(TAB + "OK! I've marked this task as not done yet:");
         }
-        System.out.println(tab + t);
+        System.out.println(TAB + t);
         saveToDisk();
     }
 
@@ -208,8 +208,8 @@ public class Tomato {
         Task t = this.tasks.get(taskNum);
         String taskName = t.toString();
         if(this.tasks.remove(t)) {
-            System.out.println(tab + "Noted. I've removed this task:");
-            System.out.println(tab + taskName);
+            System.out.println(TAB + "Noted. I've removed this task:");
+            System.out.println(TAB + taskName);
             System.out.println(numOfTasks());
             saveToDisk();
         } else {
@@ -236,7 +236,7 @@ public class Tomato {
 
     private void AddTask(Task t) {
         this.tasks.add(t);
-        System.out.println(tab + "Got it. I've added this task:\n" + tab + t.toString());
+        System.out.println(TAB + "Got it. I've added this task:\n" + TAB + t.toString());
         System.out.println(numOfTasks());
         if(!this.isLoadingTask) {
             saveToDisk();
@@ -279,6 +279,6 @@ public class Tomato {
     }
 
     private String numOfTasks() {
-        return tab + "Now you have " + tasks.size() + " tasks in the list.";
+        return TAB + "Now you have " + tasks.size() + " tasks in the list.";
     }
 }
