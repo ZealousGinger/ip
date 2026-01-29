@@ -1,3 +1,5 @@
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.io.IOException;
@@ -5,6 +7,10 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class Tomato {
     private static final String SPACER = "   ____________________________________________________________";
@@ -260,10 +266,30 @@ public class Tomato {
         String[] splitArgs = args.split("/by|\\|");
         if(splitArgs.length < 2) throw new TomatoException("deadline requires more arguments! Please provide them.");
         Task t;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+        LocalDateTime dateTime;
         if(splitArgs.length > 2) {
-            t = new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), splitArgs[3]);
+            try {
+                dateTime = LocalDateTime.parse(splitArgs[3].trim(), formatter);
+            } catch (DateTimeException e) {
+                try {
+                    dateTime = LocalDateTime.parse(splitArgs[3].trim());
+                } catch (Exception e2) {
+                    throw new TomatoException("Unable to parse date!");
+                }
+            }
+            t = new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
         } else {
-            t = new Deadline(splitArgs[0], splitArgs[1]);
+            try {
+                dateTime = LocalDateTime.parse(splitArgs[1].trim(), formatter);
+            } catch (DateTimeException e) {
+                try {
+                    dateTime = LocalDateTime.parse(splitArgs[1].trim());
+                } catch (Exception e2) {
+                    throw new TomatoException("Unable to parse date!");
+                }
+            }
+            t = new Deadline(splitArgs[0], dateTime);
         }
         AddTask(t);
     }
@@ -272,10 +298,35 @@ public class Tomato {
         String[] splitArgs = args.split("/from|\\/to|\\|");
         if(splitArgs.length < 3) throw new TomatoException("event requires more arguments! Please provide them.");
         Task t;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+        LocalDateTime from;
+        LocalDateTime to;
         if(splitArgs.length > 3) {
-            t = new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), splitArgs[3], splitArgs[4]);
+            try {
+                from = LocalDateTime.parse(splitArgs[3].trim(), formatter);
+                to = LocalDateTime.parse(splitArgs[4].trim(), formatter);
+            } catch (DateTimeException e) {
+                try {
+                    from = LocalDateTime.parse(splitArgs[3].trim());
+                    to = LocalDateTime.parse(splitArgs[4].trim());
+                } catch (Exception e2) {
+                    throw new TomatoException("Unable to parse date! Please enter a date and time in this format: 2/12/2019 1800");
+                }
+            }
+            t = new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);
         } else {
-            t = new Event(splitArgs[0], splitArgs[1], splitArgs[2]);
+            try {
+                from = LocalDateTime.parse(splitArgs[1].trim(), formatter);
+                to = LocalDateTime.parse(splitArgs[2].trim(), formatter);
+            } catch (DateTimeException e) {
+                try {
+                    from = LocalDateTime.parse(splitArgs[1].trim());
+                    to = LocalDateTime.parse(splitArgs[2].trim());
+                } catch (Exception e2) {
+                    throw new TomatoException("Unable to parse date! Please enter a date and time in this format: 2/12/2019 1800");
+                }
+            }
+            t = new Event(splitArgs[0], from, to);
         }
         AddTask(t);
     }
