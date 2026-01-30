@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Tomato {
@@ -5,6 +6,7 @@ public class Tomato {
     private boolean isExit = false;
     private TaskList tasks;
     private Ui ui;
+    private Storage storage;
 
     private enum Command {
         BYE,
@@ -17,17 +19,24 @@ public class Tomato {
         DELETE
     }
 
+    public Tomato(String filePath) {
+        this.ui = new Ui();
+        this.storage = new Storage(filePath);
+        try {
+            this.tasks = new TaskList(this.storage.load());
+        } catch (FileNotFoundException | TaskListException | TomatoException e) {
+            this.ui.showLoadingError(e);
+            this.tasks = new TaskList();
+        }
+        this.ui.printStartMessage();
+    }
+
     public static void main(String[] args) {
-        Tomato tomato = new Tomato();
+        Tomato tomato = new Tomato("data/TaskList.txt");
         tomato.run();
     }
 
     public void run() {
-        this.tasks = new TaskList();
-        this.ui = new Ui();
-        this.ui.printStartMessage();
-
-
         Scanner sc = new Scanner(System.in);
         String input;
 
@@ -62,27 +71,32 @@ public class Tomato {
         case MARK:
         case UNMARK:
             this.tasks.markTask(splitInput);
+            this.storage.saveToDisk(this.tasks.getTaskList());
             break;
         case TODO:
             if (splitInput.length == 1) {
                 throw new TomatoException("Todo description is required! Please provide it.");
             }
             this.tasks.createTodo(splitInput[1]);
+            this.storage.saveToDisk(this.tasks.getTaskList());
             break;
         case DEADLINE:
             if (splitInput.length == 1) {
                 throw new TomatoException("Deadline arguments is required! Please provide it.");
             }
             this.tasks.createDeadline(splitInput[1]);
+            this.storage.saveToDisk(this.tasks.getTaskList());
             break;
         case EVENT:
             if (splitInput.length == 1) {
                 throw new TomatoException("event arguments is required! Please provide it.");
             }
             this.tasks.createEvent(splitInput[1]);
+            this.storage.saveToDisk(this.tasks.getTaskList());
             break;
         case DELETE:
             this.tasks.deleteTask(splitInput[1]);
+            this.storage.saveToDisk(this.tasks.getTaskList());
             break;
         }
     }

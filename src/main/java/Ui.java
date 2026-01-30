@@ -1,6 +1,6 @@
 public class Ui {
-    private static final String SPACER = "   ____________________________________________________________";
-    private static final String TAB = "    ";
+    public static final String SPACER = "   ____________________________________________________________";
+    public static final String TAB = "    ";
 
     public Ui() {
 

@@ -2,93 +2,22 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import java.io.IOException;
-import java.util.Scanner;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 
 import java.util.ArrayList;
 
 public class TaskList {
     private static final String TAB = "    ";
-    private ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<Task> tasks;
     private File taskFile;
     private boolean isLoadingTask;
 
     public TaskList() {
-        try {
-            this.taskFile = loadTaskFile();
-            loadTasks();
-        } catch (FileNotFoundException | TaskListException e) {
-            if(e instanceof TaskListException) {
-                System.out.println("Unable to load tasks due to corrupted/improper format.");
-            }
-            System.out.println("creating a new file: " + e);
-            try {
-                this.taskFile = createTaskFile();
-            } catch (IOException e2) {
-                System.out.println("Error creating file: " + e2);
-            }
-        }
+        this.tasks = new ArrayList<>();
     }
 
-    private File loadTaskFile() throws FileNotFoundException {
-        String root = System.getProperty("user.dir");
-        java.nio.file.Path path = java.nio.file.Paths.get(root, "data", "TaskList.txt");
-        boolean fileExists = java.nio.file.Files.exists(path);
-        if(fileExists) {
-            return path.toFile();
-        } else {
-            throw new FileNotFoundException();
-        }
-    }
-
-    private File createTaskFile() throws IOException {
-        String root = System.getProperty("user.dir");
-        java.nio.file.Path dataDir = java.nio.file.Paths.get(root, "data");
-        if (!java.nio.file.Files.exists(dataDir)) {
-            java.nio.file.Files.createDirectories(dataDir);
-        }
-        java.nio.file.Path taskListPath = java.nio.file.Paths.get(root, "data", "TaskList.txt");
-        if (!java.nio.file.Files.exists(taskListPath)) {
-            java.nio.file.Files.createFile(taskListPath);
-            System.out.println("Created file: " + taskListPath.toAbsolutePath() + " true");
-        }
-
-        return taskListPath.toFile();
-    }
-
-    private void loadTasks() throws FileNotFoundException, TaskListException {
-        this.isLoadingTask = true;
-        System.out.println(TAB + "Loading tasks from storage......................");
-        Scanner fileScanner = new Scanner(this.taskFile);
-        while (fileScanner.hasNextLine()) {
-            String data = fileScanner.nextLine();
-            String[] args = data.split("|", 2);
-            if(args[0].equals("T")) {
-                createTodo(args[1]);
-            } else if (args[0].equals("D")) {
-                createDeadline(args[1]);
-            } else if (args[0].equals("E")) {
-                createEvent(args[1]);
-            }
-        }
-        this.isLoadingTask = false;
-    }
-
-    public void saveToDisk() {
-        try {
-            FileWriter taskWriter = new FileWriter(this.taskFile);
-            for (Task task : this.tasks) {
-                taskWriter.write(task.toSave() + "\n");
-            }
-            taskWriter.close();
-            taskWriter.close();
-        } catch (IOException e) {
-            System.out.println("unable to save to file");
-            throw new RuntimeException(e);
-        }
+    public TaskList(ArrayList<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public void printTasks() {
@@ -117,7 +46,6 @@ public class TaskList {
             System.out.println(TAB + "OK! I've marked this task as not done yet:");
         }
         System.out.println(TAB + t);
-        saveToDisk();
     }
 
     public void deleteTask(String args) throws TaskListException {
@@ -137,7 +65,6 @@ public class TaskList {
             System.out.println(TAB + "Noted. I've removed this task:");
             System.out.println(TAB + taskName);
             System.out.println(numOfTasks());
-            saveToDisk();
         } else {
             throw new TaskListException("This task cannot be removed, it doesn't exist!");
         }
@@ -148,7 +75,6 @@ public class TaskList {
         System.out.println(TAB + "Got it. I've added this task:\n" + TAB + t.toString());
         System.out.println(numOfTasks());
         if(!this.isLoadingTask) {
-            saveToDisk();
         }
     }
 
@@ -234,5 +160,9 @@ public class TaskList {
 
     public String numOfTasks() {
         return TAB + "Now you have " + tasks.size() + " tasks in the list.";
+    }
+
+    public ArrayList<Task> getTaskList() {
+        return this.tasks;
     }
 }
