@@ -1,3 +1,5 @@
+package tomato;
+
 public class Ui {
     public static final String SPACER = "   ____________________________________________________________";
     public static final String TAB = "    ";

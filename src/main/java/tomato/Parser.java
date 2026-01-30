@@ -1,3 +1,5 @@
+package tomato;
+
 public class Parser {
     private enum Command {
         BYE,
@@ -41,14 +43,14 @@ public class Parser {
                 break;
             case TODO:
                 if (splitInput.length == 1) {
-                    throw new TomatoException("Todo description is required! Please provide it.");
+                    throw new TomatoException("tomato.Todo description is required! Please provide it.");
                 }
                 this.taskList.createTodo(splitInput[1]);
                 this.storage.saveToDisk(this.taskList.getTaskList());
                 break;
             case DEADLINE:
                 if (splitInput.length == 1) {
-                    throw new TomatoException("Deadline arguments is required! Please provide it.");
+                    throw new TomatoException("tomato.Deadline arguments is required! Please provide it.");
                 }
                 this.taskList.createDeadline(splitInput[1]);
                 this.storage.saveToDisk(this.taskList.getTaskList());
