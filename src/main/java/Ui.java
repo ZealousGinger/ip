@@ -6,13 +6,13 @@ public class Ui {
 
     }
 
-    public void printStartMessage() {
+    public static void printStartMessage() {
         System.out.println(SPACER);
         System.out.println(TAB + "Hello! I'm Tomato \uD83C\uDF45 !\n" + TAB + "What can I do for you?");
         System.out.println(SPACER);
     }
 
-    public void printExitMessage() {
+    public static void printExitMessage() {
         System.out.println(TAB + "Bye. Hope to see you again soon!");
         System.out.println(SPACER);
     }
