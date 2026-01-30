@@ -79,13 +79,8 @@ public class TaskList {
     }
 
     public void createTodo(String args) {
-        String[] splitArgs = args.split("\\|");
         Task t;
-        if(splitArgs.length > 1) {
-            t = new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
-        } else {
-            t = new Todo(args);
-        }
+        t = new Todo(args);
         AddTask(t);
     }
 
@@ -95,29 +90,16 @@ public class TaskList {
         Task t;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
         LocalDateTime dateTime;
-        if(splitArgs.length > 2) {
+        try {
+            dateTime = LocalDateTime.parse(splitArgs[1].trim(), formatter);
+        } catch (DateTimeException e) {
             try {
-                dateTime = LocalDateTime.parse(splitArgs[3].trim(), formatter);
-            } catch (DateTimeException e) {
-                try {
-                    dateTime = LocalDateTime.parse(splitArgs[3].trim());
-                } catch (Exception e2) {
-                    throw new TaskListException("Unable to parse date!");
-                }
+                dateTime = LocalDateTime.parse(splitArgs[1].trim());
+            } catch (Exception e2) {
+                throw new TaskListException("Unable to parse date!");
             }
-            t = new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
-        } else {
-            try {
-                dateTime = LocalDateTime.parse(splitArgs[1].trim(), formatter);
-            } catch (DateTimeException e) {
-                try {
-                    dateTime = LocalDateTime.parse(splitArgs[1].trim());
-                } catch (Exception e2) {
-                    throw new TaskListException("Unable to parse date!");
-                }
-            }
-            t = new Deadline(splitArgs[0], dateTime);
         }
+        t = new Deadline(splitArgs[0], dateTime);
         AddTask(t);
     }
 
@@ -128,33 +110,19 @@ public class TaskList {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
         LocalDateTime from;
         LocalDateTime to;
-        if(splitArgs.length > 3) {
+        try {
+            from = LocalDateTime.parse(splitArgs[1].trim(), formatter);
+            to = LocalDateTime.parse(splitArgs[2].trim(), formatter);
+        } catch (DateTimeException e) {
             try {
-                from = LocalDateTime.parse(splitArgs[3].trim(), formatter);
-                to = LocalDateTime.parse(splitArgs[4].trim(), formatter);
-            } catch (DateTimeException e) {
-                try {
-                    from = LocalDateTime.parse(splitArgs[3].trim());
-                    to = LocalDateTime.parse(splitArgs[4].trim());
-                } catch (Exception e2) {
-                    throw new TaskListException("Unable to parse date! Please enter a date and time in this format: 2/12/2019 1800");
-                }
+                from = LocalDateTime.parse(splitArgs[1].trim());
+                to = LocalDateTime.parse(splitArgs[2].trim());
+            } catch (Exception e2) {
+                throw new TaskListException("Unable to parse date! Please enter a date and time in this format: 2/12/2019 1800");
             }
-            t = new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);
-        } else {
-            try {
-                from = LocalDateTime.parse(splitArgs[1].trim(), formatter);
-                to = LocalDateTime.parse(splitArgs[2].trim(), formatter);
-            } catch (DateTimeException e) {
-                try {
-                    from = LocalDateTime.parse(splitArgs[1].trim());
-                    to = LocalDateTime.parse(splitArgs[2].trim());
-                } catch (Exception e2) {
-                    throw new TaskListException("Unable to parse date! Please enter a date and time in this format: 2/12/2019 1800");
-                }
-            }
-            t = new Event(splitArgs[0], from, to);
         }
+        t = new Event(splitArgs[0], from, to);
+
         AddTask(t);
     }
 
