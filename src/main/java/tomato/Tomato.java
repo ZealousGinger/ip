@@ -24,7 +24,7 @@ public class Tomato {
 
         try {
             tasks = new TaskList(storage.load());
-        } catch (FileNotFoundException | TaskListException | TomatoException e) {
+        } catch (FileNotFoundException | TomatoException e) {
             ui.showLoadingError(e);
             tasks = new TaskList();
         }
@@ -53,7 +53,7 @@ public class Tomato {
             input = sc.nextLine();
             try {
                 isExit = parser.parseAndExecute(input);
-            } catch (TomatoException | TaskListException e) {
+            } catch (TomatoException e) {
                 ui.showLoadingError(e);
             }
             System.out.println(SPACER);

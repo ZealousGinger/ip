@@ -63,10 +63,10 @@ public class Storage {
      * Returns an arraylist of tasks decoded from the stored task file.
      * @return
      * @throws FileNotFoundException If file does not exist.
-     * @throws TaskListException If an error occurred from parsing the task file or if unable to create task object.
      * @throws TomatoException If unable to create task file or load tasks from file.
+     * or If an error occurred from parsing the task file or if unable to create task object.
      */
-    private ArrayList<Task> decodeTasks() throws FileNotFoundException, TaskListException {
+    private ArrayList<Task> decodeTasks() throws FileNotFoundException, TomatoException {
         ArrayList<Task> tasks = new ArrayList<>();
         System.out.println(Ui.TAB + "Loading tasks from storage......................");
         Scanner fileScanner = new Scanner(taskFile);
@@ -91,10 +91,10 @@ public class Storage {
      * If task file does not exist or cannot be read, creates a new task file and throws an exception.
      * @return arraylist of tasks.
      * @throws FileNotFoundException If file does not exist.
-     * @throws TaskListException If an error occurred from parsing the task file or if unable to create task object.
      * @throws TomatoException If unable to create task file or load tasks from file.
+     * or If an error occurred from parsing the task file or if unable to create task object.
      */
-    public ArrayList<Task> load() throws FileNotFoundException, TaskListException, TomatoException {
+    public ArrayList<Task> load() throws FileNotFoundException, TomatoException {
         try {
             loadTaskFile();
             return decodeTasks();
@@ -142,17 +142,17 @@ public class Storage {
      * @param args String arguments e.g. "D|1|return books |2025-02-02T19:00".
      * @return Deadline Task object.
      */
-    private Task decodeDeadline(String args) throws TaskListException {
+    private Task decodeDeadline(String args) throws TomatoException {
         String[] splitArgs = args.split("/by|\\|");
         if(splitArgs.length < 2) {
-            throw new TaskListException("deadline requires more arguments! Please provide them.");
+            throw new TomatoException("deadline requires more arguments! Please provide them.");
         }
 
         LocalDateTime dateTime;
         try {
             dateTime = LocalDateTime.parse(splitArgs[3].trim());
         } catch (Exception e2) {
-            throw new TaskListException("Unable to parse date!");
+            throw new TomatoException("Unable to parse date!");
         }
         return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
     }
@@ -162,10 +162,10 @@ public class Storage {
      * @param args String arguments e.g. "E|0|book shopping |2025-03-03T16:00|2025-03-03T18:00".
      * @return Event Task object.
      */
-    private Task decodeEvent(String args) throws TaskListException {
+    private Task decodeEvent(String args) throws TomatoException {
         String[] splitArgs = args.split("/from|\\/to|\\|");
         if(splitArgs.length < 3) {
-            throw new TaskListException("event requires more arguments! Please provide them.");
+            throw new TomatoException("event requires more arguments! Please provide them.");
         }
 
         LocalDateTime from;
@@ -175,7 +175,7 @@ public class Storage {
             from = LocalDateTime.parse(splitArgs[3].trim());
             to = LocalDateTime.parse(splitArgs[4].trim());
         } catch (Exception e2) {
-            throw new TaskListException("Unable to parse date! " +
+            throw new TomatoException("Unable to parse date! " +
                     "Please enter a date and time in this format: 2/12/2019 1800");
         }
 

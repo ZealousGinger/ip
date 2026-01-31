@@ -1,5 +1,9 @@
 package tomato;
 
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Represents the Parser class that parses the string input and executes the commands respectively.
  */
@@ -44,7 +48,7 @@ public class Parser {
             enumCmd = Parser.Command.valueOf(cmd.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new TomatoException("Unknown command given, please try a given command: " +
-                    "[bye, list, mark, todo, deadline, event, delete]. ");
+                    "[bye, list, mark, todo, deadline, event, delete, find]. ");
         }
 
         switch (enumCmd) {
@@ -56,41 +60,168 @@ public class Parser {
             taskList.printTasks();
             break;
         case FIND:
-            taskList.printMatchingTasks(splitInput[1]);
+            handleFindTasks(splitInput);
             break;
         case MARK:
-            // Fallthrough, mark and unmark handled by markTask method.
+            handleMarkTask(splitInput);
+            break;
         case UNMARK:
-            taskList.markTask(splitInput);
-            storage.saveToDisk(taskList.getTaskList());
+            handleUnmarkTask(splitInput);
             break;
         case TODO:
-            if (splitInput.length == 1) {
-                throw new TomatoException("tomato.Todo description is required! Please provide it.");
-            }
-            taskList.createTodo(splitInput[1]);
-            storage.saveToDisk(taskList.getTaskList());
+            handleCreateTodo(splitInput);
             break;
         case DEADLINE:
-            if (splitInput.length == 1) {
-                throw new TomatoException("tomato.Deadline arguments is required! Please provide it.");
-            }
-            taskList.createDeadline(splitInput[1]);
-            storage.saveToDisk(taskList.getTaskList());
+            handleCreateDeadline(splitInput);
             break;
         case EVENT:
-            if (splitInput.length == 1) {
-                throw new TomatoException("event arguments is required! Please provide it.");
-            }
-            taskList.createEvent(splitInput[1]);
-            storage.saveToDisk(taskList.getTaskList());
+            handleCreateEvent(splitInput);
             break;
         case DELETE:
-            taskList.deleteTask(splitInput[1]);
-            storage.saveToDisk(taskList.getTaskList());
+            handleDeleteTask(splitInput);
             break;
         }
 
         return false;
+    }
+
+    /**
+     * Parses and handles create Todo.
+     * @param splitInput string[] of input arguments.
+     * @throws TomatoException if arguments are insufficient or invalid.
+     */
+    private void handleCreateTodo(String[] splitInput) throws TomatoException {
+        if (splitInput.length == 1) {
+            throw new TomatoException("Todo description is required! Please provide it.");
+        }
+        taskList.createTodo(splitInput[1]);
+        storage.saveToDisk(taskList.getTaskList());
+    }
+
+    /**
+     * Parses and handles create Deadline.
+     * @param splitInput string[] of input arguments.
+     * @throws TomatoException if arguments are insufficient or invalid.
+     */
+    private void handleCreateDeadline(String[] splitInput) throws TomatoException {
+        if (splitInput.length == 1) {
+            throw new TomatoException("Deadline arguments is required! Please provide it.");
+        }
+        String[] args = splitInput[1].split("/by|\\|");
+        if (args.length < 2) {
+            throw new TomatoException("deadline requires more arguments! Please provide them.");
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+        LocalDateTime dateTime;
+
+        try {
+            dateTime = LocalDateTime.parse(args[1].trim(), formatter);
+        } catch (DateTimeException e) {
+            try {
+                dateTime = LocalDateTime.parse(args[1].trim());
+            } catch (Exception e2) {
+                throw new TomatoException("Unable to parse date!");
+            }
+        }
+
+        taskList.createDeadline(args[1], dateTime);
+        storage.saveToDisk(taskList.getTaskList());
+    }
+
+    /**
+     * Parses and handles create Event.
+     * @param splitInput string[] of input arguments.
+     * @throws TomatoException if arguments are insufficient or invalid.
+     */
+    private void handleCreateEvent(String[] splitInput) throws TomatoException {
+        if (splitInput.length == 1) {
+            throw new TomatoException("event arguments is required! Please provide it.");
+        }
+        String[] args = splitInput[1].split("/from|\\/to|\\|");
+        if(args.length < 3) {
+            throw new TomatoException("event requires more arguments! Please provide them.");
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+        LocalDateTime from;
+        LocalDateTime to;
+
+        try {
+            from = LocalDateTime.parse(args[1].trim(), formatter);
+            to = LocalDateTime.parse(args[2].trim(), formatter);
+        } catch (DateTimeException e) {
+
+            try {
+                from = LocalDateTime.parse(args[1].trim());
+                to = LocalDateTime.parse(args[2].trim());
+            } catch (Exception e2) {
+                throw new TomatoException("Unable to parse date! " +
+                        "Please enter a date and time in this format: 2/12/2019 1800");
+            }
+        }
+
+        taskList.createEvent(args[0], from, to);
+        storage.saveToDisk(taskList.getTaskList());
+    }
+
+    /**
+     * Parses and handles delete task.
+     * @param splitInput string[] of input arguments.
+     * @throws TomatoException if task number is not provided or invalid.
+     */
+    private void handleDeleteTask(String[] splitInput) throws TomatoException {
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(splitInput[1]) - 1;
+        } catch (Exception e) {
+            throw new TomatoException("You must provide a task number!");
+        }
+
+        taskList.deleteTask(taskNum);
+        storage.saveToDisk(taskList.getTaskList());
+    }
+
+    /**
+     * Parses and handles mark task.
+     * @param splitInput string[] of input arguments.
+     * @throws TomatoException if task number is not provided or invalid.
+     */
+    private void handleMarkTask(String[] splitInput) throws TomatoException {
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(splitInput[1]) - 1;
+        } catch (Exception e) {
+            throw new TomatoException("You must provide a task number!");
+        }
+        taskList.markTask(taskNum);
+        storage.saveToDisk(taskList.getTaskList());
+    }
+
+    /**
+     * Parses and handles unmark task.
+     * @param splitInput string[] of input arguments.
+     * @throws TomatoException if task number is not provided or invalid.
+     */
+    private void handleUnmarkTask(String[] splitInput) throws TomatoException {
+        int taskNum;
+        try {
+            taskNum = Integer.parseInt(splitInput[1]) - 1;
+        } catch (Exception e) {
+            throw new TomatoException("You must provide a task number!");
+        }
+        taskList.unmarkTask(taskNum);
+        storage.saveToDisk(taskList.getTaskList());
+    }
+
+    /**
+     * Parses and handles find task.
+     * @param splitInput string[] of input arguments.
+     * @throws TomatoException if keyword argument is not provided.
+     */
+    private void handleFindTasks(String[] splitInput) throws TomatoException {
+        if (splitInput.length == 1) {
+            throw new TomatoException("keyword is required! Please provide it.");
+        }
+        taskList.printMatchingTasks(splitInput[1]);
     }
 }

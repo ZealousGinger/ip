@@ -1,8 +1,6 @@
 package tomato;
 
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 
@@ -40,63 +38,56 @@ public class TaskList {
     }
 
     /**
-     * Modifies the state of a specified Task instance an either marked or unmarked.
-     * @param splitInput Array of string arguments, 1st is command type, 2nd is task index number, e.g.["mark", "1"].
-     * @throws TaskListException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     * Modifies the state of a specified Task instance marked.
+     * @param idx integer task index
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
-    public void markTask(String[] splitInput) throws TaskListException {
-        int taskNum;
-        try {
-            taskNum = Integer.parseInt(splitInput[1]) - 1;
-        } catch (Exception e) {
-            throw new TaskListException("You must provide a task number!");
+    public void markTask(int idx) throws TomatoException {
+        if (idx > tasks.size() || idx < 0) {
+            throw new TomatoException("That task number doesn't exist!");
         }
+        Task t = tasks.get(idx);
+        t.setDone();
+        System.out.println(TAB + "Nice! I've marked this task as done:");
+        System.out.println(TAB + t);
+    }
 
-        if (taskNum >= tasks.size()) {
-            throw new TaskListException("That task number doesn't exist!");
+    /**
+     * Modifies the state of a specified Task instance unmarked.
+     * @param idx integer task index
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
+    public void unmarkTask(int idx) throws TomatoException {
+        if (idx > tasks.size() || idx < 0) {
+            throw new TomatoException("That task number doesn't exist!");
         }
-
-        Task t = tasks.get(taskNum);
-        if(splitInput[0].equals("mark")) {
-            t.setDone();
-            System.out.println(TAB + "Nice! I've marked this task as done:");
-        } else if(splitInput[0].equals("unmark")) {
-            t.setNotDone();
-            System.out.println(TAB + "OK! I've marked this task as not done yet:");
-        }
+        Task t = tasks.get(idx);
+        t.setNotDone();
+        System.out.println(TAB + "OK! I've marked this task as not done yet:");
         System.out.println(TAB + t);
     }
 
     /**
      * Deletes an instance of a specified Task instance of the list of tasks.
-     * @param args string representing the task index number.
-     * @throws TaskListException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     * @param idx integer task index
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
-    public void deleteTask(String args) throws TaskListException {
-        int taskNum;
-        try {
-            taskNum = Integer.parseInt(args) - 1;
-        } catch (Exception e) {
-            throw new TaskListException("You must provide a task number!");
+    public void deleteTask(int idx) throws TomatoException {
+        if (idx > tasks.size() || idx < 0) {
+            throw new TomatoException("That task number doesn't exist!");
         }
-
-        if (taskNum >= tasks.size()) {
-            throw new TaskListException("That task number doesn't exist!");
-        }
-        Task t = tasks.get(taskNum);
+        Task t = tasks.get(idx);
         String taskName = t.toString();
         if(tasks.remove(t)) {
             System.out.println(TAB + "Noted. I've removed this task:");
             System.out.println(TAB + taskName);
             System.out.println(numOfTasks());
-        } else {
-            throw new TaskListException("This task cannot be removed, it doesn't exist!");
         }
     }
 
     /**
      * Adds an instance of a task object into the list of tasks.
-     * @param t
+     * @param t Task instance to add.
      */
     private void AddTask(Task t) {
         tasks.add(t);
@@ -115,60 +106,22 @@ public class TaskList {
 
     /**
      * Creates an instance of Deadline object and adds it into the list of tasks.
-     * @param args String arguments required i.e. "return books /by 2/2/2025 1900".
-     * @throws TaskListException If insufficient arguments are given or if invalid arguments unable to be parsed.
+     * @param description string description of task.
+     * @param by datetime of deadline.
      */
-    public void createDeadline(String args) throws TaskListException {
-        String[] splitArgs = args.split("/by|\\|");
-        if(splitArgs.length < 2) {
-            throw new TaskListException("deadline requires more arguments! Please provide them.");
-        }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-        LocalDateTime dateTime;
-
-        try {
-            dateTime = LocalDateTime.parse(splitArgs[1].trim(), formatter);
-        } catch (DateTimeException e) {
-            try {
-                dateTime = LocalDateTime.parse(splitArgs[1].trim());
-            } catch (Exception e2) {
-                throw new TaskListException("Unable to parse date!");
-            }
-        }
-        Task t = new Deadline(splitArgs[0], dateTime);
+    public void createDeadline(String description, LocalDateTime by) {
+        Task t = new Deadline(description, by);
         AddTask(t);
     }
 
     /**
      * Creates an instance of Event object and adds it into the list of tasks.
-     * @param args String arguments required i.e. "meeting /from 2/2/2025 1900 /to 2/2/2025 2000".
-     * @throws TaskListException If insufficient arguments are given or if invalid arguments unable to be parsed.
+     * @param description string description of task.
+     * @param from datetime of start of event.
+     * @param to datetime of end of event.
      */
-    public void createEvent(String args) throws TaskListException {
-        String[] splitArgs = args.split("/from|\\/to|\\|");
-        if(splitArgs.length < 3) {
-            throw new TaskListException("event requires more arguments! Please provide them.");
-        }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-        LocalDateTime from;
-        LocalDateTime to;
-
-        try {
-            from = LocalDateTime.parse(splitArgs[1].trim(), formatter);
-            to = LocalDateTime.parse(splitArgs[2].trim(), formatter);
-        } catch (DateTimeException e) {
-
-            try {
-                from = LocalDateTime.parse(splitArgs[1].trim());
-                to = LocalDateTime.parse(splitArgs[2].trim());
-            } catch (Exception e2) {
-                throw new TaskListException("Unable to parse date! " +
-                        "Please enter a date and time in this format: 2/12/2019 1800");
-            }
-        }
-
-        Task t = new Event(splitArgs[0], from, to);
+    public void createEvent(String description, LocalDateTime from, LocalDateTime to) {
+        Task t = new Event(description, from, to);
         AddTask(t);
     }
 
