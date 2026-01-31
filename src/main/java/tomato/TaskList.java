@@ -187,4 +187,22 @@ public class TaskList {
     public ArrayList<Task> getTaskList() {
         return tasks;
     }
+
+    public void printMatchingTasks(String keyword) {
+        ArrayList<Task> matchingTasks = getMatchingTasks(keyword);
+        System.out.println(TAB + "Here are the matching tasks in your list:");
+        for(int i = 0; i < matchingTasks.size(); ++i) {
+            System.out.println(TAB + (i+1) + "." + matchingTasks.get(i));
+        }
+    }
+
+    private ArrayList<Task> getMatchingTasks(String keyword) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.toString().contains(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
+    }
 }

@@ -12,7 +12,8 @@ public class Parser {
         TODO,
         DEADLINE,
         EVENT,
-        DELETE
+        DELETE,
+        FIND
     }
     private TaskList taskList;
     private Storage storage;
@@ -53,6 +54,9 @@ public class Parser {
             // Immediately exists the method and stop chat loop.
         case LIST:
             taskList.printTasks();
+            break;
+        case FIND:
+            taskList.printMatchingTasks(splitInput[1]);
             break;
         case MARK:
             // Fallthrough, mark and unmark handled by markTask method.
