@@ -3,17 +3,39 @@ package tomato;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents a Event Task object.
+ */
 public class Event extends Task {
 
     protected LocalDateTime from;
     protected LocalDateTime to;
+    /**
+     * Instantiates Deadline object with description, and deadline.
+     * @param description String to describe task.
+     * @param by LocalDateTime of deadline.
+     */
 
+    /**
+     * Instantiates Event object with description, starting and ending datetime.
+     * @param description String to describe task.
+     * @param from LocalDateTime of start of event.
+     * @param to LocalDateTime of end of event.
+     */
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
         this.from= from;
         this.to = to;
     }
 
+    /**
+     * Instantiates Event object with description, starting and ending datetime.
+     * Used when loading tasks from storage.
+     * @param description String to describe task.
+     * @param done boolean status
+     * @param from LocalDateTime of start of event.
+     * @param to LocalDateTime of end of event.
+     */
     public Event(String description, boolean done, LocalDateTime from, LocalDateTime to) {
         super(description, done);
         this.from= from;
@@ -27,6 +49,10 @@ public class Event extends Task {
                 " to: " + to.format(DateTimeFormatter.ofPattern("MMM d yyyy h:mma")) + ")";
     }
 
+    /**
+     * Returns string representation for storage format of task for saving.
+     * @return storage string representation.
+     */
     public String toSave() {
         return "E|" + super.toSave() + "|" + from + "|" + to;
     }

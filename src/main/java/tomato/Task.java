@@ -55,7 +55,7 @@ public class Task {
 
     /**
      * Returns string representation for storage format of task for saving.
-     * @return
+     * @return storage string representation.
      */
     public String toSave() {return (isDone ? 1 : 0) + "|" + this.description;}
 }
