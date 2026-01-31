@@ -9,7 +9,8 @@ public class Parser {
         TODO,
         DEADLINE,
         EVENT,
-        DELETE
+        DELETE,
+        FIND
     }
     private TaskList taskList;
     private Storage storage;
@@ -35,6 +36,9 @@ public class Parser {
                 return true;
             case LIST:
                 this.taskList.printTasks();
+                break;
+            case FIND:
+                taskList.printMatchingTasks(splitInput[1]);
                 break;
             case MARK:
             case UNMARK:
