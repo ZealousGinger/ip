@@ -15,21 +15,23 @@ public class Task {
     }
 
     public String getStatusIcon() {
-        return (isDone ? "X" : " "); // mark done task with X
+        return (isDone ? "X" : " ");
     }
 
-    public void markAsDone() {
-        this.isDone = true;
+    public void setDone() {
+        isDone = true;
     }
 
-    public void markAsNotdone() {
-        this.isDone = false;
+    public void setNotDone() {
+        isDone = false;
     }
 
     @Override
     public String toString() {
-        return "[" + this.getStatusIcon() + "] " + this.description;
+        return "[" + getStatusIcon() + "] " + description;
     }
 
-    public String toSave() {return (isDone ? 1 : 0) + "|" + this.description;}
+    public String toSave() {
+        return (isDone ? 1 : 0) + "|" + description;
+    }
 }

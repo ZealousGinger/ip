@@ -5,7 +5,6 @@ public class Ui {
     public static final String TAB = "    ";
 
     public Ui() {
-
     }
 
     public static void printStartMessage() {

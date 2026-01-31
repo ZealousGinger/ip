@@ -4,15 +4,11 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import java.io.File;
-
 import java.util.ArrayList;
 
 public class TaskList {
     private static final String TAB = "    ";
     private ArrayList<Task> tasks;
-    private File taskFile;
-    private boolean isLoadingTask;
 
     public TaskList() {
         this.tasks = new ArrayList<>();
@@ -24,8 +20,8 @@ public class TaskList {
 
     public void printTasks() {
         System.out.println(TAB + "Here are the tasks in your list:");
-        for(int i = 0; i < this.tasks.size(); ++i) {
-            System.out.println(TAB + (i+1) + "." + this.tasks.get(i));
+        for(int i = 0; i < tasks.size(); ++i) {
+            System.out.println(TAB + (i+1) + "." + tasks.get(i));
         }
     }
 
@@ -36,15 +32,17 @@ public class TaskList {
         } catch (Exception e) {
             throw new TaskListException("You must provide a task number!");
         }
-        if (taskNum >= this.tasks.size()) {
+
+        if (taskNum >= tasks.size()) {
             throw new TaskListException("That task number doesn't exist!");
         }
-        Task t = this.tasks.get(taskNum);
+
+        Task t = tasks.get(taskNum);
         if(splitInput[0].equals("mark")) {
-            t.markAsDone();
+            t.setDone();
             System.out.println(TAB + "Nice! I've marked this task as done:");
         } else if(splitInput[0].equals("unmark")) {
-            t.markAsNotdone();
+            t.setNotDone();
             System.out.println(TAB + "OK! I've marked this task as not done yet:");
         }
         System.out.println(TAB + t);
@@ -58,12 +56,12 @@ public class TaskList {
             throw new TaskListException("You must provide a task number!");
         }
 
-        if (taskNum >= this.tasks.size()) {
+        if (taskNum >= tasks.size()) {
             throw new TaskListException("That task number doesn't exist!");
         }
-        Task t = this.tasks.get(taskNum);
+        Task t = tasks.get(taskNum);
         String taskName = t.toString();
-        if(this.tasks.remove(t)) {
+        if(tasks.remove(t)) {
             System.out.println(TAB + "Noted. I've removed this task:");
             System.out.println(TAB + taskName);
             System.out.println(numOfTasks());
@@ -73,25 +71,25 @@ public class TaskList {
     }
 
     private void AddTask(Task t) {
-        this.tasks.add(t);
+        tasks.add(t);
         System.out.println(TAB + "Got it. I've added this task:\n" + TAB + t.toString());
         System.out.println(numOfTasks());
-        if(!this.isLoadingTask) {
-        }
     }
 
     public void createTodo(String args) {
-        Task t;
-        t = new Todo(args);
+        Task t = new Todo(args);
         AddTask(t);
     }
 
     public void createDeadline(String args) throws TaskListException {
         String[] splitArgs = args.split("/by|\\|");
-        if(splitArgs.length < 2) throw new TaskListException("deadline requires more arguments! Please provide them.");
-        Task t;
+        if(splitArgs.length < 2) {
+            throw new TaskListException("deadline requires more arguments! Please provide them.");
+        }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
         LocalDateTime dateTime;
+
         try {
             dateTime = LocalDateTime.parse(splitArgs[1].trim(), formatter);
         } catch (DateTimeException e) {
@@ -101,30 +99,34 @@ public class TaskList {
                 throw new TaskListException("Unable to parse date!");
             }
         }
-        t = new Deadline(splitArgs[0], dateTime);
+        Task t = new Deadline(splitArgs[0], dateTime);
         AddTask(t);
     }
 
     public void createEvent(String args) throws TaskListException {
         String[] splitArgs = args.split("/from|\\/to|\\|");
-        if(splitArgs.length < 3) throw new TaskListException("event requires more arguments! Please provide them.");
-        Task t;
+        if(splitArgs.length < 3) {
+            throw new TaskListException("event requires more arguments! Please provide them.");
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
         LocalDateTime from;
         LocalDateTime to;
+
         try {
             from = LocalDateTime.parse(splitArgs[1].trim(), formatter);
             to = LocalDateTime.parse(splitArgs[2].trim(), formatter);
         } catch (DateTimeException e) {
+
             try {
                 from = LocalDateTime.parse(splitArgs[1].trim());
                 to = LocalDateTime.parse(splitArgs[2].trim());
             } catch (Exception e2) {
-                throw new TaskListException("Unable to parse date! Please enter a date and time in this format: 2/12/2019 1800");
+                throw new TaskListException("Unable to parse date! " +
+                        "Please enter a date and time in this format: 2/12/2019 1800");
             }
         }
-        t = new Event(splitArgs[0], from, to);
 
+        Task t = new Event(splitArgs[0], from, to);
         AddTask(t);
     }
 
@@ -133,6 +135,6 @@ public class TaskList {
     }
 
     public ArrayList<Task> getTaskList() {
-        return this.tasks;
+        return tasks;
     }
 }

@@ -9,6 +9,7 @@ public class TaskListTest {
     @Test
     public void createDeadline_correctArgumentsInput_success() {
         TaskList tasks = new TaskList();
+
         assertDoesNotThrow(() -> {
             tasks.createDeadline("deadline return books /by 2/2/2025 1945");
         });
@@ -21,6 +22,7 @@ public class TaskListTest {
     @Test
     public void createDeadline_wrongArgumentsInput_exceptionThrown(){
         TaskList tasks = new TaskList();
+
         assertThrowsExactly(TaskListException.class, () -> {
             tasks.createDeadline("deadline return books /by 1945 2/2/2025");
         });
@@ -41,6 +43,7 @@ public class TaskListTest {
     @Test
     public void createDeadline_wrongDateFormatInput_exceptionThrown(){
         TaskList tasks = new TaskList();
+
         assertThrowsExactly(TaskListException.class, () -> {
             tasks.createDeadline("deadline return books /by 1945 2/2/2025");
         });

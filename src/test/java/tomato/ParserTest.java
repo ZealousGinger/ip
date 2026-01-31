@@ -11,6 +11,7 @@ public class ParserTest {
         Storage storage = new Storage("data/TaskList.txt");
         TaskList tasks = new TaskList();
         Parser parser = new Parser(tasks, storage);
+
         assertThrowsExactly(TomatoException.class, () -> {
             parser.parseAndExecute("jdhfjhdf");
         });
@@ -25,6 +26,7 @@ public class ParserTest {
         Storage storage = new Storage("data/TaskList.txt");
         TaskList tasks = new TaskList();
         Parser parser = new Parser(tasks, storage);
+
         assertDoesNotThrow(() -> {
             parser.parseAndExecute("LIST");
         });
