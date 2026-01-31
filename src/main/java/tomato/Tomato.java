@@ -19,16 +19,18 @@ public class Tomato {
      * @param filePath file path location (e.g. "data/TaskList.txt" ) to save tasks into.
      */
     public Tomato(String filePath) {
-        this.ui = new Ui();
-        this.storage = new Storage(filePath);
+        ui = new Ui();
+        storage = new Storage(filePath);
+
         try {
-            this.tasks = new TaskList(this.storage.load());
+            tasks = new TaskList(storage.load());
         } catch (FileNotFoundException | TaskListException | TomatoException e) {
-            this.ui.showLoadingError(e);
-            this.tasks = new TaskList();
+            ui.showLoadingError(e);
+            tasks = new TaskList();
         }
-        this.parser = new Parser(this.tasks, this.storage);
-        this.ui.printStartMessage();
+
+        parser = new Parser(tasks, storage);
+        ui.printStartMessage();
     }
 
     /**
@@ -50,9 +52,9 @@ public class Tomato {
         while (!isExit) {
             input = sc.nextLine();
             try {
-                this.isExit = this.parser.parseAndExecute(input);
+                isExit = parser.parseAndExecute(input);
             } catch (TomatoException | TaskListException e) {
-                this.ui.showLoadingError(e);
+                ui.showLoadingError(e);
             }
             System.out.println(SPACER);
         }

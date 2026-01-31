@@ -7,14 +7,8 @@ import java.time.format.DateTimeFormatter;
  * Represents a Event Task object.
  */
 public class Event extends Task {
-
     protected LocalDateTime from;
     protected LocalDateTime to;
-    /**
-     * Instantiates Deadline object with description, and deadline.
-     * @param description String to describe task.
-     * @param by LocalDateTime of deadline.
-     */
 
     /**
      * Instantiates Event object with description, starting and ending datetime.
@@ -32,12 +26,12 @@ public class Event extends Task {
      * Instantiates Event object with description, starting and ending datetime.
      * Used when loading tasks from storage.
      * @param description String to describe task.
-     * @param done boolean status
+     * @param isDone boolean status
      * @param from LocalDateTime of start of event.
      * @param to LocalDateTime of end of event.
      */
-    public Event(String description, boolean done, LocalDateTime from, LocalDateTime to) {
-        super(description, done);
+    public Event(String description, boolean isDone, LocalDateTime from, LocalDateTime to) {
+        super(description, isDone);
         this.from= from;
         this.to = to;
     }

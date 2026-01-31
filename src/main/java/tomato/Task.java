@@ -31,31 +31,33 @@ public class Task {
      * @return string status representation.
      */
     public String getStatusIcon() {
-        return (isDone ? "X" : " "); // mark done task with X
+        return (isDone ? "X" : " ");
     }
 
     /**
-     * Marks task as done.
+     * Sets task as done.
      */
-    public void markAsDone() {
-        this.isDone = true;
+    public void setDone() {
+        isDone = true;
     }
 
     /**
-     * Marks task as not done.
+     * Sets task as done.
      */
-    public void markAsNotdone() {
-        this.isDone = false;
+    public void setNotDone() {
+        isDone = false;
     }
 
     @Override
     public String toString() {
-        return "[" + this.getStatusIcon() + "] " + this.description;
+        return "[" + getStatusIcon() + "] " + description;
     }
 
     /**
      * Returns string representation for storage format of task for saving.
      * @return storage string representation.
      */
-    public String toSave() {return (isDone ? 1 : 0) + "|" + this.description;}
+    public String toSave() {
+        return (isDone ? 1 : 0) + "|" + description;
+    }
 }

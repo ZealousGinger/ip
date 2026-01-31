@@ -16,10 +16,10 @@ public class Todo extends Task {
     /**
      * Instantiates Todo object with description and status, used when loading tasks from storage.
      * @param description String to describe task.
-     * @param done boolean status
+     * @param isDone boolean status
      */
-    public Todo(String description, boolean done) {
-        super(description, done);
+    public Todo(String description, boolean isDone) {
+        super(description, isDone);
     }
 
     @Override
