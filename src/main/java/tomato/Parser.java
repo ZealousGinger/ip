@@ -1,5 +1,8 @@
 package tomato;
 
+/**
+ * Represents the Parser class that parses the string input and executes the commands respectively.
+ */
 public class Parser {
     private enum Command {
         BYE,
@@ -14,12 +17,24 @@ public class Parser {
     private TaskList taskList;
     private Storage storage;
 
+    /**
+     * Instantiates the Parser class with specified TaskList and Storage.
+     * @param taskList list of tasks retrieved from storage.
+     * @param storage storage class that handles saving changes of tasks to disk.
+     */
     public Parser(TaskList taskList, Storage storage) {
         this.taskList = taskList;
         this.storage = storage;
     }
 
 
+    /**
+     * Returns a boolean value that represents whether to stop parsing and exit the chatbot loop.
+     * Parses the given input string and executes the command if valid.
+     * @param input string representing the command to be executed.
+     * @return boolean value to stop parsing and exit the chat loop.
+     * @throws TomatoException If unable to parse arguments, or invalid arguments.
+     */
     public boolean parseAndExecute(String input) throws TomatoException {
         String[] splitInput = input.split(" ", 2);
         String cmd = splitInput[0];

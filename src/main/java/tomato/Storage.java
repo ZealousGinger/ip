@@ -8,15 +8,26 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Represents the storage class.
+ */
 public class Storage {
     private File taskFile;
     private final String filePath;
 
+    /**
+     * Instantiates the storage class with a specified file path for storage file.
+     * @param filePath string of file path to store the task file.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    public void loadTaskFile() throws FileNotFoundException {
+    /**
+     * Checks the previously specified file path, and loads it if exists.
+     * @throws FileNotFoundException If previously specified file path does not exist.
+     */
+    private void loadTaskFile() throws FileNotFoundException {
         String root = System.getProperty("user.dir");
         java.nio.file.Path path = java.nio.file.Paths.get(root, this.filePath);
         boolean fileExists = java.nio.file.Files.exists(path);
@@ -27,7 +38,11 @@ public class Storage {
         }
     }
 
-    public void createTaskFile() throws IOException {
+    /**
+     * Creates the relevant directories and file according the previously specified file path.
+     * @throws IOException If an input output error has occurred while trying to create the file.
+     */
+    private void createTaskFile() throws IOException {
         String root = System.getProperty("user.dir");
         java.nio.file.Path taskListPath = java.nio.file.Paths.get(root, this.filePath);
         java.nio.file.Path dataDir = taskListPath.getParent();
@@ -43,7 +58,14 @@ public class Storage {
         this.taskFile = taskListPath.toFile();
     }
 
-    public ArrayList<Task> decodeTasks() throws FileNotFoundException, TaskListException {
+    /**
+     * Returns an arraylist of tasks decoded from the stored task file.
+     * @return
+     * @throws FileNotFoundException If file does not exist.
+     * @throws TaskListException If an error occurred from parsing the task file or if unable to create task object.
+     * @throws TomatoException If unable to create task file or load tasks from file.
+     */
+    private ArrayList<Task> decodeTasks() throws FileNotFoundException, TaskListException {
         ArrayList<Task> tasks = new ArrayList<>();
         System.out.println(Ui.TAB + "Loading tasks from storage......................");
         Scanner fileScanner = new Scanner(this.taskFile);
@@ -61,6 +83,14 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Returns an arraylist of tasks loaded from the stored task file if it exists.
+     * If task file does not exist or cannot be read, creates a new task file and throws an exception.
+     * @return arraylist of tasks.
+     * @throws FileNotFoundException If file does not exist.
+     * @throws TaskListException If an error occurred from parsing the task file or if unable to create task object.
+     * @throws TomatoException If unable to create task file or load tasks from file.
+     */
     public ArrayList<Task> load() throws FileNotFoundException, TaskListException, TomatoException {
         try {
             this.loadTaskFile();
@@ -75,6 +105,10 @@ public class Storage {
         throw new TomatoException("Error unable to load from file!");
     }
 
+    /**
+     * Saves given array list of tasks into the task file.
+     * @param tasks
+     */
     public void saveToDisk(ArrayList<Task> tasks) {
         try {
             FileWriter taskWriter = new FileWriter(this.taskFile);
@@ -89,14 +123,24 @@ public class Storage {
         }
     }
 
-    public Task decodeTodo(String args) {
+    /**
+     * Returns a Todo instance from the stored todo string.
+     * @param args String arguments e.g. "T|1|read book".
+     * @return Todo Task object.
+     */
+    private Task decodeTodo(String args) {
         String[] splitArgs = args.split("\\|");
         Task t;
         t = new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
         return t;
     }
 
-    public Task decodeDeadline(String args) throws TaskListException {
+    /**
+     * Returns a Deadline instance from the stored deadline string.
+     * @param args String arguments e.g. "D|1|return books |2025-02-02T19:00".
+     * @return Deadline Task object.
+     */
+    private Task decodeDeadline(String args) throws TaskListException {
         String[] splitArgs = args.split("/by|\\|");
         if(splitArgs.length < 2) throw new TaskListException("deadline requires more arguments! Please provide them.");
         Task t;
@@ -112,7 +156,12 @@ public class Storage {
         return t;
     }
 
-    public Task decodeEvent(String args) throws TaskListException {
+    /**
+     * Returns a Event instance from the stored event string.
+     * @param args String arguments e.g. "E|0|book shopping |2025-03-03T16:00|2025-03-03T18:00".
+     * @return Event Task object.
+     */
+    private Task decodeEvent(String args) throws TaskListException {
         String[] splitArgs = args.split("/from|\\/to|\\|");
         if(splitArgs.length < 3) throw new TaskListException("event requires more arguments! Please provide them.");
         Task t;

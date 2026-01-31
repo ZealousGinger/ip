@@ -8,20 +8,34 @@ import java.io.File;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a list of Task(s) instances along with relevant methods to maintain the list.
+ * Methods include creating, un/marking, deleting, counting, listing, tasks.
+ */
 public class TaskList {
     private static final String TAB = "    ";
     private ArrayList<Task> tasks;
     private File taskFile;
     private boolean isLoadingTask;
 
+    /**
+     * Instantiates the class with an empty list.
+     */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
+    /**
+     * Instantiates the class with the specified array list of tasks.
+     * @param tasks ArrayList of Task instances from storage task file.
+     */
     public TaskList(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
+    /**
+     * Prints all the tasks in the current list in a human-readable format along with tasks information.
+     */
     public void printTasks() {
         System.out.println(TAB + "Here are the tasks in your list:");
         for(int i = 0; i < this.tasks.size(); ++i) {
@@ -29,6 +43,11 @@ public class TaskList {
         }
     }
 
+    /**
+     * Modifies the state of a specified Task instance an either marked or unmarked.
+     * @param splitInput Array of string arguments, 1st is command type, 2nd is task index number, e.g.["mark", "1"].
+     * @throws TaskListException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
     public void markTask(String[] splitInput) throws TaskListException {
         int taskNum;
         try {
@@ -50,6 +69,11 @@ public class TaskList {
         System.out.println(TAB + t);
     }
 
+    /**
+     * Deletes an instance of a specified Task instance of the list of tasks.
+     * @param args string representing the task index number.
+     * @throws TaskListException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
     public void deleteTask(String args) throws TaskListException {
         int taskNum;
         try {
@@ -72,6 +96,10 @@ public class TaskList {
         }
     }
 
+    /**
+     * Adds an instance of a task object into the list of tasks.
+     * @param t
+     */
     private void AddTask(Task t) {
         this.tasks.add(t);
         System.out.println(TAB + "Got it. I've added this task:\n" + TAB + t.toString());
@@ -80,12 +108,21 @@ public class TaskList {
         }
     }
 
+    /**
+     * Creates an instance of Todo object and adds it into the list of tasks.
+     * @param args String description of the Todo task.
+     */
     public void createTodo(String args) {
         Task t;
         t = new Todo(args);
         AddTask(t);
     }
 
+    /**
+     * Creates an instance of Deadline object and adds it into the list of tasks.
+     * @param args String arguments required i.e. "return books /by 2/2/2025 1900".
+     * @throws TaskListException If insufficient arguments are given or if invalid arguments unable to be parsed.
+     */
     public void createDeadline(String args) throws TaskListException {
         String[] splitArgs = args.split("/by|\\|");
         if(splitArgs.length < 2) throw new TaskListException("deadline requires more arguments! Please provide them.");
@@ -105,6 +142,11 @@ public class TaskList {
         AddTask(t);
     }
 
+    /**
+     * Creates an instance of Event object and adds it into the list of tasks.
+     * @param args String arguments required i.e. "meeting /from 2/2/2025 1900 /to 2/2/2025 2000".
+     * @throws TaskListException If insufficient arguments are given or if invalid arguments unable to be parsed.
+     */
     public void createEvent(String args) throws TaskListException {
         String[] splitArgs = args.split("/from|\\/to|\\|");
         if(splitArgs.length < 3) throw new TaskListException("event requires more arguments! Please provide them.");
@@ -128,10 +170,18 @@ public class TaskList {
         AddTask(t);
     }
 
+    /**
+     * Returns the number of tasks in the list.
+     * @return number of tasks.
+     */
     public String numOfTasks() {
         return TAB + "Now you have " + tasks.size() + " tasks in the list.";
     }
 
+    /**
+     * Returns the ArrayList of Tasks.
+     * @return array list of tasks.
+     */
     public ArrayList<Task> getTaskList() {
         return this.tasks;
     }
