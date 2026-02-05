@@ -39,7 +39,7 @@ public class Parser {
      * @return boolean value to stop parsing and exit the chat loop.
      * @throws TomatoException If unable to parse arguments, or invalid arguments.
      */
-    public boolean parseAndExecute(String input) throws TomatoException {
+    public String parseAndExecute(String input) throws TomatoException {
         String[] splitInput = input.split(" ", 2);
         String cmd = splitInput[0];
         Parser.Command enumCmd;
@@ -51,38 +51,40 @@ public class Parser {
                     "[bye, list, mark, todo, deadline, event, delete, find]. ");
         }
 
+        String result = "";
+
         switch (enumCmd) {
         case BYE:
             Ui.printExitMessage();
-            return true;
+            return null;
             // Immediately exists the method and stop chat loop.
         case LIST:
-            taskList.printTasks();
+            result = taskList.toString();
             break;
         case FIND:
-            handleFindTasks(splitInput);
+            result = handleFindTasks(splitInput);
             break;
         case MARK:
-            handleMarkTask(splitInput);
+            result = handleMarkTask(splitInput);
             break;
         case UNMARK:
-            handleUnmarkTask(splitInput);
+            result = handleUnmarkTask(splitInput);
             break;
         case TODO:
-            handleCreateTodo(splitInput);
+            result = handleCreateTodo(splitInput);
             break;
         case DEADLINE:
-            handleCreateDeadline(splitInput);
+            result = handleCreateDeadline(splitInput);
             break;
         case EVENT:
-            handleCreateEvent(splitInput);
+            result = handleCreateEvent(splitInput);
             break;
         case DELETE:
-            handleDeleteTask(splitInput);
+            result = handleDeleteTask(splitInput);
             break;
         }
 
-        return false;
+        return result;
     }
 
     /**
@@ -90,12 +92,13 @@ public class Parser {
      * @param splitInput string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private void handleCreateTodo(String[] splitInput) throws TomatoException {
+    private String handleCreateTodo(String[] splitInput) throws TomatoException {
         if (splitInput.length == 1) {
             throw new TomatoException("Todo description is required! Please provide it.");
         }
-        taskList.createTodo(splitInput[1]);
+        String res = taskList.createTodo(splitInput[1]);
         storage.saveToDisk(taskList.getTaskList());
+        return res;
     }
 
     /**
@@ -103,7 +106,7 @@ public class Parser {
      * @param splitInput string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private void handleCreateDeadline(String[] splitInput) throws TomatoException {
+    private String handleCreateDeadline(String[] splitInput) throws TomatoException {
         if (splitInput.length == 1) {
             throw new TomatoException("Deadline arguments is required! Please provide it.");
         }
@@ -125,8 +128,9 @@ public class Parser {
             }
         }
 
-        taskList.createDeadline(args[1], dateTime);
+        String res = taskList.createDeadline(args[1], dateTime);
         storage.saveToDisk(taskList.getTaskList());
+        return res;
     }
 
     /**
@@ -134,7 +138,7 @@ public class Parser {
      * @param splitInput string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private void handleCreateEvent(String[] splitInput) throws TomatoException {
+    private String handleCreateEvent(String[] splitInput) throws TomatoException {
         if (splitInput.length == 1) {
             throw new TomatoException("event arguments is required! Please provide it.");
         }
@@ -160,8 +164,9 @@ public class Parser {
             }
         }
 
-        taskList.createEvent(args[0], from, to);
+        String res = taskList.createEvent(args[0], from, to);
         storage.saveToDisk(taskList.getTaskList());
+        return res;
     }
 
     /**
@@ -169,7 +174,7 @@ public class Parser {
      * @param splitInput string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private void handleDeleteTask(String[] splitInput) throws TomatoException {
+    private String handleDeleteTask(String[] splitInput) throws TomatoException {
         int taskNum;
         try {
             taskNum = Integer.parseInt(splitInput[1]) - 1;
@@ -177,8 +182,9 @@ public class Parser {
             throw new TomatoException("You must provide a task number!");
         }
 
-        taskList.deleteTask(taskNum);
+        String res = taskList.deleteTask(taskNum);
         storage.saveToDisk(taskList.getTaskList());
+        return res;
     }
 
     /**
@@ -186,15 +192,16 @@ public class Parser {
      * @param splitInput string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private void handleMarkTask(String[] splitInput) throws TomatoException {
+    private String handleMarkTask(String[] splitInput) throws TomatoException {
         int taskNum;
         try {
             taskNum = Integer.parseInt(splitInput[1]) - 1;
         } catch (Exception e) {
             throw new TomatoException("You must provide a task number!");
         }
-        taskList.markTask(taskNum);
+        String res = taskList.markTask(taskNum);
         storage.saveToDisk(taskList.getTaskList());
+        return res;
     }
 
     /**
@@ -202,15 +209,16 @@ public class Parser {
      * @param splitInput string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private void handleUnmarkTask(String[] splitInput) throws TomatoException {
+    private String handleUnmarkTask(String[] splitInput) throws TomatoException {
         int taskNum;
         try {
             taskNum = Integer.parseInt(splitInput[1]) - 1;
         } catch (Exception e) {
             throw new TomatoException("You must provide a task number!");
         }
-        taskList.unmarkTask(taskNum);
+        String res = taskList.unmarkTask(taskNum);
         storage.saveToDisk(taskList.getTaskList());
+        return res;
     }
 
     /**
@@ -218,10 +226,10 @@ public class Parser {
      * @param splitInput string[] of input arguments.
      * @throws TomatoException if keyword argument is not provided.
      */
-    private void handleFindTasks(String[] splitInput) throws TomatoException {
+    private String handleFindTasks(String[] splitInput) throws TomatoException {
         if (splitInput.length == 1) {
             throw new TomatoException("keyword is required! Please provide it.");
         }
-        taskList.printMatchingTasks(splitInput[1]);
+        return taskList.printMatchingTasks(splitInput[1]);
     }
 }

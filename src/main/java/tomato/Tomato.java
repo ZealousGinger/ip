@@ -48,15 +48,32 @@ public class Tomato {
     public void run() {
         Scanner sc = new Scanner(System.in);
         String input;
+        String result = "";
 
-        while (!isExit) {
+        while (result != null) {
             input = sc.nextLine();
             try {
-                isExit = parser.parseAndExecute(input);
+                result = parser.parseAndExecute(input);
+                System.out.println(result);
             } catch (TomatoException e) {
                 ui.showLoadingError(e);
             }
             System.out.println(SPACER);
         }
     }
+
+
+    /**
+     * Generates a response for the user's chat message.
+     */
+    public String getResponse(String input) {
+        String result;
+        try {
+            result = parser.parseAndExecute(input);
+        } catch (TomatoException e) {
+            return "Error: " + e;
+        }
+        return result;
+    }
+
 }
