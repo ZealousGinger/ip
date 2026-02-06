@@ -28,13 +28,16 @@ public class TaskList {
     }
 
     /**
-     * Prints all the tasks in the current list in a human-readable format along with tasks information.
+     * returns all the tasks in the current list in a human-readable format along with tasks information.
      */
-    public void printTasks() {
-        System.out.println(TAB + "Here are the tasks in your list:");
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append(TAB + "Here are the tasks in your list:\n");
         for(int i = 0; i < tasks.size(); ++i) {
-            System.out.println(TAB + (i+1) + "." + tasks.get(i));
+            str.append(TAB + (i+1) + "." + tasks.get(i) + "\n");
         }
+        return str.toString();
     }
 
     /**
@@ -42,14 +45,13 @@ public class TaskList {
      * @param idx integer task index
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
-    public void markTask(int idx) throws TomatoException {
+    public String markTask(int idx) throws TomatoException {
         if (idx > tasks.size() || idx < 0) {
             throw new TomatoException("That task number doesn't exist!");
         }
         Task t = tasks.get(idx);
         t.setDone();
-        System.out.println(TAB + "Nice! I've marked this task as done:");
-        System.out.println(TAB + t);
+        return TAB + "Nice! I've marked this task as done:" + TAB + t;
     }
 
     /**
@@ -57,14 +59,13 @@ public class TaskList {
      * @param idx integer task index
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
-    public void unmarkTask(int idx) throws TomatoException {
+    public String unmarkTask(int idx) throws TomatoException {
         if (idx > tasks.size() || idx < 0) {
             throw new TomatoException("That task number doesn't exist!");
         }
         Task t = tasks.get(idx);
         t.setNotDone();
-        System.out.println(TAB + "OK! I've marked this task as not done yet:");
-        System.out.println(TAB + t);
+        return TAB + "OK! I've marked this task as not done yet:" + TAB + t;
     }
 
     /**
@@ -72,36 +73,40 @@ public class TaskList {
      * @param idx integer task index
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
-    public void deleteTask(int idx) throws TomatoException {
+    public String deleteTask(int idx) throws TomatoException {
         if (idx > tasks.size() || idx < 0) {
             throw new TomatoException("That task number doesn't exist!");
         }
         Task t = tasks.get(idx);
         String taskName = t.toString();
+        StringBuilder str = new StringBuilder();
         if(tasks.remove(t)) {
-            System.out.println(TAB + "Noted. I've removed this task:");
-            System.out.println(TAB + taskName);
-            System.out.println(numOfTasks());
+            str.append(TAB + "Noted. I've removed this task:\n");
+            str.append(TAB + taskName + "\n");
+            str.append(numOfTasks() + "\n");
         }
+        return str.toString();
     }
 
     /**
      * Adds an instance of a task object into the list of tasks.
      * @param t Task instance to add.
      */
-    private void AddTask(Task t) {
+    private String AddTask(Task t) {
+        StringBuilder str = new StringBuilder();
         tasks.add(t);
-        System.out.println(TAB + "Got it. I've added this task:\n" + TAB + t.toString());
-        System.out.println(numOfTasks());
+        str.append(TAB + "Got it. I've added this task:\n" + TAB + t.toString() + "\n");
+        str.append(numOfTasks() + "\n");
+        return str.toString();
     }
 
     /**
      * Creates an instance of Todo object and adds it into the list of tasks.
      * @param args String description of the Todo task.
      */
-    public void createTodo(String args) {
+    public String createTodo(String args) {
         Task t = new Todo(args);
-        AddTask(t);
+        return AddTask(t);
     }
 
     /**
@@ -109,9 +114,9 @@ public class TaskList {
      * @param description string description of task.
      * @param by datetime of deadline.
      */
-    public void createDeadline(String description, LocalDateTime by) {
+    public String createDeadline(String description, LocalDateTime by) {
         Task t = new Deadline(description, by);
-        AddTask(t);
+        return AddTask(t);
     }
 
     /**
@@ -120,9 +125,9 @@ public class TaskList {
      * @param from datetime of start of event.
      * @param to datetime of end of event.
      */
-    public void createEvent(String description, LocalDateTime from, LocalDateTime to) {
+    public String createEvent(String description, LocalDateTime from, LocalDateTime to) {
         Task t = new Event(description, from, to);
-        AddTask(t);
+        return AddTask(t);
     }
 
     /**
@@ -141,12 +146,14 @@ public class TaskList {
         return tasks;
     }
 
-    public void printMatchingTasks(String keyword) {
+    public String printMatchingTasks(String keyword) {
+        StringBuilder str = new StringBuilder();
         ArrayList<Task> matchingTasks = getMatchingTasks(keyword);
-        System.out.println(TAB + "Here are the matching tasks in your list:");
+        str.append(TAB + "Here are the matching tasks in your list:" + "\n");
         for(int i = 0; i < matchingTasks.size(); ++i) {
-            System.out.println(TAB + (i+1) + "." + matchingTasks.get(i));
+            str.append(TAB + (i+1) + "." + matchingTasks.get(i) + "\n");
         }
+        return str.toString();
     }
 
     private ArrayList<Task> getMatchingTasks(String keyword) {

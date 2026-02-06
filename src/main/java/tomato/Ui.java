@@ -14,27 +14,24 @@ public class Ui {
     }
 
     /**
-     * Prints the start message.
+     * Gets the start message.
      */
-    public static void printStartMessage() {
-        System.out.println(SPACER);
-        System.out.println(TAB + "Hello! I'm Tomato \uD83C\uDF45 !\n" + TAB + "What can I do for you?");
-        System.out.println(SPACER);
+    public static String getStartMessage() {
+        return SPACER + "\n" + TAB + "Hello! I'm Tomato \uD83C\uDF45 !\n" + TAB + "What can I do for you?\n" + SPACER;
     }
 
     /**
-     * Prints the exit message.
+     * Gets the exit message.
      */
-    public static void printExitMessage() {
-        System.out.println(TAB + "Bye. Hope to see you again soon!");
-        System.out.println(SPACER);
+    public static String getExitMessage() {
+        return TAB + "Bye. Hope to see you again soon!\n" + SPACER;
     }
 
     /**
-     * Prints loading error message.
+     * Gets loading error message.
      * @param e Exception of the error.
      */
-    public void showLoadingError(Exception e) {
-        System.out.println("Error loading: " + e);
+    public static String getLoadingError(Exception e) {
+        return "Error loading: " + e;
     }
 }
