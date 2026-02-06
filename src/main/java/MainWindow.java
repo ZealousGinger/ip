@@ -56,7 +56,7 @@ public class MainWindow extends AnchorPane {
                     DialogBox.getDukeDialog(Ui.getExitMessage(), tomatoImage)
             );
             userInput.clear();
-            PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+            PauseTransition pause = new PauseTransition(Duration.seconds(.5));
             pause.setOnFinished(event -> Platform.exit());
             pause.play();
         } else {
