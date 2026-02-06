@@ -55,7 +55,6 @@ public class Parser {
 
         switch (enumCmd) {
         case BYE:
-            Ui.printExitMessage();
             return null;
             // Immediately exists the method and stop chat loop.
         case LIST:

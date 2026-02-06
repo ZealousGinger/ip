@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -5,8 +6,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 import tomato.Tomato;
+import tomato.Ui;
+
 /**
  * Controller for the main GUI.
  */
@@ -22,8 +27,8 @@ public class MainWindow extends AnchorPane {
 
     private Tomato tomato;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image dukeImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.jpg"));
+    private Image tomatoImage = new Image(this.getClass().getResourceAsStream("/images/tomato.jpg"));
 
     @FXML
     public void initialize() {
@@ -33,6 +38,7 @@ public class MainWindow extends AnchorPane {
     /** Injects the Tomato instance */
     public void setTomato(Tomato t) {
         tomato = t;
+        dialogContainer.getChildren().addAll(DialogBox.getDukeDialog(Ui.getStartMessage(), tomatoImage));
     }
 
     /**
@@ -43,10 +49,22 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText();
         String response = tomato.getResponse(input);
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, dukeImage)
-        );
-        userInput.clear();
+
+        if (response == null) { // print exit message and exit the app
+            dialogContainer.getChildren().addAll(
+                    DialogBox.getUserDialog(input, userImage),
+                    DialogBox.getDukeDialog(Ui.getExitMessage(), tomatoImage)
+            );
+            userInput.clear();
+            PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+            pause.setOnFinished(event -> Platform.exit());
+            pause.play();
+        } else {
+            dialogContainer.getChildren().addAll(
+                    DialogBox.getUserDialog(input, userImage),
+                    DialogBox.getDukeDialog(response, tomatoImage)
+            );
+            userInput.clear();
+        }
     }
 }

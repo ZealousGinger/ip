@@ -25,12 +25,11 @@ public class Tomato {
         try {
             tasks = new TaskList(storage.load());
         } catch (FileNotFoundException | TomatoException e) {
-            ui.showLoadingError(e);
+            ui.getLoadingError(e);
             tasks = new TaskList();
         }
 
         parser = new Parser(tasks, storage);
-        ui.printStartMessage();
     }
 
     /**
@@ -56,7 +55,7 @@ public class Tomato {
                 result = parser.parseAndExecute(input);
                 System.out.println(result);
             } catch (TomatoException e) {
-                ui.showLoadingError(e);
+                ui.getLoadingError(e);
             }
             System.out.println(SPACER);
         }
@@ -71,7 +70,7 @@ public class Tomato {
         try {
             result = parser.parseAndExecute(input);
         } catch (TomatoException e) {
-            return "Error: " + e;
+            return Ui.getLoadingError(e);
         }
         return result;
     }
