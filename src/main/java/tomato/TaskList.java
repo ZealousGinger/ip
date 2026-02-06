@@ -33,9 +33,9 @@ public class TaskList {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append(TAB + "Here are the tasks in your list:");
+        str.append(TAB + "Here are the tasks in your list:\n");
         for(int i = 0; i < tasks.size(); ++i) {
-            str.append(TAB + (i+1) + "." + tasks.get(i));
+            str.append(TAB + (i+1) + "." + tasks.get(i) + "\n");
         }
         return str.toString();
     }
@@ -81,9 +81,9 @@ public class TaskList {
         String taskName = t.toString();
         StringBuilder str = new StringBuilder();
         if(tasks.remove(t)) {
-            str.append(TAB + "Noted. I've removed this task:");
-            str.append(TAB + taskName);
-            str.append(numOfTasks());
+            str.append(TAB + "Noted. I've removed this task:\n");
+            str.append(TAB + taskName + "\n");
+            str.append(numOfTasks() + "\n");
         }
         return str.toString();
     }
@@ -95,8 +95,8 @@ public class TaskList {
     private String AddTask(Task t) {
         StringBuilder str = new StringBuilder();
         tasks.add(t);
-        str.append(TAB + "Got it. I've added this task:\n" + TAB + t.toString());
-        str.append(numOfTasks());
+        str.append(TAB + "Got it. I've added this task:\n" + TAB + t.toString() + "\n");
+        str.append(numOfTasks() + "\n");
         return str.toString();
     }
 
@@ -149,9 +149,9 @@ public class TaskList {
     public String printMatchingTasks(String keyword) {
         StringBuilder str = new StringBuilder();
         ArrayList<Task> matchingTasks = getMatchingTasks(keyword);
-        str.append(TAB + "Here are the matching tasks in your list:");
+        str.append(TAB + "Here are the matching tasks in your list:" + "\n");
         for(int i = 0; i < matchingTasks.size(); ++i) {
-            str.append(TAB + (i+1) + "." + matchingTasks.get(i));
+            str.append(TAB + (i+1) + "." + matchingTasks.get(i) + "\n");
         }
         return str.toString();
     }

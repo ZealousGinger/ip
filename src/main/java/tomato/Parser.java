@@ -127,7 +127,7 @@ public class Parser {
             }
         }
 
-        String res = taskList.createDeadline(args[1], dateTime);
+        String res = taskList.createDeadline(args[0], dateTime);
         storage.saveToDisk(taskList.getTaskList());
         return res;
     }
