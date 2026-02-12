@@ -37,6 +37,7 @@ public class MainWindow extends AnchorPane {
 
     /** Injects the Tomato instance */
     public void setTomato(Tomato t) {
+        assert t != null : "Tomato instance should not be null";
         tomato = t;
         dialogContainer.getChildren().addAll(DialogBox.getDukeDialog(Ui.getStartMessage(), tomatoImage));
     }
@@ -51,6 +52,7 @@ public class MainWindow extends AnchorPane {
         String response = tomato.getResponse(input);
 
         if (response == null) { // print exit message and exit the app
+            assert input.equalsIgnoreCase("bye") : "user input should be 'bye'";
             dialogContainer.getChildren().addAll(
                     DialogBox.getUserDialog(input, userImage),
                     DialogBox.getDukeDialog(Ui.getExitMessage(), tomatoImage)
@@ -60,6 +62,7 @@ public class MainWindow extends AnchorPane {
             pause.setOnFinished(event -> Platform.exit());
             pause.play();
         } else {
+            assert !response.isBlank() : "response string should not be blank";
             dialogContainer.getChildren().addAll(
                     DialogBox.getUserDialog(input, userImage),
                     DialogBox.getDukeDialog(response, tomatoImage)

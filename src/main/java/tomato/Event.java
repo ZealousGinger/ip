@@ -18,6 +18,8 @@ public class Event extends Task {
      */
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
+        assert from != null : "DateTime from should not be null";
+        assert to != null : "DateTime to should not be null";
         this.from= from;
         this.to = to;
     }
@@ -32,6 +34,8 @@ public class Event extends Task {
      */
     public Event(String description, boolean isDone, LocalDateTime from, LocalDateTime to) {
         super(description, isDone);
+        assert from != null : "DateTime from should not be null";
+        assert to != null : "DateTime to should not be null";
         this.from= from;
         this.to = to;
     }

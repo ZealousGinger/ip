@@ -3,6 +3,7 @@ package tomato;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Represents the Parser class that parses the string input and executes the commands respectively.
@@ -28,6 +29,8 @@ public class Parser {
      * @param storage storage class that handles saving changes of tasks to disk.
      */
     public Parser(TaskList taskList, Storage storage) {
+        assert taskList != null : "taskList should not be null";
+        assert storage != null : "storage should not be null";
         this.taskList = taskList;
         this.storage = storage;
     }
@@ -83,6 +86,7 @@ public class Parser {
             break;
         }
 
+        assert !result.isEmpty() : "result string should not be empty";
         return result;
     }
 
@@ -94,9 +98,13 @@ public class Parser {
     private String handleCreateTodo(String[] splitInput) throws TomatoException {
         if (splitInput.length == 1) {
             throw new TomatoException("Todo description is required! Please provide it.");
+        } else if (splitInput[1].isBlank()) {
+            throw new TomatoException("Todo description is required! Please provide it.");
         }
         String res = taskList.createTodo(splitInput[1]);
-        storage.saveToDisk(taskList.getTaskList());
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
         return res;
     }
 
@@ -112,6 +120,8 @@ public class Parser {
         String[] args = splitInput[1].split("/by|\\|");
         if (args.length < 2) {
             throw new TomatoException("deadline requires more arguments! Please provide them.");
+        } else if (args[0].isBlank()) {
+            throw new TomatoException("Deadline description is required! Please provide it.");
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
@@ -128,7 +138,9 @@ public class Parser {
         }
 
         String res = taskList.createDeadline(args[0], dateTime);
-        storage.saveToDisk(taskList.getTaskList());
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
         return res;
     }
 
@@ -144,7 +156,10 @@ public class Parser {
         String[] args = splitInput[1].split("/from|\\/to|\\|");
         if(args.length < 3) {
             throw new TomatoException("event requires more arguments! Please provide them.");
+        } else if (args[0].isBlank()) {
+            throw new TomatoException("Event description is required! Please provide it.");
         }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
         LocalDateTime from;
         LocalDateTime to;
@@ -164,7 +179,9 @@ public class Parser {
         }
 
         String res = taskList.createEvent(args[0], from, to);
-        storage.saveToDisk(taskList.getTaskList());
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
         return res;
     }
 
@@ -199,7 +216,9 @@ public class Parser {
             throw new TomatoException("You must provide a task number!");
         }
         String res = taskList.markTask(taskNum);
-        storage.saveToDisk(taskList.getTaskList());
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
         return res;
     }
 
@@ -216,7 +235,9 @@ public class Parser {
             throw new TomatoException("You must provide a task number!");
         }
         String res = taskList.unmarkTask(taskNum);
-        storage.saveToDisk(taskList.getTaskList());
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
         return res;
     }
 
@@ -227,6 +248,8 @@ public class Parser {
      */
     private String handleFindTasks(String[] splitInput) throws TomatoException {
         if (splitInput.length == 1) {
+            throw new TomatoException("keyword is required! Please provide it.");
+        } else if (splitInput[1].isBlank()) {
             throw new TomatoException("keyword is required! Please provide it.");
         }
         return taskList.printMatchingTasks(splitInput[1]);

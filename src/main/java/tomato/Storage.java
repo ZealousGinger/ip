@@ -20,6 +20,7 @@ public class Storage {
      * @param filePath string of file path to store the task file.
      */
     public Storage(String filePath) {
+        assert !filePath.isBlank() : "file path string must not be blank";
         this.filePath = filePath;
     }
 
@@ -67,6 +68,8 @@ public class Storage {
      * or If an error occurred from parsing the task file or if unable to create task object.
      */
     private ArrayList<Task> decodeTasks() throws FileNotFoundException, TomatoException {
+        assert taskFile != null : "task file should not be null";
+
         ArrayList<Task> tasks = new ArrayList<>();
         System.out.println(Ui.TAB + "Loading tasks from storage......................");
         Scanner fileScanner = new Scanner(taskFile);
@@ -107,6 +110,7 @@ public class Storage {
             }
         }
 
+        assert taskFile != null : "task file should not be null here";
         throw new TomatoException("Error unable to load from file!");
     }
 
@@ -115,6 +119,8 @@ public class Storage {
      * @param tasks
      */
     public void saveToDisk(ArrayList<Task> tasks) {
+        assert taskFile != null : "task file should not be null";
+
         try {
             FileWriter taskWriter = new FileWriter(taskFile);
             for (Task task : tasks) {
