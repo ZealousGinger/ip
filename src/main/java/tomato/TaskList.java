@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class TaskList {
     private static final String TAB = "    ";
-    private ArrayList<Task> tasks;
+    private final ArrayList<Task> tasks;
 
     /**
      * Instantiates the class with an empty list.
@@ -40,16 +40,20 @@ public class TaskList {
         return str.toString();
     }
 
+    private Task getTask(int idx) throws TomatoException {
+        if (idx > tasks.size() || idx < 0) {
+            throw new TomatoException("That task number doesn't exist!");
+        }
+        return tasks.get(idx);
+    }
+
     /**
      * Modifies the state of a specified Task instance marked.
      * @param idx integer task index
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String markTask(int idx) throws TomatoException {
-        if (idx > tasks.size() || idx < 0) {
-            throw new TomatoException("That task number doesn't exist!");
-        }
-        Task t = tasks.get(idx);
+        Task t = getTask(idx);
         t.setDone();
         return TAB + "Nice! I've marked this task as done:" + TAB + t;
     }
@@ -60,10 +64,7 @@ public class TaskList {
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String unmarkTask(int idx) throws TomatoException {
-        if (idx > tasks.size() || idx < 0) {
-            throw new TomatoException("That task number doesn't exist!");
-        }
-        Task t = tasks.get(idx);
+        Task t = getTask(idx);
         t.setNotDone();
         return TAB + "OK! I've marked this task as not done yet:" + TAB + t;
     }
@@ -74,10 +75,7 @@ public class TaskList {
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String deleteTask(int idx) throws TomatoException {
-        if (idx > tasks.size() || idx < 0) {
-            throw new TomatoException("That task number doesn't exist!");
-        }
-        Task t = tasks.get(idx);
+        Task t = getTask(idx);
         String taskName = t.toString();
         StringBuilder str = new StringBuilder();
         if(tasks.remove(t)) {
@@ -92,7 +90,7 @@ public class TaskList {
      * Adds an instance of a task object into the list of tasks.
      * @param t Task instance to add.
      */
-    private String AddTask(Task t) {
+    private String addTask(Task t) {
         StringBuilder str = new StringBuilder();
         tasks.add(t);
         str.append(TAB + "Got it. I've added this task:\n" + TAB + t.toString() + "\n");
@@ -106,7 +104,7 @@ public class TaskList {
      */
     public String createTodo(String args) {
         Task t = new Todo(args);
-        return AddTask(t);
+        return addTask(t);
     }
 
     /**
@@ -116,7 +114,7 @@ public class TaskList {
      */
     public String createDeadline(String description, LocalDateTime by) {
         Task t = new Deadline(description, by);
-        return AddTask(t);
+        return addTask(t);
     }
 
     /**
@@ -127,7 +125,7 @@ public class TaskList {
      */
     public String createEvent(String description, LocalDateTime from, LocalDateTime to) {
         Task t = new Event(description, from, to);
-        return AddTask(t);
+        return addTask(t);
     }
 
     /**
