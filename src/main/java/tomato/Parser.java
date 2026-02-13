@@ -329,6 +329,7 @@ public class Parser {
         return taskList.printMatchingTasks(args[1]);
     }
 
+    /** Parses and handles updating of task description */
     private String handleUpdateDescription(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.UPDATE_DESCRIPTION));
         String[] descriptionArgs = args[1].split(REGEX_DEFAULT);
@@ -341,6 +342,7 @@ public class Parser {
         return res;
     }
 
+    /** Parses and handles updating of deadline by datetime */
     private String handleUpdateDeadlineBy(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.UPDATE_DEADLINE));
         String[] deadlineArgs = args[1].split(REGEX_DEFAULT);
@@ -354,6 +356,7 @@ public class Parser {
         return res;
     }
 
+    /** Parses and handles updating of event from datetime */
     private String handleUpdateEventFrom(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_FROM));
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
@@ -367,6 +370,7 @@ public class Parser {
         return res;
     }
 
+    /** Parses and handles updating of event to datetime */
     private String handleUpdateEventTo(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_TO));
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
@@ -380,6 +384,7 @@ public class Parser {
         return res;
     }
 
+    /** Parses and handles updating of event from and to datetimes */
     private String handleUpdateEventTime(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_TIME));
         String[] eventArgs = args[1].split(REGEX_DEFAULT);

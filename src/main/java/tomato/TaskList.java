@@ -75,30 +75,66 @@ public class TaskList {
         return TAB + "OK! I've marked this task as not done yet:" + TAB + t;
     }
 
+    /**
+     * Updates the description of a task.
+     * @param idx integer task index.
+     * @param description new description to update.
+     * @return String result.
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
     public String updateDescription(int idx, String description) throws TomatoException {
         Task t = getTask(idx);
         t.setDescription(description);
         return TAB + "OK! I've updated your description !" + TAB + t;
     }
 
+    /**
+     * Updates the due datetime of a deadline.
+     * @param idx integer task index.
+     * @param by new datetime to update.
+     * @return String result.
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
     public String updateDeadlineTime(int idx, LocalDateTime by) throws TomatoException {
         Deadline d = (Deadline) getTask(idx);
         d.setDateTimeBy(by);
         return TAB + "OK! I've updated your deadline due datetime !" + TAB + d;
     }
 
+    /**
+     * Updates from datetime of an event.
+     * @param idx integer task index.
+     * @param from new datetime to update.
+     * @return String result.
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
     public String updateEventFrom(int idx, LocalDateTime from) throws TomatoException {
         Event e = (Event) getTask(idx);
         e.setDateTimeFrom(from);
         return TAB + "OK! I've updated your event from datetime !" + TAB + e;
     }
 
+    /**
+     * Updates to datetime of an event.
+     * @param idx integer task index.
+     * @param to new datetime to update.
+     * @return String result.
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
     public String updateEventTo(int idx, LocalDateTime to) throws TomatoException {
         Event e = (Event) getTask(idx);
         e.setDateTimeFrom(to);
         return TAB + "OK! I've updated your event to datetime !" + TAB + e;
     }
 
+    /**
+     * Updates from and to datetimes of an event.
+     * @param idx integer task index.
+     * @param from new from datetime to update.
+     * @param to new to datetime to update.
+     * @return String result.
+     * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
+     */
     public String updateEventTime(int idx, LocalDateTime from, LocalDateTime to) throws TomatoException {
         Event e = (Event) getTask(idx);
         e.setDateTimeFrom(from);
