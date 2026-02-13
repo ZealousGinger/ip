@@ -3,6 +3,7 @@ package tomato;
 import java.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a list of Task(s) instances along with relevant methods to maintain the list.
@@ -156,13 +157,11 @@ public class TaskList {
         return str.toString();
     }
 
+    /** Returns tasks matching with given keyword */
     private ArrayList<Task> getMatchingTasks(String keyword) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.toString().contains(keyword)) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
+        List<Task> matchingTasks = tasks.stream()
+                .filter(t -> t.toString().contains(keyword))
+                .toList();
+        return new ArrayList<Task>(matchingTasks);
     }
 }
