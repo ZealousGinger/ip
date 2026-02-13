@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.DateTimeException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,14 +14,9 @@ import java.util.Scanner;
  * Represents the storage class.
  */
 public class Storage {
+    private final Parser parser = new Parser();
     private File taskFile;
     private final String filePath;
-    private static final String REGEX_DEFAULT = "\\|";
-    private static final String REGEX_BY = "/by|";
-    private static final String REGEX_FROM_TO = "/from|\\\\/to|";
-    private static final String REGEX_EMPTY = "";
-    private static final String DEADLINE = "DEADLINE";
-    private static final String EVENT = "EVENT";
 
     /**
      * Instantiates the storage class with a specified file path for storage file.
@@ -40,9 +32,9 @@ public class Storage {
     private boolean loadTaskFile() {
         String root = System.getProperty("user.dir");
         Path path = Paths.get(root, filePath);
-        boolean fileExists = Files.exists(path);
+        boolean isExists = Files.exists(path);
 
-        if(!fileExists) {
+        if(!isExists) {
             return false;
         }
         taskFile = path.toFile();
@@ -69,27 +61,12 @@ public class Storage {
         taskFile = taskListPath.toFile();
     }
 
-    private Task decodeTask(String[] args) throws TomatoException {
-        if (args[0].equals("T")) {
-            return decodeTodo(args[1]);
-        } else if (args[0].equals("D")) {
-            return decodeDeadline(args[1]);
-        } else if (args[0].equals("E")) {
-            return decodeEvent(args[1]);
-        } else {
-            assert false : "code should not reach here";
-        }
-
-        assert false : "code should not reach here";
-        return null;
-    }
-
-    private ArrayList<Task> scanTasks(Scanner sc) throws TomatoException {
+    private ArrayList<Task> scanFile(Scanner sc) throws TomatoException {
         ArrayList<Task> tasks = new ArrayList<>();
         while (sc.hasNextLine()) {
             String data = sc.nextLine();
             String[] args = data.split("|", 2);
-            tasks.add(decodeTask(args));
+            tasks.add(parser.decodeTask(args));
         }
         return tasks;
     }
@@ -103,7 +80,7 @@ public class Storage {
      */
     private ArrayList<Task> loadTasks() throws FileNotFoundException, TomatoException {
         Scanner fileScanner = new Scanner(taskFile);
-        return scanTasks(fileScanner);
+        return scanFile(fileScanner);
     }
 
     /**
@@ -128,82 +105,24 @@ public class Storage {
         return loadTasks();
     }
 
+    private void writeToFile(ArrayList<Task> tasks) throws IOException {
+        FileWriter taskWriter = new FileWriter(taskFile);
+        for (Task task : tasks) {
+            taskWriter.write(task.toSave() + "\n");
+        }
+        taskWriter.close();
+    }
+
+
     /**
      * Saves given array list of tasks into the task file.
      * @param tasks Array list of Task objects.
      */
-    public void saveToDisk(ArrayList<Task> tasks) {
+    public void saveToDisk(ArrayList<Task> tasks) throws TomatoException {
         try {
-            FileWriter taskWriter = new FileWriter(taskFile);
-            for (Task task : tasks) {
-                taskWriter.write(task.toSave() + "\n");
-            }
-            taskWriter.close();
+            writeToFile(tasks);
         } catch (IOException e) {
-            System.out.println("unable to save to file");
-            throw new RuntimeException(e);
+            throw new TomatoException("IO error, unable to write to file.");
         }
-    }
-
-    private String[] parseArgs(String arg, String keyword) {
-        return arg.split(keyword + REGEX_DEFAULT);
-    }
-
-    private void checkArgLength(String[] args, int len, String commandName) throws TomatoException {
-        if (args.length < len) {
-            throw new TomatoException(commandName + " arguments is required! Please provide it.");
-        }
-    }
-
-    private LocalDateTime parseDate(String arg) throws TomatoException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-        String trimmedArg = arg.trim();
-
-        try {
-            return LocalDateTime.parse(trimmedArg, formatter);
-        } catch (DateTimeException e) {
-            // move on and try the second parser
-        }
-
-        try {
-            return LocalDateTime.parse(trimmedArg);
-        } catch (DateTimeException e) {
-            throw new TomatoException("Unable to parse date!");
-        }
-    }
-
-    /**
-     * Returns a Todo instance from the stored todo string.
-     * @param args String arguments e.g. "T|1|read book".
-     * @return Todo Task object.
-     */
-    private Task decodeTodo(String args) {
-        String[] splitArgs = parseArgs(args, REGEX_EMPTY);
-        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
-    }
-
-    /**
-     * Returns a Deadline instance from the stored deadline string.
-     * @param args String arguments e.g. "D|1|return books |2025-02-02T19:00".
-     * @return Deadline Task object.
-     */
-    private Task decodeDeadline(String args) throws TomatoException {
-        String[] splitArgs = parseArgs(args, REGEX_BY);
-        checkArgLength(splitArgs, 2, DEADLINE);
-        LocalDateTime dateTime = parseDate(splitArgs[3]);
-        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
-    }
-
-    /**
-     * Returns a Event instance from the stored event string.
-     * @param args String arguments e.g. "E|0|book shopping |2025-03-03T16:00|2025-03-03T18:00".
-     * @return Event Task object.
-     */
-    private Task decodeEvent(String args) throws TomatoException {
-        String[] splitArgs = parseArgs(args, REGEX_FROM_TO);
-        checkArgLength(splitArgs, 3, EVENT);
-        LocalDateTime from = parseDate(splitArgs[3]);
-        LocalDateTime to = parseDate(splitArgs[4]);
-        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);
     }
 }

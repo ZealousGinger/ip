@@ -21,10 +21,21 @@ public class Parser {
     }
     private TaskList taskList;
     private Storage storage;
+    private static final String REGEX_EMPTY = "";
+    private static final String REGEX_DEFAULT = "\\|";
+    private static final String REGEX_BY = "/by|";
+    private static final String REGEX_FROM_TO = "/from|\\\\/to|";
     private static final String REGEX_DEADLINE = "/by|\\|";
     private static final String REGEX_EVENT = "/from|\\/to|\\|";
     private static final String DATE_TIME_FORMAT = "d/M/yyyy HHmm";
 
+
+    /**
+     * Instantiates the Parser class without tasklist or storage, used for parsing by Storage class.
+     */
+    public Parser() {
+
+    }
 
     /**
      * Instantiates the Parser class with specified TaskList and Storage.
@@ -92,10 +103,27 @@ public class Parser {
         return result;
     }
 
-    private void checkArgLength(String[] args, int len, String commandName) throws TomatoException {
+    /**
+     * Checks argument length to determine if sufficient arguments are given.
+     * @param args String array of arguments.
+     * @param len length required by the command.
+     * @param commandName string name of the command.
+     * @throws TomatoException if insufficient arguments are given.
+     */
+    public void checkArgLength(String[] args, int len, String commandName) throws TomatoException {
         if (args.length < len) {
             throw new TomatoException(commandName + " arguments is required! Please provide it.");
         }
+    }
+
+    /**
+     * Parse arguments according to regex.
+     * @param arg input string.
+     * @param keyword regex to split arguments.
+     * @return array of string.
+     */
+    public String[] parseArgs(String arg, String keyword) {
+        return arg.split(keyword + REGEX_DEFAULT);
     }
 
     private String[] parseSlashDeadline(String arg) {
@@ -120,7 +148,13 @@ public class Parser {
         return arr;
     }
 
-    private LocalDateTime parseDate(String arg) throws TomatoException {
+    /**
+     * Parses string input into LocalDateTime.
+     * @param arg String input.
+     * @return LocalDateTime parsed object.
+     * @throws TomatoException if unable to parse input.
+     */
+    public LocalDateTime parseDate(String arg) throws TomatoException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         String trimmedArg = arg.trim();
 
@@ -230,5 +264,62 @@ public class Parser {
     private String handleFindTasks(String[] splitInput) throws TomatoException {
         checkArgLength(splitInput, 2, String.valueOf(Command.FIND));
         return taskList.printMatchingTasks(splitInput[1]);
+    }
+
+    /**
+     * Returns a Todo instance from the stored todo string.
+     * @param args String arguments e.g. "T|1|read book".
+     * @return Todo Task object.
+     */
+    private Task decodeTodo(String args) {
+        String[] splitArgs = parseArgs(args, REGEX_EMPTY);
+        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
+    }
+
+    /**
+     * Returns a Deadline instance from the stored deadline string.
+     * @param args String arguments e.g. "D|1|return books |2025-02-02T19:00".
+     * @return Deadline Task object.
+     */
+    private Task decodeDeadline(String args) throws TomatoException {
+        String[] splitArgs = parseArgs(args, REGEX_BY);
+        checkArgLength(splitArgs, 2, String.valueOf(Command.DEADLINE));
+        LocalDateTime dateTime = parseDate(splitArgs[3]);
+        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
+    }
+
+    /**
+     * Returns a Event instance from the stored event string.
+     * @param args String arguments e.g. "E|0|book shopping |2025-03-03T16:00|2025-03-03T18:00".
+     * @return Event Task object.
+     */
+    private Task decodeEvent(String args) throws TomatoException {
+        String[] splitArgs = parseArgs(args, REGEX_FROM_TO);
+        checkArgLength(splitArgs, 3, String.valueOf(Command.EVENT));
+        LocalDateTime from = parseDate(splitArgs[3]);
+        LocalDateTime to = parseDate(splitArgs[4]);
+        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);
+    }
+
+    /**
+     * Decodes String from file storage to Task.
+     * @param args array of string.
+     * @return Task object.
+     * @throws TomatoException if unable to parse arguments.
+     */
+    public Task decodeTask(String[] args) throws TomatoException {
+        switch (args[0]) {
+        case "T":
+            return decodeTodo(args[1]);
+        case "D":
+            return decodeDeadline(args[1]);
+        case "E":
+            return decodeEvent(args[1]);
+        default:
+            assert false : "code should not reach here";
+        }
+
+        assert false : "code should not reach here";
+        return null;
     }
 }
