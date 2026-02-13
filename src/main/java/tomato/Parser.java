@@ -19,8 +19,10 @@ public class Parser {
         DELETE,
         FIND
     }
+
     private TaskList taskList;
     private Storage storage;
+
     private static final String REGEX_EMPTY = "";
     private static final String REGEX_DEFAULT = "\\|";
     private static final String REGEX_BY = "/by|";
@@ -47,6 +49,55 @@ public class Parser {
         this.storage = storage;
     }
 
+    private Command parseCommand(String arg) throws TomatoException{
+        Command cmd;
+        try {
+            cmd = Command.valueOf(arg.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new TomatoException("Unknown command given, please try a given command: " +
+                    "[bye, list, mark, todo, deadline, event, delete, find]. ");
+        }
+        return cmd;
+    }
+
+    private String handleCommand(Command cmd, String[] args) throws TomatoException {
+        String result = "";
+
+        switch (cmd) {
+        case BYE:
+            return null;
+            // Immediately exists the method and stop chat loop.
+        case LIST:
+            result = handleListTasks();
+            break;
+        case FIND:
+            result = handleFindTasks(args);
+            break;
+        case MARK:
+            result = handleMarkTask(args);
+            break;
+        case UNMARK:
+            result = handleUnmarkTask(args);
+            break;
+        case TODO:
+            result = handleCreateTodo(args);
+            break;
+        case DEADLINE:
+            result = handleCreateDeadline(args);
+            break;
+        case EVENT:
+            result = handleCreateEvent(args);
+            break;
+        case DELETE:
+            result = handleDeleteTask(args);
+            break;
+        default:
+            assert false : "Code execution is not supposed to reach here";
+        }
+
+        return result;
+    }
+
     /**
      * Returns a boolean value that represents whether to stop parsing and exit the chatbot loop.
      * Parses the given input string and executes the command if valid.
@@ -55,52 +106,9 @@ public class Parser {
      * @throws TomatoException If unable to parse arguments, or invalid arguments.
      */
     public String parseAndExecute(String input) throws TomatoException {
-        String[] splitInput = input.split(" ", 2);
-        String cmd = splitInput[0];
-        Parser.Command enumCmd;
-
-        try {
-            enumCmd = Parser.Command.valueOf(cmd.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new TomatoException("Unknown command given, please try a given command: " +
-                    "[bye, list, mark, todo, deadline, event, delete, find]. ");
-        }
-
-        String result = "";
-
-        switch (enumCmd) {
-        case BYE:
-            return null;
-            // Immediately exists the method and stop chat loop.
-        case LIST:
-            result = taskList.toString();
-            break;
-        case FIND:
-            result = handleFindTasks(splitInput);
-            break;
-        case MARK:
-            result = handleMarkTask(splitInput);
-            break;
-        case UNMARK:
-            result = handleUnmarkTask(splitInput);
-            break;
-        case TODO:
-            result = handleCreateTodo(splitInput);
-            break;
-        case DEADLINE:
-            result = handleCreateDeadline(splitInput);
-            break;
-        case EVENT:
-            result = handleCreateEvent(splitInput);
-            break;
-        case DELETE:
-            result = handleDeleteTask(splitInput);
-            break;
-        default:
-            assert false : "Code execution is not supposed to reach here";
-        }
-
-        return result;
+        String[] splitArgs = input.split(" ", 2);
+        Command cmd = parseCommand(splitArgs[0]);
+        return handleCommand(cmd, splitArgs);
     }
 
     /**
@@ -126,14 +134,17 @@ public class Parser {
         return arg.split(keyword + REGEX_DEFAULT);
     }
 
+    /** Parses and splits "/by" for deadline Task */
     private String[] parseSlashDeadline(String arg) {
         return arg.split(REGEX_DEADLINE);
     }
 
+    /** Parses and splits "/from" and "/to" for event Task */
     private String[] parseSlashEvent(String arg) {
         return arg.split(REGEX_EVENT);
     }
 
+    /** Checks and parses deadline arguments */
     private String[] parseDeadline(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.DEADLINE));
         String[] arr = parseSlashDeadline(args[1]);
@@ -141,6 +152,7 @@ public class Parser {
         return arr;
     }
 
+    /** Checks and parses event arguments */
     private String[] parseEvent(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.EVENT));
         String[] arr = parseSlashEvent(args[1]);
@@ -171,6 +183,7 @@ public class Parser {
         }
     }
 
+    /** Parses input representing task number and returns task index int */
     private int parseTaskNo(String arg) throws TomatoException {
         try {
             return Integer.parseInt(arg) - 1;
@@ -179,54 +192,59 @@ public class Parser {
         }
     }
 
+    /** Returns current list of tasks */
+    private String handleListTasks() {
+        return taskList.toString();
+    }
+
     /**
      * Parses and handles create Todo.
-     * @param splitInput string[] of input arguments.
+     * @param args string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private String handleCreateTodo(String[] splitInput) throws TomatoException {
-        checkArgLength(splitInput, 2, String.valueOf(Command.TODO));
-        String res = taskList.createTodo(splitInput[1]);
+    private String handleCreateTodo(String[] args) throws TomatoException {
+        checkArgLength(args, 2, String.valueOf(Command.TODO));
+        String res = taskList.createTodo(args[1]);
         storage.saveToDisk(taskList.getTaskList());
         return res;
     }
 
     /**
      * Parses and handles create Deadline.
-     * @param splitInput string[] of input arguments.
+     * @param args string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private String handleCreateDeadline(String[] splitInput) throws TomatoException {
-        String[] args = parseDeadline(splitInput);
-        LocalDateTime dateTime = parseDate(args[1]);
+    private String handleCreateDeadline(String[] args) throws TomatoException {
+        String[] deadlineArgs = parseDeadline(args);
+        LocalDateTime dateTime = parseDate(deadlineArgs[1]);
 
-        String res = taskList.createDeadline(args[0], dateTime);
+        String res = taskList.createDeadline(deadlineArgs[0], dateTime);
         storage.saveToDisk(taskList.getTaskList());
         return res;
     }
 
     /**
      * Parses and handles create Event.
-     * @param splitInput string[] of input arguments.
+     * @param args string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private String handleCreateEvent(String[] splitInput) throws TomatoException {
-        String[] args = parseEvent(splitInput);
-        LocalDateTime from = parseDate(args[1]);
-        LocalDateTime to = parseDate(args[2]);
+    private String handleCreateEvent(String[] args) throws TomatoException {
+        String[] eventArgs = parseEvent(args);
+        LocalDateTime from = parseDate(eventArgs[1]);
+        LocalDateTime to = parseDate(eventArgs[2]);
 
-        String res = taskList.createEvent(args[0], from, to);
+        String res = taskList.createEvent(eventArgs[0], from, to);
         storage.saveToDisk(taskList.getTaskList());
         return res;
     }
 
     /**
      * Parses and handles delete task.
-     * @param splitInput string[] of input arguments.
+     * @param args string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private String handleDeleteTask(String[] splitInput) throws TomatoException {
-        int taskNum = parseTaskNo(splitInput[1]);
+    private String handleDeleteTask(String[] args) throws TomatoException {
+        int taskNum = parseTaskNo(args[1]);
         String res = taskList.deleteTask(taskNum);
         storage.saveToDisk(taskList.getTaskList());
         return res;
@@ -234,11 +252,11 @@ public class Parser {
 
     /**
      * Parses and handles mark task.
-     * @param splitInput string[] of input arguments.
+     * @param args string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private String handleMarkTask(String[] splitInput) throws TomatoException {
-        int taskNum = parseTaskNo(splitInput[1]);
+    private String handleMarkTask(String[] args) throws TomatoException {
+        int taskNum = parseTaskNo(args[1]);
         String res = taskList.markTask(taskNum);
         storage.saveToDisk(taskList.getTaskList());
         return res;
@@ -246,11 +264,11 @@ public class Parser {
 
     /**
      * Parses and handles unmark task.
-     * @param splitInput string[] of input arguments.
+     * @param args string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private String handleUnmarkTask(String[] splitInput) throws TomatoException {
-        int taskNum = parseTaskNo(splitInput[1]);
+    private String handleUnmarkTask(String[] args) throws TomatoException {
+        int taskNum = parseTaskNo(args[1]);
         String res = taskList.unmarkTask(taskNum);
         storage.saveToDisk(taskList.getTaskList());
         return res;
@@ -258,12 +276,12 @@ public class Parser {
 
     /**
      * Parses and handles find task.
-     * @param splitInput string[] of input arguments.
+     * @param args string[] of input arguments.
      * @throws TomatoException if keyword argument is not provided.
      */
-    private String handleFindTasks(String[] splitInput) throws TomatoException {
-        checkArgLength(splitInput, 2, String.valueOf(Command.FIND));
-        return taskList.printMatchingTasks(splitInput[1]);
+    private String handleFindTasks(String[] args) throws TomatoException {
+        checkArgLength(args, 2, String.valueOf(Command.FIND));
+        return taskList.printMatchingTasks(args[1]);
     }
 
     /**

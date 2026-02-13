@@ -61,6 +61,7 @@ public class Storage {
         taskFile = taskListPath.toFile();
     }
 
+    /** Scans task file and returns the arraylist of tasks */
     private ArrayList<Task> scanFile(Scanner sc) throws TomatoException {
         ArrayList<Task> tasks = new ArrayList<>();
         while (sc.hasNextLine()) {
@@ -105,6 +106,7 @@ public class Storage {
         return loadTasks();
     }
 
+    /** Writes array of tasks to file */
     private void writeToFile(ArrayList<Task> tasks) throws IOException {
         FileWriter taskWriter = new FileWriter(taskFile);
         for (Task task : tasks) {
