@@ -1,5 +1,7 @@
 package tomato;
 
+import ui.Ui;
+
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -8,11 +10,23 @@ import java.util.Scanner;
  */
 public class Tomato {
     private static final String SPACER = "   ____________________________________________________________";
-    private boolean isExit = false;
-    private TaskList tasks;
     private Ui ui;
-    private Storage storage;
     private Parser parser;
+
+    /**
+     * Loads the tasklist from storage or create a new one.
+     * @param s Storage object to load the file from.
+     * @return TaskList object.
+     */
+    public TaskList loadTaskList(Storage s) {
+        TaskList t;
+        try {
+            t = new TaskList(s.load());
+        } catch (FileNotFoundException | TomatoException e) {
+            t = new TaskList();
+        }
+        return t;
+    }
 
     /**
      * Instantiates an instance of Tomato chatbot with the specified storage file location.
@@ -20,21 +34,14 @@ public class Tomato {
      */
     public Tomato(String filePath) {
         ui = new Ui();
-        storage = new Storage(filePath);
-
-        try {
-            tasks = new TaskList(storage.load());
-        } catch (FileNotFoundException | TomatoException e) {
-            ui.getLoadingError(e);
-            tasks = new TaskList();
-        }
-
+        Storage storage = new Storage(filePath);
+        TaskList tasks = loadTaskList(storage);
         parser = new Parser(tasks, storage);
     }
 
     /**
      * Represents an entry point to instantiate an instance of the Tomato chatbot class.
-     * @param args
+     * @param args arguments.
      */
     public static void main(String[] args) {
         Tomato tomato = new Tomato("data/TaskList.txt");
