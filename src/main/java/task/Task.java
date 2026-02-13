@@ -12,6 +12,9 @@ public class Task {
      * @param description String to describe task.
      */
     public Task(String description) {
+        assert description != null : "Description should not be null";
+        assert !description.isBlank() : "Description should not be blank";
+
         this.description = description;
         this.isDone = false;
     }
@@ -22,6 +25,9 @@ public class Task {
      * @param isDone boolean status
      */
     public Task(String description, boolean isDone) {
+        assert description != null : "Description should not be null";
+        assert !description.isBlank() : "Description should not be blank";
+
         this.description = description;
         this.isDone = isDone;
     }

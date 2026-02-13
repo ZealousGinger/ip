@@ -8,6 +8,7 @@ import task.Todo;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Represents the Parser class that parses the string input and executes the commands respectively.
@@ -50,6 +51,8 @@ public class Parser {
      * @param storage storage class that handles saving changes of tasks to disk.
      */
     public Parser(TaskList taskList, Storage storage) {
+        assert taskList != null : "taskList should not be null";
+        assert storage != null : "storage should not be null";
         this.taskList = taskList;
         this.storage = storage;
     }
@@ -99,6 +102,7 @@ public class Parser {
         default:
             assert false : "Code execution is not supposed to reach here";
         }
+        assert !result.isEmpty() : "result string should not be empty";
 
         return result;
     }
@@ -210,6 +214,8 @@ public class Parser {
     private String handleCreateTodo(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.TODO));
         String res = taskList.createTodo(args[1]);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
         storage.saveToDisk(taskList.getTaskList());
         return res;
     }
@@ -224,6 +230,8 @@ public class Parser {
         LocalDateTime dateTime = parseDate(deadlineArgs[1]);
 
         String res = taskList.createDeadline(deadlineArgs[0], dateTime);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
         storage.saveToDisk(taskList.getTaskList());
         return res;
     }
@@ -239,6 +247,8 @@ public class Parser {
         LocalDateTime to = parseDate(eventArgs[2]);
 
         String res = taskList.createEvent(eventArgs[0], from, to);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
         storage.saveToDisk(taskList.getTaskList());
         return res;
     }
@@ -263,7 +273,9 @@ public class Parser {
     private String handleMarkTask(String[] args) throws TomatoException {
         int taskNum = parseTaskNo(args[1]);
         String res = taskList.markTask(taskNum);
-        storage.saveToDisk(taskList.getTaskList());
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
         return res;
     }
 
@@ -275,7 +287,9 @@ public class Parser {
     private String handleUnmarkTask(String[] args) throws TomatoException {
         int taskNum = parseTaskNo(args[1]);
         String res = taskList.unmarkTask(taskNum);
-        storage.saveToDisk(taskList.getTaskList());
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
         return res;
     }
 
