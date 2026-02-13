@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.animation.PauseTransition;
@@ -26,19 +25,18 @@ public class MainWindow extends AnchorPane {
     private Button sendButton;
 
     private Tomato tomato;
-
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.jpg"));
-    private Image tomatoImage = new Image(this.getClass().getResourceAsStream("/images/tomato.jpg"));
+    private Ui ui;
 
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
-    /** Injects the Tomato instance */
-    public void setTomato(Tomato t) {
+    /** Injects the Tomato instance and instantiate Ui class and dialog */
+    public void setTomatoGui(Tomato t) {
         tomato = t;
-        dialogContainer.getChildren().addAll(DialogBox.getDukeDialog(Ui.getStartMessage(), tomatoImage));
+        ui = new Ui(dialogContainer, userInput);
+        ui.showStartDialog();
     }
 
     /**
@@ -49,22 +47,11 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText();
         String response = tomato.getResponse(input);
-
-        if (response == null) { // print exit message and exit the app
-            dialogContainer.getChildren().addAll(
-                    DialogBox.getUserDialog(input, userImage),
-                    DialogBox.getDukeDialog(Ui.getExitMessage(), tomatoImage)
-            );
-            userInput.clear();
-            PauseTransition pause = new PauseTransition(Duration.seconds(.5));
-            pause.setOnFinished(event -> Platform.exit());
-            pause.play();
-        } else {
-            dialogContainer.getChildren().addAll(
-                    DialogBox.getUserDialog(input, userImage),
-                    DialogBox.getDukeDialog(response, tomatoImage)
-            );
-            userInput.clear();
+        if (response == null) {
+            ui.exit(input);
+            return;
         }
+
+        ui.showDialog(input, response);
     }
 }
