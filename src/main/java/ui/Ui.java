@@ -1,4 +1,4 @@
-package tomato;
+package ui;
 
 /**
  * Represents the User Interface class.

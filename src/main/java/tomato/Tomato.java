@@ -1,5 +1,7 @@
 package tomato;
 
+import ui.Ui;
+
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 

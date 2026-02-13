@@ -1,3 +1,5 @@
+package tomato;
+
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -5,7 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import tomato.Tomato;
+import ui.MainWindow;
 
 /**
  * A GUI for Tomato using FXML.

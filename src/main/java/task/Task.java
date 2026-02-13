@@ -1,4 +1,4 @@
-package tomato;
+package task;
 
 /**
  * Represents Task object class, stores description and status.

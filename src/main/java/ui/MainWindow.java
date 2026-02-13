@@ -1,3 +1,5 @@
+package ui;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,9 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-
 import tomato.Tomato;
-import tomato.Ui;
 
 /**
  * Controller for the main GUI.

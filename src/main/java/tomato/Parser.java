@@ -1,5 +1,10 @@
 package tomato;
 
+import task.Deadline;
+import task.Event;
+import task.Task;
+import task.Todo;
+
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
