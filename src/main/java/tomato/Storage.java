@@ -1,10 +1,14 @@
 package tomato;
 
+import task.Task;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,6 +16,7 @@ import java.util.Scanner;
  * Represents the storage class.
  */
 public class Storage {
+    private final Parser parser = new Parser();
     private File taskFile;
     private final String filePath;
 
@@ -26,18 +31,17 @@ public class Storage {
 
     /**
      * Checks the previously specified file path, and loads it if exists.
-     * @throws FileNotFoundException If previously specified file path does not exist.
      */
-    private void loadTaskFile() throws FileNotFoundException {
+    private boolean loadTaskFile() {
         String root = System.getProperty("user.dir");
-        java.nio.file.Path path = java.nio.file.Paths.get(root, filePath);
-        boolean fileExists = java.nio.file.Files.exists(path);
+        Path path = Paths.get(root, filePath);
+        boolean isExists = Files.exists(path);
 
-        if(fileExists) {
-            taskFile = path.toFile();
-        } else {
-            throw new FileNotFoundException();
+        if(!isExists) {
+            return false;
         }
+        taskFile = path.toFile();
+        return true;
     }
 
     /**
@@ -46,47 +50,41 @@ public class Storage {
      */
     private void createTaskFile() throws IOException {
         String root = System.getProperty("user.dir");
-        java.nio.file.Path taskListPath = java.nio.file.Paths.get(root, filePath);
-        java.nio.file.Path dataDir = taskListPath.getParent();
+        Path taskListPath = Paths.get(root, filePath);
+        Path dataDir = taskListPath.getParent();
 
-        if (!java.nio.file.Files.exists(dataDir)) {
-            java.nio.file.Files.createDirectories(dataDir);
+        if (!Files.exists(dataDir)) {
+            Files.createDirectories(dataDir);
         }
 
-        if (!java.nio.file.Files.exists(taskListPath)) {
-            java.nio.file.Files.createFile(taskListPath);
+        if (!Files.exists(taskListPath)) {
+            Files.createFile(taskListPath);
             System.out.println("Created file: " + taskListPath.toAbsolutePath() + " true");
         }
         taskFile = taskListPath.toFile();
     }
 
+    /** Scans task file and returns the arraylist of tasks */
+    private ArrayList<Task> scanFile(Scanner sc) throws TomatoException {
+        ArrayList<Task> tasks = new ArrayList<>();
+        while (sc.hasNextLine()) {
+            String data = sc.nextLine();
+            String[] args = data.split("|", 2);
+            tasks.add(parser.decodeTask(args));
+        }
+        return tasks;
+    }
+
     /**
      * Returns an arraylist of tasks decoded from the stored task file.
-     * @return
+     * @return Arraylist of tasks.
      * @throws FileNotFoundException If file does not exist.
      * @throws TomatoException If unable to create task file or load tasks from file.
      * or If an error occurred from parsing the task file or if unable to create task object.
      */
-    private ArrayList<Task> decodeTasks() throws FileNotFoundException, TomatoException {
-        assert taskFile != null : "task file should not be null";
-
-        ArrayList<Task> tasks = new ArrayList<>();
-        System.out.println(Ui.TAB + "Loading tasks from storage......................");
+    private ArrayList<Task> loadTasks() throws FileNotFoundException, TomatoException {
         Scanner fileScanner = new Scanner(taskFile);
-
-        while (fileScanner.hasNextLine()) {
-            String data = fileScanner.nextLine();
-            String[] args = data.split("|", 2);
-
-            if (args[0].equals("T")) {
-                tasks.add(decodeTodo(args[1]));
-            } else if (args[0].equals("D")) {
-                tasks.add(decodeDeadline(args[1]));
-            } else if (args[0].equals("E")) {
-                tasks.add(decodeEvent(args[1]));
-            }
-        }
-        return tasks;
+        return scanFile(fileScanner);
     }
 
     /**
@@ -98,93 +96,39 @@ public class Storage {
      * or If an error occurred from parsing the task file or if unable to create task object.
      */
     public ArrayList<Task> load() throws FileNotFoundException, TomatoException {
-        try {
-            loadTaskFile();
-            return decodeTasks();
-        } catch (Exception e) {
-
+        assert taskFile != null : "task file should not be null here";
+        boolean isLoaded = loadTaskFile();
+        if (!isLoaded) {
             try {
                 createTaskFile();
-            } catch (IOException e2) {
+                throw new TomatoException("Unable to load from task file!");
+            } catch (IOException e) {
                 throw new TomatoException("Error, Unable to create new task file!");
             }
         }
-
-        assert taskFile != null : "task file should not be null here";
-        throw new TomatoException("Error unable to load from file!");
+        return loadTasks();
     }
+
+    /** Writes array of tasks to file */
+    private void writeToFile(ArrayList<Task> tasks) throws IOException {
+        FileWriter taskWriter = new FileWriter(taskFile);
+        for (Task task : tasks) {
+            taskWriter.write(task.toSave() + "\n");
+        }
+        taskWriter.close();
+    }
+
 
     /**
      * Saves given array list of tasks into the task file.
-     * @param tasks
+     * @param tasks Array list of Task objects.
      */
-    public void saveToDisk(ArrayList<Task> tasks) {
+    public void saveToDisk(ArrayList<Task> tasks) throws TomatoException {
         assert taskFile != null : "task file should not be null";
-
         try {
-            FileWriter taskWriter = new FileWriter(taskFile);
-            for (Task task : tasks) {
-                taskWriter.write(task.toSave() + "\n");
-            }
-            taskWriter.close();
+            writeToFile(tasks);
         } catch (IOException e) {
-            System.out.println("unable to save to file");
-            throw new RuntimeException(e);
+            throw new TomatoException("IO error, unable to write to file.");
         }
-    }
-
-    /**
-     * Returns a Todo instance from the stored todo string.
-     * @param args String arguments e.g. "T|1|read book".
-     * @return Todo Task object.
-     */
-    private Task decodeTodo(String args) {
-        String[] splitArgs = args.split("\\|");
-        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
-    }
-
-    /**
-     * Returns a Deadline instance from the stored deadline string.
-     * @param args String arguments e.g. "D|1|return books |2025-02-02T19:00".
-     * @return Deadline Task object.
-     */
-    private Task decodeDeadline(String args) throws TomatoException {
-        String[] splitArgs = args.split("/by|\\|");
-        if(splitArgs.length < 2) {
-            throw new TomatoException("deadline requires more arguments! Please provide them.");
-        }
-
-        LocalDateTime dateTime;
-        try {
-            dateTime = LocalDateTime.parse(splitArgs[3].trim());
-        } catch (Exception e2) {
-            throw new TomatoException("Unable to parse date!");
-        }
-        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
-    }
-
-    /**
-     * Returns a Event instance from the stored event string.
-     * @param args String arguments e.g. "E|0|book shopping |2025-03-03T16:00|2025-03-03T18:00".
-     * @return Event Task object.
-     */
-    private Task decodeEvent(String args) throws TomatoException {
-        String[] splitArgs = args.split("/from|\\/to|\\|");
-        if(splitArgs.length < 3) {
-            throw new TomatoException("event requires more arguments! Please provide them.");
-        }
-
-        LocalDateTime from;
-        LocalDateTime to;
-
-        try {
-            from = LocalDateTime.parse(splitArgs[3].trim());
-            to = LocalDateTime.parse(splitArgs[4].trim());
-        } catch (Exception e2) {
-            throw new TomatoException("Unable to parse date! " +
-                    "Please enter a date and time in this format: 2/12/2019 1800");
-        }
-
-        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);
     }
 }
