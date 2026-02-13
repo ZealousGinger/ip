@@ -54,6 +54,13 @@ public class Task {
         isDone = false;
     }
 
+    /**
+     * Sets the description.
+     */
+    public void setDescription(String s) {
+        description = s;
+    }
+
     @Override
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;

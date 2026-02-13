@@ -96,7 +96,6 @@ public class Storage {
      * or If an error occurred from parsing the task file or if unable to create task object.
      */
     public ArrayList<Task> load() throws FileNotFoundException, TomatoException {
-        assert taskFile != null : "task file should not be null here";
         boolean isLoaded = loadTaskFile();
         if (!isLoaded) {
             try {
@@ -106,6 +105,7 @@ public class Storage {
                 throw new TomatoException("Error, Unable to create new task file!");
             }
         }
+        assert taskFile != null : "task file should not be null here";
         return loadTasks();
     }
 

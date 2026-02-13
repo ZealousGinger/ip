@@ -40,6 +40,20 @@ public class Event extends Task {
         this.to = to;
     }
 
+    /**
+     * Sets LocalDateTime from.
+     */
+    public void setDateTimeFrom(LocalDateTime from) {
+        this.from = from;
+    }
+
+    /**
+     * Sets LocalDateTime to.
+     */
+    public void setDateTimeTo(LocalDateTime to) {
+        this.to = to;
+    }
+
     @Override
     public String toString() {
         return "[E]" + super.toString() +

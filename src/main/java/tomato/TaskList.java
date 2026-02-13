@@ -75,6 +75,37 @@ public class TaskList {
         return TAB + "OK! I've marked this task as not done yet:" + TAB + t;
     }
 
+    public String updateDescription(int idx, String description) throws TomatoException {
+        Task t = getTask(idx);
+        t.setDescription(description);
+        return TAB + "OK! I've updated your description !" + TAB + t;
+    }
+
+    public String updateDeadlineTime(int idx, LocalDateTime by) throws TomatoException {
+        Deadline d = (Deadline) getTask(idx);
+        d.setDateTimeBy(by);
+        return TAB + "OK! I've updated your deadline due datetime !" + TAB + d;
+    }
+
+    public String updateEventFrom(int idx, LocalDateTime from) throws TomatoException {
+        Event e = (Event) getTask(idx);
+        e.setDateTimeFrom(from);
+        return TAB + "OK! I've updated your event from datetime !" + TAB + e;
+    }
+
+    public String updateEventTo(int idx, LocalDateTime to) throws TomatoException {
+        Event e = (Event) getTask(idx);
+        e.setDateTimeFrom(to);
+        return TAB + "OK! I've updated your event to datetime !" + TAB + e;
+    }
+
+    public String updateEventTime(int idx, LocalDateTime from, LocalDateTime to) throws TomatoException {
+        Event e = (Event) getTask(idx);
+        e.setDateTimeFrom(from);
+        e.setDateTimeTo(to);
+        return TAB + "OK! I've updated your event datetime !" + TAB + e;
+    }
+
     /**
      * Deletes an instance of a specified Task instance of the list of tasks.
      * @param idx integer task index

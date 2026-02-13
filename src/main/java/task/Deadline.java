@@ -32,6 +32,13 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    /**
+     * Sets LocalDateTime by.
+     */
+    public void setDateTimeBy(LocalDateTime by) {
+        this.by = by;
+    }
+
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " +

@@ -23,7 +23,12 @@ public class Parser {
         DEADLINE,
         EVENT,
         DELETE,
-        FIND
+        FIND,
+        UPDATE_DESCRIPTION,
+        UPDATE_DEADLINE,
+        UPDATE_EVENT_FROM,
+        UPDATE_EVENT_TO,
+        UPDATE_EVENT_TIME
     }
 
     private TaskList taskList;
@@ -63,7 +68,9 @@ public class Parser {
             cmd = Command.valueOf(arg.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new TomatoException("Unknown command given, please try a given command: " +
-                    "[bye, list, mark, todo, deadline, event, delete, find]. ");
+                    "[bye, list, mark, todo, deadline, event, delete, find, " +
+                    "update_description, update_deadline, update_event_from, " +
+                    "update_event_to, update_event_time]. ");
         }
         return cmd;
     }
@@ -99,6 +106,21 @@ public class Parser {
         case DELETE:
             result = handleDeleteTask(args);
             break;
+        case UPDATE_DESCRIPTION:
+            result = handleUpdateDescription(args);
+            break;
+        case UPDATE_DEADLINE:
+            result = handleUpdateDeadlineBy(args);
+            break;
+        case UPDATE_EVENT_FROM:
+            result = handleUpdateEventFrom(args);
+            break;
+        case UPDATE_EVENT_TO:
+            result = handleUpdateEventTo(args);
+            break;
+        case UPDATE_EVENT_TIME:
+            result = handleUpdateEventTime(args);
+            break;
         default:
             assert false : "Code execution is not supposed to reach here";
         }
@@ -128,7 +150,11 @@ public class Parser {
      * @throws TomatoException if insufficient arguments are given.
      */
     public void checkArgLength(String[] args, int len, String commandName) throws TomatoException {
-        if (args.length < len) {
+        if (args.length < len && commandName.toLowerCase().contains("update")) {
+            throw new TomatoException(commandName + " arguments is required! Please provide it.\n" +
+                    "Separate arguments by '|' e.g. 'update_description 1|buy book'\n" +
+                    "e.g. update_deadline 2|3/3/2024 1900");
+        } else if (args.length < len) {
             throw new TomatoException(commandName + " arguments is required! Please provide it.");
         }
     }
@@ -301,6 +327,71 @@ public class Parser {
     private String handleFindTasks(String[] args) throws TomatoException {
         checkArgLength(args, 2, String.valueOf(Command.FIND));
         return taskList.printMatchingTasks(args[1]);
+    }
+
+    private String handleUpdateDescription(String[] args) throws TomatoException {
+        checkArgLength(args, 2, String.valueOf(Command.UPDATE_DESCRIPTION));
+        String[] descriptionArgs = args[1].split(REGEX_DEFAULT);
+        checkArgLength(descriptionArgs, 2, String.valueOf(Command.UPDATE_DESCRIPTION));
+        int taskNum = parseTaskNo(descriptionArgs[0]);
+        String res = taskList.updateDescription(taskNum, descriptionArgs[1]);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
+        return res;
+    }
+
+    private String handleUpdateDeadlineBy(String[] args) throws TomatoException {
+        checkArgLength(args, 2, String.valueOf(Command.UPDATE_DEADLINE));
+        String[] deadlineArgs = args[1].split(REGEX_DEFAULT);
+        checkArgLength(deadlineArgs, 2, String.valueOf(Command.UPDATE_DEADLINE));
+        int taskNum = parseTaskNo(deadlineArgs[0]);
+        LocalDateTime dateTime = parseDate(deadlineArgs[1]);
+        String res = taskList.updateDeadlineTime(taskNum, dateTime);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
+        return res;
+    }
+
+    private String handleUpdateEventFrom(String[] args) throws TomatoException {
+        checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_FROM));
+        String[] eventArgs = args[1].split(REGEX_DEFAULT);
+        checkArgLength(eventArgs, 2, String.valueOf(Command.UPDATE_EVENT_FROM));
+        int taskNum = parseTaskNo(eventArgs[0]);
+        LocalDateTime dateTime = parseDate(eventArgs[1]);
+        String res = taskList.updateEventFrom(taskNum, dateTime);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
+        return res;
+    }
+
+    private String handleUpdateEventTo(String[] args) throws TomatoException {
+        checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_TO));
+        String[] eventArgs = args[1].split(REGEX_DEFAULT);
+        checkArgLength(eventArgs, 2, String.valueOf(Command.UPDATE_EVENT_TO));
+        int taskNum = parseTaskNo(eventArgs[0]);
+        LocalDateTime dateTime = parseDate(eventArgs[1]);
+        String res = taskList.updateEventTo(taskNum, dateTime);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
+        return res;
+    }
+
+    private String handleUpdateEventTime(String[] args) throws TomatoException {
+        checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_TIME));
+        String[] eventArgs = args[1].split(REGEX_DEFAULT);
+        checkArgLength(eventArgs, 3, String.valueOf(Command.UPDATE_EVENT_TIME));
+        int taskNum = parseTaskNo(eventArgs[0]);
+        LocalDateTime from = parseDate(eventArgs[1]);
+        LocalDateTime to = parseDate(eventArgs[2]);
+        String res = taskList.updateEventTime(taskNum, from, to);
+        ArrayList<Task> updatedTaskList = taskList.getTaskList();
+        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
+        storage.saveToDisk(updatedTaskList);
+        return res;
     }
 
     /**

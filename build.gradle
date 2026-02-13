@@ -43,7 +43,6 @@ test {
 }
 
 application {
-//    mainClass.set("tomato.Tomato")
     mainClass.set("tomato.Launcher")
 }
 
