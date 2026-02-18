@@ -6,8 +6,7 @@ import tomato.TomatoException;
 import ui.Ui;
 
 public class InvalidCommand extends Command {
-    public static final String COMMAND_WORD = ".*";
-    private static final String errorMessage = "\nInvalid command given: ";
+    private static final String errorMessage = "Invalid command given: ";
     private static final String listCommandsMessage = "\nPlease try a given command: " +
             "[bye, list, mark, todo, deadline, event, delete, find, " +
             "update_description, update_deadline, update_event_from, " +

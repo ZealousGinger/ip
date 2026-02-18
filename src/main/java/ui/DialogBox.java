@@ -49,6 +49,23 @@ public class DialogBox extends HBox {
         dialog.getStyleClass().add("reply-label");
     }
 
+    /**
+     * Sets the dialog box to an error style (red).
+     */
+    private void setError() {
+        // Code generated from AI
+        dialog.getStyleClass().add("error-label");
+        this.getStyleClass().add("error-box");
+    }
+
+
+    public static DialogBox getErrorDialog(String text, Image img) {
+        var db = new DialogBox(text, img);
+        db.flip();
+        db.setError();
+        return db;
+    }
+
     public static DialogBox getUserDialog(String text, Image img) {
         return new DialogBox(text, img);
     }

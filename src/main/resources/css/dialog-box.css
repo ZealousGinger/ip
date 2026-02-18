@@ -11,6 +11,18 @@
     -fx-border-radius: 1em 1em 1em 0;
 }
 
+/* Ai generated error-label and error-box for css styling of error (red) dialog box */
+.error-label {
+    -fx-background-color: #ff4d4d;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 6px 10px;
+}
+
+.error-box {
+    -fx-background-color: #ffe5e5;
+}
+
 #displayPicture {
     /* Shadow effect on image. */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 5, 5);
