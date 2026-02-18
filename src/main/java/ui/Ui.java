@@ -52,36 +52,31 @@ public class Ui {
         return TAB + "Bye. Hope to see you again soon!\n" + SPACER;
     }
 
-    /**
-     * Gets loading error message.
-     * @param e Exception to the error.
-     */
-    public static String getLoadingError(Exception e) {
-        return "Error loading: " + e;
-    }
-
     private void clearInputField() {
         userInput.clear();
     }
 
-    public void showDialog(String user, String bot) {
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(user, userImage),
-                DialogBox.getDukeDialog(bot, tomatoImage)
-        );
+    public void showUserDialog(String s) {
+        dialogContainer.getChildren().addAll(DialogBox.getUserDialog(s, userImage));
         clearInputField();
+    }
+
+    public void showErrorDialog(Exception e) {
+        dialogContainer.getChildren().addAll(DialogBox.getTomatoDialog(e.getMessage(), tomatoImage));
+    }
+
+    public void showTomatoDialog(String s) {
+        dialogContainer.getChildren().addAll(DialogBox.getTomatoDialog(s, tomatoImage));
     }
 
     public void showStartDialog() {
-        dialogContainer.getChildren().addAll(DialogBox.getDukeDialog(getStartMessage(), tomatoImage));
+        dialogContainer.getChildren().addAll(DialogBox.getTomatoDialog(getStartMessage(), tomatoImage));
     }
 
-    public void showExitDialog(String input) {
+    public void showExitDialog() {
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(Ui.getExitMessage(), tomatoImage)
+                DialogBox.getTomatoDialog(Ui.getExitMessage(), tomatoImage)
         );
-        clearInputField();
     }
 
     private void exitGui() {
@@ -90,8 +85,8 @@ public class Ui {
         pause.play();
     }
 
-    public void exit(String input) {
-        showExitDialog(input);
+    public void exit() {
+        showExitDialog();
         exitGui();
     }
 }

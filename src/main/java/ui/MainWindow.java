@@ -36,7 +36,7 @@ public class MainWindow extends AnchorPane {
     public void setTomatoGui(Tomato t) {
         tomato = t;
         ui = new Ui(dialogContainer, userInput);
-        ui.showStartDialog();
+        t.setGui(ui);
     }
 
     /**
@@ -46,12 +46,6 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = tomato.getResponse(input);
-        if (response == null) {
-            ui.exit(input);
-            return;
-        }
-
-        ui.showDialog(input, response);
+        tomato.handleResponse(input);
     }
 }

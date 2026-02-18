@@ -1,8 +1,11 @@
 package tomato;
 
+import commands.ByeCommand;
+import commands.Command;
 import ui.Ui;
 
 import java.io.FileNotFoundException;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -12,6 +15,8 @@ public class Tomato {
     private static final String SPACER = "   ____________________________________________________________";
     private Ui ui;
     private Parser parser;
+    private Storage storage;
+    private TaskList tasks;
 
     /**
      * Loads the tasklist from storage or create a new one.
@@ -34,9 +39,14 @@ public class Tomato {
      */
     public Tomato(String filePath) {
         ui = new Ui();
-        Storage storage = new Storage(filePath);
-        TaskList tasks = loadTaskList(storage);
-        parser = new Parser(tasks, storage);
+        storage = new Storage(filePath);
+        tasks = loadTaskList(storage);
+        parser = new Parser();
+    }
+
+    public void setGui(Ui gui) {
+        ui = gui;
+        ui.showStartDialog();
     }
 
     /**
@@ -54,32 +64,42 @@ public class Tomato {
     public void run() {
         Scanner sc = new Scanner(System.in);
         String input;
-        String result = "";
+        Command cmd = null;
 
-        while (result != null) {
+        while(true) {
             input = sc.nextLine();
             try {
-                result = parser.parseAndExecute(input);
-                System.out.println(result);
+                cmd = parser.parse(input);
+                if (cmd.isExit()) {
+                    break;
+                }
+                cmd.execute(tasks, ui, storage);
             } catch (TomatoException e) {
-                ui.getLoadingError(e);
+                ui.showErrorDialog(e);
             }
-            System.out.println(SPACER);
         }
     }
 
 
     /**
-     * Generates a response for the user's chat message.
+     * Handles a response for the user's chat message.
      */
-    public String getResponse(String input) {
-        String result;
-        try {
-            result = parser.parseAndExecute(input);
-        } catch (TomatoException e) {
-            return Ui.getLoadingError(e);
-        }
-        return result;
+    public void handleResponse(String input) {
+        ui.showUserDialog(input);
+        parseAndExecuteResponse(input);
+    }
+
+    /**
+     * Parses and executes the user's response.
+     */
+    public void parseAndExecuteResponse(String input) {
+        Command cmd;
+            try {
+                cmd = parser.parse(input);
+                cmd.execute(tasks, ui, storage);
+            } catch (TomatoException e) {
+                ui.showErrorDialog(e);
+            }
     }
 
 }

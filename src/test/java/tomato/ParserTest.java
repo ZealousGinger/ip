@@ -1,7 +1,9 @@
 package tomato;
 
+import commands.Command;
 import org.junit.jupiter.api.Test;
 import task.Task;
+import ui.Ui;
 
 import java.util.ArrayList;
 
@@ -29,14 +31,14 @@ public class ParserTest {
     public void parseAndExecute_correctArgumentsInput_success() {
         Storage storage = new StorageStub("test");
         TaskList tasks = new TaskList();
-        Parser parser = new Parser(tasks, storage);
+        Parser parser = new Parser();
 
         assertDoesNotThrow(() -> {
-            parser.parseAndExecute("deadline return books /by 2/2/2025 1945");
+            parser.parse("deadline return books /by 2/2/2025 1945");
         });
 
         assertDoesNotThrow(() -> {
-            parser.parseAndExecute("deadline buy books /by 4/2/2026 0930");
+            parser.parse("deadline buy books /by 4/2/2026 0930");
         });
     }
 
@@ -44,22 +46,22 @@ public class ParserTest {
     public void parseAndExecute_wrongArgumentsInput_exceptionThrown(){
         Storage storage = new StorageStub("test");
         TaskList tasks = new TaskList();
-        Parser parser = new Parser(tasks, storage);
+        Parser parser = new Parser();
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("deadline return books /by 1945 2/2/2025");
+            parser.parse("deadline return books /by 1945 2/2/2025");
         });
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("deadline buy books /by June 9th");
+            parser.parse("deadline buy books /by June 9th");
         });
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("deadline buy books by 4/2/2026 0930");
+            parser.parse("deadline buy books by 4/2/2026 0930");
         });
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("deadline buy books /from 4/2/2026 0930");
+            parser.parse("deadline buy books /from 4/2/2026 0930");
         });
     }
 
@@ -67,14 +69,14 @@ public class ParserTest {
     public void parseAndExecute_wrongDateFormatInput_exceptionThrown(){
         Storage storage = new StorageStub("test");
         TaskList tasks = new TaskList();
-        Parser parser = new Parser(tasks, storage);
+        Parser parser = new Parser();
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("deadline return books /by 1945 2/2/2025");
+            parser.parse("deadline return books /by 1945 2/2/2025");
         });
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("deadline buy books /by June 9th");
+            parser.parse("deadline buy books /by June 9th");
         });
     }
 
@@ -82,14 +84,17 @@ public class ParserTest {
     public void parseAndExecute_invalidInputCommand_exceptionThrown() {
         Storage storage = new StorageStub("test");
         TaskList tasks = new TaskList();
-        Parser parser = new Parser(tasks, storage);
+        Ui ui = new Ui();
+        Parser parser = new Parser();
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("jdhfjhdf");
+            Command cmd = parser.parse("jdhfjhdf");
+            cmd.execute(tasks, ui, storage);
         });
 
         assertThrowsExactly(TomatoException.class, () -> {
-            parser.parseAndExecute("BYEE");
+            Command cmd = parser.parse("BYEE");
+            cmd.execute(tasks, ui, storage);
         });
     }
 
@@ -97,14 +102,14 @@ public class ParserTest {
     public void parseAndExecute_validInputCommand_success() {
         Storage storage = new StorageStub("test");
         TaskList tasks = new TaskList();
-        Parser parser = new Parser(tasks, storage);
+        Parser parser = new Parser();
 
         assertDoesNotThrow(() -> {
-            parser.parseAndExecute("LIST");
+            parser.parse("LIST");
         });
 
         assertDoesNotThrow(() -> {
-            parser.parseAndExecute("BYE");
+            parser.parse("BYE");
         });
     }
 }

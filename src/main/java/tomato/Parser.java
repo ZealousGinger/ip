@@ -1,5 +1,6 @@
 package tomato;
 
+import commands.*;
 import task.Deadline;
 import task.Event;
 import task.Task;
@@ -8,32 +9,11 @@ import task.Todo;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 /**
  * Represents the Parser class that parses the string input and executes the commands respectively.
  */
 public class Parser {
-    private enum Command {
-        BYE,
-        LIST,
-        MARK,
-        UNMARK,
-        TODO,
-        DEADLINE,
-        EVENT,
-        DELETE,
-        FIND,
-        UPDATE_DESCRIPTION,
-        UPDATE_DEADLINE,
-        UPDATE_EVENT_FROM,
-        UPDATE_EVENT_TO,
-        UPDATE_EVENT_TIME
-    }
-
-    private TaskList taskList;
-    private Storage storage;
-
     private static final String REGEX_EMPTY = "";
     private static final String REGEX_DEFAULT = "\\|";
     private static final String REGEX_BY = "/by|";
@@ -44,89 +24,9 @@ public class Parser {
 
 
     /**
-     * Instantiates the Parser class without tasklist or storage, used for parsing by Storage class.
+     * Instantiates the Parser class
      */
     public Parser() {
-
-    }
-
-    /**
-     * Instantiates the Parser class with specified TaskList and Storage.
-     * @param taskList list of tasks retrieved from storage.
-     * @param storage storage class that handles saving changes of tasks to disk.
-     */
-    public Parser(TaskList taskList, Storage storage) {
-        assert taskList != null : "taskList should not be null";
-        assert storage != null : "storage should not be null";
-        this.taskList = taskList;
-        this.storage = storage;
-    }
-
-    private Command parseCommand(String arg) throws TomatoException{
-        Command cmd;
-        try {
-            cmd = Command.valueOf(arg.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new TomatoException("Unknown command given, please try a given command: " +
-                    "[bye, list, mark, todo, deadline, event, delete, find, " +
-                    "update_description, update_deadline, update_event_from, " +
-                    "update_event_to, update_event_time]. ");
-        }
-        return cmd;
-    }
-
-    private String handleCommand(Command cmd, String[] args) throws TomatoException {
-        String result = "";
-
-        switch (cmd) {
-        case BYE:
-            return null;
-            // Immediately exists the method and stop chat loop.
-        case LIST:
-            result = handleListTasks();
-            break;
-        case FIND:
-            result = handleFindTasks(args);
-            break;
-        case MARK:
-            result = handleMarkTask(args);
-            break;
-        case UNMARK:
-            result = handleUnmarkTask(args);
-            break;
-        case TODO:
-            result = handleCreateTodo(args);
-            break;
-        case DEADLINE:
-            result = handleCreateDeadline(args);
-            break;
-        case EVENT:
-            result = handleCreateEvent(args);
-            break;
-        case DELETE:
-            result = handleDeleteTask(args);
-            break;
-        case UPDATE_DESCRIPTION:
-            result = handleUpdateDescription(args);
-            break;
-        case UPDATE_DEADLINE:
-            result = handleUpdateDeadlineBy(args);
-            break;
-        case UPDATE_EVENT_FROM:
-            result = handleUpdateEventFrom(args);
-            break;
-        case UPDATE_EVENT_TO:
-            result = handleUpdateEventTo(args);
-            break;
-        case UPDATE_EVENT_TIME:
-            result = handleUpdateEventTime(args);
-            break;
-        default:
-            assert false : "Code execution is not supposed to reach here";
-        }
-        assert !result.isEmpty() : "result string should not be empty";
-
-        return result;
     }
 
     /**
@@ -136,10 +36,60 @@ public class Parser {
      * @return boolean value to stop parsing and exit the chat loop.
      * @throws TomatoException If unable to parse arguments, or invalid arguments.
      */
-    public String parseAndExecute(String input) throws TomatoException {
-        String[] splitArgs = input.split(" ", 2);
-        Command cmd = parseCommand(splitArgs[0]);
-        return handleCommand(cmd, splitArgs);
+    public Command parse(String input) throws TomatoException {
+        String[] args = input.split(" ", 2);
+        String stringCommand = args[0].toLowerCase();
+        Command cmd = null;
+
+        switch (stringCommand) {
+        case ByeCommand.COMMAND_WORD:
+            cmd = new ByeCommand();
+            break;
+        case ListCommand.COMMAND_WORD:
+            cmd = new ListCommand();
+            break;
+        case FindCommand.COMMAND_WORD:
+            cmd = handleFindTasks(args);
+            break;
+        case MarkCommand.COMMAND_WORD:
+            cmd = handleMarkTask(args);
+            break;
+        case UnmarkCommand.COMMAND_WORD:
+            cmd = handleUnmarkTask(args);
+            break;
+        case TodoCommand.COMMAND_WORD:
+            cmd = handleCreateTodo(args);
+            break;
+        case DeadlineCommand.COMMAND_WORD:
+            cmd = handleCreateDeadline(args);
+            break;
+        case EventCommand.COMMAND_WORD:
+            cmd = handleCreateEvent(args);
+            break;
+        case DeleteCommand.COMMAND_WORD:
+            cmd = handleDeleteTask(args);
+            break;
+        case UpdateDescriptionCommand.COMMAND_WORD:
+            cmd = handleUpdateDescription(args);
+            break;
+        case UpdateDeadlineCommand.COMMAND_WORD:
+            cmd = handleUpdateDeadlineBy(args);
+            break;
+        case UpdateEventFromCommand.COMMAND_WORD:
+            cmd = handleUpdateEventFrom(args);
+            break;
+        case UpdateEventToCommand.COMMAND_WORD:
+            cmd = handleUpdateEventTo(args);
+            break;
+        case UpdateEventTimeCommand.COMMAND_WORD:
+            cmd = handleUpdateEventTime(args);
+            break;
+        default:
+            cmd = handleInvalidCommand(args);
+            break;
+        }
+
+        return cmd;
     }
 
     /**
@@ -181,17 +131,17 @@ public class Parser {
 
     /** Checks and parses deadline arguments */
     private String[] parseDeadline(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.DEADLINE));
+        checkArgLength(args, 2, DeadlineCommand.COMMAND_WORD);
         String[] arr = parseSlashDeadline(args[1]);
-        checkArgLength(arr, 2, String.valueOf(Command.DEADLINE));
+        checkArgLength(arr, 2, DeadlineCommand.COMMAND_WORD);
         return arr;
     }
 
     /** Checks and parses event arguments */
     private String[] parseEvent(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.EVENT));
+        checkArgLength(args, 2, EventCommand.COMMAND_WORD);
         String[] arr = parseSlashEvent(args[1]);
-        checkArgLength(arr, 3, String.valueOf(Command.EVENT));
+        checkArgLength(arr, 3, EventCommand.COMMAND_WORD);
         return arr;
     }
 
@@ -227,23 +177,15 @@ public class Parser {
         }
     }
 
-    /** Returns current list of tasks */
-    private String handleListTasks() {
-        return taskList.toString();
-    }
-
     /**
      * Parses and handles create Todo.
      * @param args string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private String handleCreateTodo(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.TODO));
-        String res = taskList.createTodo(args[1]);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(taskList.getTaskList());
-        return res;
+    private Command handleCreateTodo(String[] args) throws TomatoException {
+        checkArgLength(args, 2, TodoCommand.COMMAND_WORD);
+        String description = args[1];
+        return new TodoCommand(description);
     }
 
     /**
@@ -251,15 +193,11 @@ public class Parser {
      * @param args string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private String handleCreateDeadline(String[] args) throws TomatoException {
+    private Command handleCreateDeadline(String[] args) throws TomatoException {
         String[] deadlineArgs = parseDeadline(args);
+        String description = deadlineArgs[0];
         LocalDateTime dateTime = parseDate(deadlineArgs[1]);
-
-        String res = taskList.createDeadline(deadlineArgs[0], dateTime);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(taskList.getTaskList());
-        return res;
+        return new DeadlineCommand(description, dateTime);
     }
 
     /**
@@ -267,16 +205,12 @@ public class Parser {
      * @param args string[] of input arguments.
      * @throws TomatoException if arguments are insufficient or invalid.
      */
-    private String handleCreateEvent(String[] args) throws TomatoException {
+    private Command handleCreateEvent(String[] args) throws TomatoException {
         String[] eventArgs = parseEvent(args);
+        String description = eventArgs[0];
         LocalDateTime from = parseDate(eventArgs[1]);
         LocalDateTime to = parseDate(eventArgs[2]);
-
-        String res = taskList.createEvent(eventArgs[0], from, to);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(taskList.getTaskList());
-        return res;
+        return new EventCommand(description, from, to);
     }
 
     /**
@@ -284,11 +218,10 @@ public class Parser {
      * @param args string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private String handleDeleteTask(String[] args) throws TomatoException {
+    private Command handleDeleteTask(String[] args) throws TomatoException {
+        checkArgLength(args, 2, DeleteCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(args[1]);
-        String res = taskList.deleteTask(taskNum);
-        storage.saveToDisk(taskList.getTaskList());
-        return res;
+        return new DeleteCommand(taskNum);
     }
 
     /**
@@ -296,13 +229,10 @@ public class Parser {
      * @param args string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private String handleMarkTask(String[] args) throws TomatoException {
+    private Command handleMarkTask(String[] args) throws TomatoException {
+        checkArgLength(args, 2, MarkCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(args[1]);
-        String res = taskList.markTask(taskNum);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(updatedTaskList);
-        return res;
+        return new MarkCommand(taskNum);
     }
 
     /**
@@ -310,13 +240,10 @@ public class Parser {
      * @param args string[] of input arguments.
      * @throws TomatoException if task number is not provided or invalid.
      */
-    private String handleUnmarkTask(String[] args) throws TomatoException {
+    private Command handleUnmarkTask(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UnmarkCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(args[1]);
-        String res = taskList.unmarkTask(taskNum);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(updatedTaskList);
-        return res;
+        return new UnmarkCommand(taskNum);
     }
 
     /**
@@ -324,79 +251,66 @@ public class Parser {
      * @param args string[] of input arguments.
      * @throws TomatoException if keyword argument is not provided.
      */
-    private String handleFindTasks(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.FIND));
-        return taskList.printMatchingTasks(args[1]);
+    private Command handleFindTasks(String[] args) throws TomatoException {
+        checkArgLength(args, 2, FindCommand.COMMAND_WORD);
+        String keyword = args[1];
+        return new FindCommand(keyword);
     }
 
     /** Parses and handles updating of task description */
-    private String handleUpdateDescription(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.UPDATE_DESCRIPTION));
+    private Command handleUpdateDescription(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UpdateDescriptionCommand.COMMAND_WORD);
         String[] descriptionArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(descriptionArgs, 2, String.valueOf(Command.UPDATE_DESCRIPTION));
+        checkArgLength(descriptionArgs, 2, UpdateDescriptionCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(descriptionArgs[0]);
-        String res = taskList.updateDescription(taskNum, descriptionArgs[1]);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(updatedTaskList);
-        return res;
+        String description = descriptionArgs[1];
+        return new UpdateDescriptionCommand(taskNum, description);
     }
 
     /** Parses and handles updating of deadline by datetime */
-    private String handleUpdateDeadlineBy(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.UPDATE_DEADLINE));
+    private Command handleUpdateDeadlineBy(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UpdateDeadlineCommand.COMMAND_WORD);
         String[] deadlineArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(deadlineArgs, 2, String.valueOf(Command.UPDATE_DEADLINE));
+        checkArgLength(deadlineArgs, 2, UpdateDeadlineCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(deadlineArgs[0]);
         LocalDateTime dateTime = parseDate(deadlineArgs[1]);
-        String res = taskList.updateDeadlineTime(taskNum, dateTime);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(updatedTaskList);
-        return res;
+        return new UpdateDeadlineCommand(taskNum, dateTime);
     }
 
     /** Parses and handles updating of event from datetime */
-    private String handleUpdateEventFrom(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_FROM));
+    private Command handleUpdateEventFrom(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UpdateEventFromCommand.COMMAND_WORD);
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 2, String.valueOf(Command.UPDATE_EVENT_FROM));
+        checkArgLength(eventArgs, 2, UpdateEventFromCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(eventArgs[0]);
         LocalDateTime dateTime = parseDate(eventArgs[1]);
-        String res = taskList.updateEventFrom(taskNum, dateTime);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(updatedTaskList);
-        return res;
+        return new UpdateEventFromCommand(taskNum, dateTime);
     }
 
     /** Parses and handles updating of event to datetime */
-    private String handleUpdateEventTo(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_TO));
+    private Command handleUpdateEventTo(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UpdateEventToCommand.COMMAND_WORD);
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 2, String.valueOf(Command.UPDATE_EVENT_TO));
+        checkArgLength(eventArgs, 2, UpdateEventToCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(eventArgs[0]);
         LocalDateTime dateTime = parseDate(eventArgs[1]);
-        String res = taskList.updateEventTo(taskNum, dateTime);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(updatedTaskList);
-        return res;
+        return new UpdateEventToCommand(taskNum, dateTime);
     }
 
     /** Parses and handles updating of event from and to datetimes */
-    private String handleUpdateEventTime(String[] args) throws TomatoException {
-        checkArgLength(args, 2, String.valueOf(Command.UPDATE_EVENT_TIME));
+    private Command handleUpdateEventTime(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UpdateEventTimeCommand.COMMAND_WORD);
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 3, String.valueOf(Command.UPDATE_EVENT_TIME));
+        checkArgLength(eventArgs, 3, UpdateEventTimeCommand.COMMAND_WORD);
         int taskNum = parseTaskNo(eventArgs[0]);
         LocalDateTime from = parseDate(eventArgs[1]);
         LocalDateTime to = parseDate(eventArgs[2]);
-        String res = taskList.updateEventTime(taskNum, from, to);
-        ArrayList<Task> updatedTaskList = taskList.getTaskList();
-        assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";
-        storage.saveToDisk(updatedTaskList);
-        return res;
+        return new UpdateEventTimeCommand(taskNum, from, to);
+    }
+
+    private Command handleInvalidCommand(String[] args) throws TomatoException {
+        String invalidCmd = args[0];
+        return new InvalidCommand(invalidCmd);
     }
 
     /**
@@ -416,19 +330,19 @@ public class Parser {
      */
     private Task decodeDeadline(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_BY);
-        checkArgLength(splitArgs, 2, String.valueOf(Command.DEADLINE));
+        checkArgLength(splitArgs, 2, DeadlineCommand.COMMAND_WORD);
         LocalDateTime dateTime = parseDate(splitArgs[3]);
         return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
     }
 
     /**
-     * Returns a Event instance from the stored event string.
+     * Returns an Event instance from the stored event string.
      * @param args String arguments e.g. "E|0|book shopping |2025-03-03T16:00|2025-03-03T18:00".
      * @return Event Task object.
      */
     private Task decodeEvent(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_FROM_TO);
-        checkArgLength(splitArgs, 3, String.valueOf(Command.EVENT));
+        checkArgLength(splitArgs, 3, EventCommand.COMMAND_WORD);
         LocalDateTime from = parseDate(splitArgs[3]);
         LocalDateTime to = parseDate(splitArgs[4]);
         return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);
