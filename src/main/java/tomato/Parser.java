@@ -318,8 +318,9 @@ public class Parser {
      * @param args String arguments e.g. "T|1|read book".
      * @return Todo Task object.
      */
-    private Task decodeTodo(String args) {
+    private Task decodeTodo(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_EMPTY);
+        checkArgLength(splitArgs, 3, TodoCommand.COMMAND_WORD);
         return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
     }
 

@@ -100,7 +100,7 @@ public class Storage {
         if (!isLoaded) {
             try {
                 createTaskFile();
-                throw new TomatoException("Unable to load from task file!");
+                throw new TomatoException("Missing task file!");
             } catch (IOException e) {
                 throw new TomatoException("Error, Unable to create new task file!");
             }

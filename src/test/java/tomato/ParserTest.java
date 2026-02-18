@@ -1,9 +1,10 @@
 package tomato;
 
 import commands.Command;
-import org.junit.jupiter.api.Test;
 import task.Task;
 import ui.Ui;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 class StorageStub extends Storage {
+
     /**
      * Instantiates the storage class with a specified file path for storage file.
      *
@@ -28,9 +30,7 @@ class StorageStub extends Storage {
 
 public class ParserTest {
     @Test
-    public void parseAndExecute_correctArgumentsInput_success() {
-        Storage storage = new StorageStub("test");
-        TaskList tasks = new TaskList();
+    public void parse_correctArgumentsInput_success() {
         Parser parser = new Parser();
 
         assertDoesNotThrow(() -> {
@@ -43,9 +43,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseAndExecute_wrongArgumentsInput_exceptionThrown(){
-        Storage storage = new StorageStub("test");
-        TaskList tasks = new TaskList();
+    public void parse_wrongArgumentsInput_exceptionThrown(){
         Parser parser = new Parser();
 
         assertThrowsExactly(TomatoException.class, () -> {
@@ -66,9 +64,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseAndExecute_wrongDateFormatInput_exceptionThrown(){
-        Storage storage = new StorageStub("test");
-        TaskList tasks = new TaskList();
+    public void parse_wrongDateFormatInput_exceptionThrown(){
         Parser parser = new Parser();
 
         assertThrowsExactly(TomatoException.class, () -> {
@@ -81,7 +77,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseAndExecute_invalidInputCommand_exceptionThrown() {
+    public void parse_invalidInputCommand_exceptionThrown() {
         Storage storage = new StorageStub("test");
         TaskList tasks = new TaskList();
         Ui ui = new Ui();
@@ -99,9 +95,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parseAndExecute_validInputCommand_success() {
-        Storage storage = new StorageStub("test");
-        TaskList tasks = new TaskList();
+    public void parse_validInputCommand_success() {
         Parser parser = new Parser();
 
         assertDoesNotThrow(() -> {
