@@ -58,6 +58,8 @@ public class Task {
      * Sets the description.
      */
     public void setDescription(String s) {
+        assert description != null : "Description should not be null";
+        assert !description.isBlank() : "Description should not be blank";
         description = s;
     }
 

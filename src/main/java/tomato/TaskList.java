@@ -83,6 +83,9 @@ public class TaskList {
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String updateDescription(int idx, String description) throws TomatoException {
+        if (description.isBlank()) {
+            throw new TomatoException("Description cannot be blank!");
+        }
         Task t = getTask(idx);
         t.setDescription(description);
         return TAB + "OK! I've updated your description !" + TAB + t;
