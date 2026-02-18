@@ -1,0 +1,7 @@
+D|1|read aristotle|2025-02-02T19:00
+E|0|shopping for books |2025-02-02T17:00|2025-02-02T19:00
+T|1|buy water
+T|0|book club registration
+T|0|write study notes
+T|0|read pride and prejudice by jane austen
+D|1|buy books |2023-03-03T13:00
