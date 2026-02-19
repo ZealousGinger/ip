@@ -46,8 +46,10 @@ public class TaskList {
     }
 
     private Task getTask(int idx) throws TomatoException {
-        if (idx > tasks.size() || idx < 0) {
-            throw new TomatoException("That task number doesn't exist!");
+        if (idx >= tasks.size() || idx < 0) {
+            throw new TomatoException("That task number " + (idx + 1) + " doesn't exist!\n" +
+                    "Pick a task number from " + 1 + " to " + tasks.size()
+                    , Integer.toString(idx + 1));
         }
         return tasks.get(idx);
     }

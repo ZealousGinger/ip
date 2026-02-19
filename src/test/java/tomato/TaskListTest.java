@@ -69,9 +69,13 @@ public class TaskListTest {
         tasks.createTodo("buy books");
         tasks.createTodo("return books to library");
 
-        // test case 1: out of bound index
+        // test cases 1: out of bound index
         assertThrowsExactly(TomatoException.class, () -> {
             tasks.markTask(3);
+        });
+
+        assertThrowsExactly(TomatoException.class, () -> {
+            tasks.markTask(2);
         });
 
         // test case 2: negative index
