@@ -193,6 +193,7 @@ Bye. Hope to see you again soon!
 
 ## Command summary
 
+
 | Command | Format | Example |
 |---|---|---|
 | `todo` | `todo {TASK_DESCRIPTION}` | `todo cs2103t week 6 quiz` |
@@ -209,3 +210,4 @@ Bye. Hope to see you again soon!
 | `find` | `find {KEYWORD}` | `find cs2103t` |
 | `list` | `list` | `list` |
 | `bye` | `bye` | `bye` |
+
