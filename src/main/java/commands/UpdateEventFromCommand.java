@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class UpdateEventFromCommand extends Command {
-    public static final String COMMAND_WORD = "update_event_from";
-    public static final String MESSAGE_USAGE = "update_event_from {task number}|{DD/MM/YYYY HHMM}\n" +
-            "e.g.(update_event_from 2|3/3/2024 1900)";
+    public static final String COMMAND_WORD = "from";
+    public static final String MESSAGE_USAGE = "update {task number} /from {DD/MM/YYYY HHMM}\n" +
+            "e.g.(update 2 /from 3/3/2024 1900)";
     private final int taskNum;
     private final LocalDateTime dateTime;
 

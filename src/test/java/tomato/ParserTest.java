@@ -40,6 +40,18 @@ public class ParserTest {
         assertDoesNotThrow(() -> {
             parser.parse("deadline buy books /by 4/2/2026 0930");
         });
+
+        assertDoesNotThrow(() -> {
+            parser.parse("update 1 /description abcdefgh");
+        });
+
+        assertDoesNotThrow(() -> {
+            parser.parse("update 1 /by 2/2/2024 1900");
+        });
+
+        assertDoesNotThrow(() -> {
+            parser.parse("update 1 /time 2/2/2024 1900 /to 3/3/2024 1900");
+        });
     }
 
     @Test
@@ -60,6 +72,26 @@ public class ParserTest {
 
         assertThrowsExactly(TomatoException.class, () -> {
             parser.parse("deadline buy books /from 4/2/2026 0930");
+        });
+
+        assertThrowsExactly(TomatoException.class, () -> {
+            parser.parse("update 1 /description");
+        });
+
+        assertThrowsExactly(TomatoException.class, () -> {
+            parser.parse("update 1 /by 2/2/2024 19dfd00");
+        });
+
+        assertThrowsExactly(TomatoException.class, () -> {
+            parser.parse("update 1 /time 2/2/20dfd24 1900 /to 3/3/2024 1900");
+        });
+
+        assertThrowsExactly(TomatoException.class, () -> {
+            parser.parse("update 1 /time 2/2/2024 1900");
+        });
+
+        assertThrowsExactly(TomatoException.class, () -> {
+            parser.parse("update 1 /time 2/2/2024 1900 /to");
         });
     }
 

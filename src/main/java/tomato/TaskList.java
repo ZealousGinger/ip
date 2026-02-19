@@ -100,7 +100,11 @@ public class TaskList {
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String updateDeadlineTime(int idx, LocalDateTime by) throws TomatoException {
-        Deadline d = (Deadline) getTask(idx);
+        Task t = getTask(idx);
+        if (!(t instanceof Deadline)) {
+            throw new TomatoException("This Task is not a Deadline task! You cannot update it's by!");
+        }
+        Deadline d = (Deadline) t;
         d.setDateTimeBy(by);
         return "OK! I've updated your deadline due datetime !" + d;
     }
@@ -113,7 +117,11 @@ public class TaskList {
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String updateEventFrom(int idx, LocalDateTime from) throws TomatoException {
-        Event e = (Event) getTask(idx);
+        Task t = getTask(idx);
+        if (!(t instanceof Event)) {
+            throw new TomatoException("This Task is not a Event task! You cannot update it's from!");
+        }
+        Event e = (Event) t;
         e.setDateTimeFrom(from);
         return "OK! I've updated your event from datetime !" + e;
     }
@@ -126,7 +134,11 @@ public class TaskList {
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String updateEventTo(int idx, LocalDateTime to) throws TomatoException {
-        Event e = (Event) getTask(idx);
+        Task t = getTask(idx);
+        if (!(t instanceof Event)) {
+            throw new TomatoException("This Task is not a Event task! You cannot update it's to!");
+        }
+        Event e = (Event) t;
         e.setDateTimeTo(to);
         return "OK! I've updated your event to datetime !" + e;
     }
@@ -140,7 +152,11 @@ public class TaskList {
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String updateEventTime(int idx, LocalDateTime from, LocalDateTime to) throws TomatoException {
-        Event e = (Event) getTask(idx);
+        Task t = getTask(idx);
+        if (!(t instanceof Event)) {
+            throw new TomatoException("This Task is not a Event task! You cannot update it's time!");
+        }
+        Event e = (Event) t;
         e.setDateTimeFrom(from);
         e.setDateTimeTo(to);
         return "OK! I've updated your event datetime !" + e;

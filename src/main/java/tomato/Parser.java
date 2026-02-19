@@ -69,20 +69,8 @@ public class Parser {
         case DeleteCommand.COMMAND_WORD:
             cmd = handleDeleteTask(args);
             break;
-        case UpdateDescriptionCommand.COMMAND_WORD:
-            cmd = handleUpdateDescription(args);
-            break;
-        case UpdateDeadlineCommand.COMMAND_WORD:
-            cmd = handleUpdateDeadlineBy(args);
-            break;
-        case UpdateEventFromCommand.COMMAND_WORD:
-            cmd = handleUpdateEventFrom(args);
-            break;
-        case UpdateEventToCommand.COMMAND_WORD:
-            cmd = handleUpdateEventTo(args);
-            break;
-        case UpdateEventTimeCommand.COMMAND_WORD:
-            cmd = handleUpdateEventTime(args);
+        case UpdateCommand.COMMAND_WORD:
+            cmd = handleUpdateTask(args);
             break;
         default:
             cmd = handleInvalidCommand(args);
@@ -256,55 +244,63 @@ public class Parser {
         return new FindCommand(keyword);
     }
 
-    /** Parses and handles updating of task description */
-    private Command handleUpdateDescription(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
-        String[] descriptionArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(descriptionArgs, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
-        int taskNum = parseTaskNo(descriptionArgs[0]);
-        String description = descriptionArgs[1];
-        return new UpdateDescriptionCommand(taskNum, description);
+    private UpdateCommand.Argument parseUpdateArgument(String arg) {
+        UpdateCommand.Argument enumArg;
+        try {
+            enumArg = UpdateCommand.Argument.valueOf(arg.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+        return enumArg;
     }
 
-    /** Parses and handles updating of deadline by datetime */
-    private Command handleUpdateDeadlineBy(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
-        String[] deadlineArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(deadlineArgs, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
-        int taskNum = parseTaskNo(deadlineArgs[0]);
-        LocalDateTime dateTime = parseDate(deadlineArgs[1]);
-        return new UpdateDeadlineCommand(taskNum, dateTime);
+    private int parseUpdateTaskNum(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UpdateCommand.MESSAGE_USAGE);
+        String[] updateArgs = args[1].split(" /");
+        return parseTaskNo(updateArgs[0]);
     }
 
-    /** Parses and handles updating of event from datetime */
-    private Command handleUpdateEventFrom(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateEventFromCommand.MESSAGE_USAGE);
-        String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 2, UpdateEventFromCommand.MESSAGE_USAGE);
-        int taskNum = parseTaskNo(eventArgs[0]);
-        LocalDateTime dateTime = parseDate(eventArgs[1]);
-        return new UpdateEventFromCommand(taskNum, dateTime);
+    private String[] parseUpdateArgValues(String[] args) throws TomatoException {
+        String[] updateArgs = args[1].split(" /");
+        return updateArgs[1].split(" ", 2);
     }
 
-    /** Parses and handles updating of event to datetime */
-    private Command handleUpdateEventTo(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateEventToCommand.MESSAGE_USAGE);
-        String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 2, UpdateEventToCommand.MESSAGE_USAGE);
-        int taskNum = parseTaskNo(eventArgs[0]);
-        LocalDateTime dateTime = parseDate(eventArgs[1]);
-        return new UpdateEventToCommand(taskNum, dateTime);
+    private String[] parseUpdateTime(String[] args) throws TomatoException {
+        checkArgLength(args, 2, UpdateCommand.MESSAGE_USAGE);
+        String[] updateArgs = args[1].split(" /");
+        checkArgLength(updateArgs, 3, UpdateCommand.MESSAGE_USAGE);
+        String[] timeArgs = updateArgs[2].split(" ", 2);
+        checkArgLength(timeArgs, 2, UpdateCommand.MESSAGE_USAGE);
+        String[] argAndValue = parseUpdateArgValues(args);
+        String from = argAndValue[1];
+        String to = timeArgs[1];
+        return new String[]{from, to};
     }
+    private Command handleUpdateTask(String[] args) throws TomatoException {
+        int taskNum = parseUpdateTaskNum(args);
+        String[] argAndValue = parseUpdateArgValues(args);
+        UpdateCommand.Argument arg = parseUpdateArgument(argAndValue[0]);
 
-    /** Parses and handles updating of event from and to datetimes */
-    private Command handleUpdateEventTime(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
-        String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 3, UpdateEventTimeCommand.MESSAGE_USAGE);
-        int taskNum = parseTaskNo(eventArgs[0]);
-        LocalDateTime from = parseDate(eventArgs[1]);
-        LocalDateTime to = parseDate(eventArgs[2]);
-        return new UpdateEventTimeCommand(taskNum, from, to);
+        switch (arg) {
+            case DESCRIPTION:
+                checkArgLength(argAndValue, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.DESCRIPTION, taskNum, argAndValue[1]);
+            case BY:
+                checkArgLength(argAndValue, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.BY, taskNum, parseDate(argAndValue[1]));
+            case FROM:
+                checkArgLength(argAndValue, 2, UpdateEventFromCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.FROM, taskNum, parseDate(argAndValue[1]));
+            case TO:
+                checkArgLength(argAndValue, 2, UpdateEventToCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.TO, taskNum, parseDate(argAndValue[1]));
+            case TIME:
+                String[] fromTo = parseUpdateTime(args);
+                checkArgLength(fromTo, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.TIME, taskNum, parseDate(fromTo[0]), parseDate(fromTo[1]));
+            default:
+                throw new TomatoException(UpdateCommand.MESSAGE_USAGE);
+        }
     }
 
     private Command handleInvalidCommand(String[] args) throws TomatoException {

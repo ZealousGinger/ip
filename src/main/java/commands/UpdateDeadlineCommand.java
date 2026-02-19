@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class UpdateDeadlineCommand extends Command {
-    public static final String COMMAND_WORD = "update_deadline";
-    public static final String MESSAGE_USAGE = "update_deadline {task number}|{DD/MM/YYYY HHMM}\n" +
-            "e.g.(update_deadline 2|3/3/2024 1900)";
+    public static final String COMMAND_WORD = "deadline";
+    public static final String MESSAGE_USAGE = "update {task number} /by {DD/MM/YYYY HHMM}\n" +
+            "e.g.(update 2 /by 3/3/2024 1900)";
     private final int taskNum;
     private final LocalDateTime dateTime;
 
