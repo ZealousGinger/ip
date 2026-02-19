@@ -1,15 +1,15 @@
 package tomato;
 
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
+
 import tomato.commands.Command;
 import tomato.data.TaskList;
 import tomato.parser.Parser;
 import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
-
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;

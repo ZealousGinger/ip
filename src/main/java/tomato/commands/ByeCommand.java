@@ -1,7 +1,7 @@
 package tomato.commands;
 
-import tomato.storage.Storage;
 import tomato.data.TaskList;
+import tomato.storage.Storage;
 import tomato.ui.Ui;
 
 public class ByeCommand extends Command {

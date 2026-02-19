@@ -1,9 +1,5 @@
 package tomato.storage;
 
-import tomato.TomatoException;
-import tomato.parser.Parser;
-import tomato.task.Task;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -13,6 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import tomato.TomatoException;
+import tomato.parser.Parser;
+import tomato.task.Task;
 
 /**
  * Handles loading and saving tasks from persistent storage.

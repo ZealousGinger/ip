@@ -1,13 +1,13 @@
 package tomato.commands;
 
-import tomato.task.Task;
-import tomato.storage.Storage;
-import tomato.data.TaskList;
-import tomato.TomatoException;
-import tomato.ui.Ui;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import tomato.TomatoException;
+import tomato.data.TaskList;
+import tomato.storage.Storage;
+import tomato.task.Task;
+import tomato.ui.Ui;
 
 public class DeadlineCommand extends Command {
     public static final String COMMAND_WORD = "deadline";

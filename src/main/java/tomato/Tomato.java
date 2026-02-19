@@ -1,13 +1,13 @@
 package tomato;
 
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import tomato.commands.Command;
 import tomato.data.TaskList;
 import tomato.parser.Parser;
 import tomato.storage.Storage;
 import tomato.ui.Ui;
-
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 /**
  * Represents the Tomato chatbot application.

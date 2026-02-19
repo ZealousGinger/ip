@@ -1,8 +1,8 @@
 package tomato.commands;
 
-import tomato.storage.Storage;
-import tomato.data.TaskList;
 import tomato.TomatoException;
+import tomato.data.TaskList;
+import tomato.storage.Storage;
 import tomato.ui.Ui;
 
 public class DeleteCommand extends Command {
