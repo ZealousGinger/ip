@@ -71,14 +71,14 @@ public class Storage {
     /**
      * Returns tasks decoded from the given file scanner.
      *
-     * @param sc Scanner over the task file.
+     * @param fileScanner Scanner over the task file.
      * @return List of decoded tasks.
      * @throws TomatoException If a line cannot be decoded into a task.
      */
-    private ArrayList<Task> scanFile(Scanner sc) throws TomatoException {
+    private ArrayList<Task> scanFile(Scanner fileScanner) throws TomatoException {
         ArrayList<Task> tasks = new ArrayList<>();
-        while (sc.hasNextLine()) {
-            String data = sc.nextLine();
+        while (fileScanner.hasNextLine()) {
+            String data = fileScanner.nextLine();
             String[] args = data.split("|", 2);
             tasks.add(parser.decodeTask(args));
         }

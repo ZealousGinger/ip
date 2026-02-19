@@ -3,7 +3,7 @@ package tomato.commands;
 import tomato.TomatoException;
 import tomato.data.TaskList;
 import tomato.storage.Storage;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 /**
  * Represents an executable command in Tomato.
@@ -17,7 +17,7 @@ public abstract class Command {
      * @param storage The storage handler for saving or loading tasks.
      * @throws TomatoException If an error occurs during execution.
      */
-    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws TomatoException;
+    public abstract void execute(TaskList tasks, UserInterface ui, Storage storage) throws TomatoException;
 
     /**
      * Returns whether this command signals the app to exit.

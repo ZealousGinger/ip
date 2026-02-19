@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import tomato.TomatoException;
 import tomato.data.TaskList;
 import tomato.storage.Storage;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 /**
  * Represents a command that updates one or more fields of an existing task.
@@ -19,7 +19,7 @@ public class UpdateCommand extends Command {
     /**
      * Represents updatable task fields.
      */
-    public static enum Argument {
+    public static enum UpdateField {
         DESCRIPTION,
         BY,
         FROM,
@@ -27,22 +27,22 @@ public class UpdateCommand extends Command {
         TIME
     }
 
-    private Argument argToUpdate ;
+    private UpdateField updateField;
     private String taskDescription;
     private LocalDateTime datetime;
-    private LocalDateTime from;
-    private LocalDateTime to;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 
 
     /**
      * Creates an update command for task description.
      *
-     * @param argToUpdate Field to update.
+     * @param updateField Field to update.
      * @param taskNum Index of the task to update.
      * @param taskDescription New description value.
      */
-    public UpdateCommand(Argument argToUpdate, int taskNum, String taskDescription) {
-        this.argToUpdate = argToUpdate;
+    public UpdateCommand(UpdateField updateField, int taskNum, String taskDescription) {
+        this.updateField = updateField;
         this.taskNum = taskNum;
         this.taskDescription = taskDescription;
     }
@@ -50,12 +50,12 @@ public class UpdateCommand extends Command {
     /**
      * Creates an update command for a single date-time field.
      *
-     * @param argToUpdate Field to update.
+     * @param updateField Field to update.
      * @param taskNum Index of the task to update.
      * @param datetime New date-time value.
      */
-    public UpdateCommand(Argument argToUpdate, int taskNum, LocalDateTime datetime) {
-        this.argToUpdate = argToUpdate;
+    public UpdateCommand(UpdateField updateField, int taskNum, LocalDateTime datetime) {
+        this.updateField = updateField;
         this.taskNum = taskNum;
         this.datetime = datetime;
     }
@@ -63,16 +63,16 @@ public class UpdateCommand extends Command {
     /**
      * Creates an update command for an event time range.
      *
-     * @param argToUpdate Field to update.
+     * @param updateField Field to update.
      * @param taskNum Index of the task to update.
-     * @param from New start date-time.
-     * @param to New end date-time.
+     * @param startDateTime New start date-time.
+     * @param endDateTime New end date-time.
      */
-    public UpdateCommand(Argument argToUpdate, int taskNum, LocalDateTime from, LocalDateTime to) {
-        this.argToUpdate = argToUpdate;
+    public UpdateCommand(UpdateField updateField, int taskNum, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        this.updateField = updateField;
         this.taskNum = taskNum;
-        this.from = from;
-        this.to = to;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
     }
 
     /**
@@ -81,7 +81,7 @@ public class UpdateCommand extends Command {
      * @return Concrete update command.
      */
     private Command handleArgumentToUpdate() {
-        switch (argToUpdate) {
+        switch (updateField) {
         case DESCRIPTION:
             return new UpdateDescriptionCommand(taskNum, taskDescription);
         case BY:
@@ -91,14 +91,14 @@ public class UpdateCommand extends Command {
         case TO:
             return new UpdateEventToCommand(taskNum, datetime);
         case TIME:
-            return new UpdateEventTimeCommand(taskNum, from, to);
+            return new UpdateEventTimeCommand(taskNum, startDateTime, endDateTime);
         }
         assert false : "code should not reach here";
         return null;
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws TomatoException {
+    public void execute(TaskList tasks, UserInterface ui, Storage storage) throws TomatoException {
         Command cmd = handleArgumentToUpdate();
         cmd.execute(tasks, ui, storage);
     }

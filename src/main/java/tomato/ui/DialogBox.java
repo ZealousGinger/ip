@@ -91,10 +91,10 @@ public class DialogBox extends HBox {
      * @return Error dialog box.
      */
     public static DialogBox getErrorDialog(String text, Image img) {
-        var db = new DialogBox(text, img);
-        db.flip();
-        db.setError();
-        return db;
+        DialogBox dialogBox = new DialogBox(text, img);
+        dialogBox.flip();
+        dialogBox.setError();
+        return dialogBox;
     }
 
     /**
@@ -106,11 +106,11 @@ public class DialogBox extends HBox {
      * @return Error dialog box with highlight.
      */
     public static DialogBox getErrorHighlightedDialog(String text, String errorWord, Image img) {
-        var db = new DialogBox(text, img);
-        db.flip();
-        db.setError();
-        db.highlightErrorWord(text, errorWord);
-        return db;
+        DialogBox dialogBox = new DialogBox(text, img);
+        dialogBox.flip();
+        dialogBox.setError();
+        dialogBox.highlightErrorWord(text, errorWord);
+        return dialogBox;
     }
 
     /**
@@ -132,8 +132,8 @@ public class DialogBox extends HBox {
      * @return Tomato dialog box.
      */
     public static DialogBox getTomatoDialog(String text, Image img) {
-        var db = new DialogBox(text, img);
-        db.flip();
-        return db;
+        DialogBox dialogBox = new DialogBox(text, img);
+        dialogBox.flip();
+        return dialogBox;
     }
 }

@@ -10,3 +10,4 @@
 9. Used gpt-5.3-codex to check and fix for variable scope initialization, declaration of class variables.
 10. Used gpt-5.3-codex to add missing Javadoc comments as well as improve the quality of existing comments.
 11. Used gpt-5.3-codex to check and fix advanced java coding standard rules.
+12. Used gpt-5.3-codex to check and improve code naming based on code quality naming standards.

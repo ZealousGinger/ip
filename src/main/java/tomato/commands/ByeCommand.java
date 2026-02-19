@@ -2,7 +2,7 @@ package tomato.commands;
 
 import tomato.data.TaskList;
 import tomato.storage.Storage;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 /**
  * Represents a command that exits Tomato.
@@ -17,7 +17,7 @@ public class ByeCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public void execute(TaskList tasks, UserInterface ui, Storage storage) {
         ui.exit();
     }
 

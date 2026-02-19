@@ -23,7 +23,7 @@ public class MainWindow extends AnchorPane {
     private Button sendButton;
 
     private Tomato tomato;
-    private Ui ui;
+    private UserInterface ui;
 
     /**
      * Initializes the scroll pane bindings after FXML injection.
@@ -40,7 +40,7 @@ public class MainWindow extends AnchorPane {
      */
     public void setTomatoGui(Tomato t) {
         tomato = t;
-        ui = new Ui(dialogContainer, userInput);
+        ui = new UserInterface(dialogContainer, userInput);
         t.setGui(ui);
     }
 

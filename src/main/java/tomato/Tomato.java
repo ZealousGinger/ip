@@ -7,13 +7,13 @@ import tomato.commands.Command;
 import tomato.data.TaskList;
 import tomato.parser.Parser;
 import tomato.storage.Storage;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 /**
  * Represents the Tomato chatbot application.
  */
 public class Tomato {
-    private Ui ui;
+    private UserInterface ui;
     private Parser parser;
     private Storage storage;
     private TaskList tasks;
@@ -24,7 +24,7 @@ public class Tomato {
      * @param filePath file path location (e.g. "data/TaskList.txt" ) to save tasks into.
      */
     public Tomato(String filePath) {
-        ui = new Ui();
+        ui = new UserInterface();
         storage = new Storage(filePath);
         tasks = loadTaskList(storage);
         parser = new Parser();
@@ -33,17 +33,17 @@ public class Tomato {
     /**
      * Returns a loaded task list, or a new empty list when loading fails.
      *
-     * @param s Storage object to load the file from.
+     * @param storageAdapter Storage object to load the file from.
      * @return TaskList object.
      */
-    public TaskList loadTaskList(Storage s) {
-        TaskList t;
+    public TaskList loadTaskList(Storage storageAdapter) {
+        TaskList loadedTasks;
         try {
-            t = new TaskList(s.load());
+            loadedTasks = new TaskList(storageAdapter.load());
         } catch (FileNotFoundException | TomatoException exception) {
-            t = new TaskList();
+            loadedTasks = new TaskList();
         }
-        return t;
+        return loadedTasks;
     }
 
     /**
@@ -51,7 +51,7 @@ public class Tomato {
      *
      * @param gui UI adapter instance.
      */
-    public void setGui(Ui gui) {
+    public void setGui(UserInterface gui) {
         ui = gui;
         ui.showStartDialog();
     }
@@ -70,11 +70,11 @@ public class Tomato {
      * Runs the text UI input loop for the chatbot.
      */
     public void run() {
-        Scanner sc = new Scanner(System.in);
+        Scanner consoleScanner = new Scanner(System.in);
         String input;
 
         while (true) {
-            input = sc.nextLine();
+            input = consoleScanner.nextLine();
             try {
                 Command cmd = parser.parse(input);
 

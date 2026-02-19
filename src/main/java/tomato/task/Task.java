@@ -60,12 +60,12 @@ public class Task {
     /**
      * Sets the task description.
      *
-     * @param s New task description.
+     * @param description New task description.
      */
-    public void setDescription(String s) {
+    public void setDescription(String description) {
         assert description != null : "Description should not be null";
         assert !description.isBlank() : "Description should not be blank";
-        description = s;
+        this.description = description;
     }
 
     @Override

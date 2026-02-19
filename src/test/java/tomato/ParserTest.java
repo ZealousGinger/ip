@@ -9,7 +9,7 @@ import tomato.data.TaskList;
 import tomato.parser.Parser;
 import tomato.storage.Storage;
 import tomato.task.Task;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -115,7 +115,7 @@ public class ParserTest {
     public void parse_invalidInputCommand_exceptionThrown() {
         Storage storage = new StorageStub("test");
         TaskList tasks = new TaskList();
-        Ui ui = new Ui();
+        UserInterface ui = new UserInterface();
         Parser parser = new Parser();
 
         assertThrowsExactly(TomatoException.class, () -> {

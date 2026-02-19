@@ -13,7 +13,7 @@ import tomato.TomatoException;
 /**
  * Handles UI rendering and dialog display for Tomato.
  */
-public class Ui {
+public class UserInterface {
     @FXML
     private VBox dialogContainer;
     @FXML
@@ -35,7 +35,7 @@ public class Ui {
     /**
      * Creates a UI instance without JavaFX bindings.
      */
-    public Ui() {
+    public UserInterface() {
     }
 
     /**
@@ -44,7 +44,7 @@ public class Ui {
      * @param dialogContainer Container for dialog nodes.
      * @param userInput User input text field.
      */
-    public Ui(VBox dialogContainer, TextField userInput) {
+    public UserInterface(VBox dialogContainer, TextField userInput) {
         this.dialogContainer = dialogContainer;
         this.userInput = userInput;
     }
@@ -70,46 +70,46 @@ public class Ui {
     /**
      * Shows the user's message in the dialog container.
      *
-     * @param s User input text.
+     * @param userMessage User input text.
      */
-    public void showUserDialog(String s) {
-        dialogContainer.getChildren().addAll(DialogBox.getUserDialog(s, happyUserImage));
+    public void showUserDialog(String userMessage) {
+        dialogContainer.getChildren().addAll(DialogBox.getUserDialog(userMessage, happyUserImage));
         clearInputField();
     }
 
     /**
      * Shows an error dialog for the provided exception.
      *
-     * @param e Exception to display.
+     * @param exception Exception to display.
      */
-    public void showErrorDialog(Exception e) {
-        if (e instanceof TomatoException && ((TomatoException) e).getErrorWord() != null) {
-            showErrorHighlightedDialog(e);
+    public void showErrorDialog(Exception exception) {
+        if (exception instanceof TomatoException && ((TomatoException) exception).getErrorWord() != null) {
+            showErrorHighlightedDialog(exception);
         } else {
             dialogContainer.getChildren().addAll(
-                    DialogBox.getErrorDialog("ERROR!\n" + e.getMessage(), sadTomatoImage));
+                    DialogBox.getErrorDialog("ERROR!\n" + exception.getMessage(), sadTomatoImage));
         }
     }
 
     /**
      * Shows an error dialog with highlighted error text.
      *
-     * @param e Exception containing the highlight token.
+     * @param exception Exception containing the highlight token.
      */
-    public void showErrorHighlightedDialog(Exception e) {
-        TomatoException te = ((TomatoException) e);
+    public void showErrorHighlightedDialog(Exception exception) {
+        TomatoException tomatoException = ((TomatoException) exception);
         dialogContainer.getChildren().addAll(
-                DialogBox.getErrorHighlightedDialog("ERROR!\n" + e.getMessage(), te.getErrorWord(),
+                DialogBox.getErrorHighlightedDialog("ERROR!\n" + exception.getMessage(), tomatoException.getErrorWord(),
                         sadTomatoImage));
     }
 
     /**
      * Shows a Tomato response dialog.
      *
-     * @param s Tomato response text.
+     * @param tomatoResponse Tomato response text.
      */
-    public void showTomatoDialog(String s) {
-        dialogContainer.getChildren().addAll(DialogBox.getTomatoDialog(s, tomatoImage));
+    public void showTomatoDialog(String tomatoResponse) {
+        dialogContainer.getChildren().addAll(DialogBox.getTomatoDialog(tomatoResponse, tomatoImage));
     }
 
     /**
@@ -124,7 +124,7 @@ public class Ui {
      */
     public void showExitDialog() {
         dialogContainer.getChildren().addAll(
-                DialogBox.getTomatoDialog(Ui.getExitMessage(), tomatoImage)
+                DialogBox.getTomatoDialog(UserInterface.getExitMessage(), tomatoImage)
         );
     }
 

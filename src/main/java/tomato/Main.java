@@ -21,8 +21,8 @@ public class Main extends Application {
     public void start(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
-            AnchorPane ap = fxmlLoader.load();
-            Scene scene = new Scene(ap);
+            AnchorPane mainWindowPane = fxmlLoader.load();
+            Scene scene = new Scene(mainWindowPane);
             stage.setScene(scene);
             stage.setMinHeight(220);
             stage.setMinWidth(417);

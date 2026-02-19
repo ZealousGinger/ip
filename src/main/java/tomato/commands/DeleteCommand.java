@@ -3,7 +3,7 @@ package tomato.commands;
 import tomato.TomatoException;
 import tomato.data.TaskList;
 import tomato.storage.Storage;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 /**
  * Represents a command that deletes a task.
@@ -23,7 +23,7 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws TomatoException {
+    public void execute(TaskList tasks, UserInterface ui, Storage storage) throws TomatoException {
         String res = tasks.deleteTask(taskNum);
         storage.saveToDisk(tasks.getTaskList());
         ui.showTomatoDialog(res);

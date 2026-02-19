@@ -7,7 +7,7 @@ import tomato.TomatoException;
 import tomato.data.TaskList;
 import tomato.storage.Storage;
 import tomato.task.Task;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 /**
  * Represents a command that creates an event task.
@@ -35,7 +35,7 @@ public class EventCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws TomatoException {
+    public void execute(TaskList tasks, UserInterface ui, Storage storage) throws TomatoException {
         String res = tasks.createEvent(taskName, from, to);
         ArrayList<Task> updatedTaskList = tasks.getTaskList();
         assert !updatedTaskList.isEmpty() : "Updated Task List should be not be empty";

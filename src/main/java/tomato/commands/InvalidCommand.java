@@ -3,7 +3,7 @@ package tomato.commands;
 import tomato.TomatoException;
 import tomato.data.TaskList;
 import tomato.storage.Storage;
-import tomato.ui.Ui;
+import tomato.ui.UserInterface;
 
 /**
  * Represents a command that reports invalid user input.
@@ -26,7 +26,7 @@ public class InvalidCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws TomatoException {
+    public void execute(TaskList tasks, UserInterface ui, Storage storage) throws TomatoException {
         throw new TomatoException(ERROR_MESSAGE + invalidCmd + LIST_COMMANDS_MESSAGE, invalidCmd);
     }
 }

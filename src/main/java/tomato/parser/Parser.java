@@ -101,32 +101,32 @@ public class Parser {
     /**
      * Returns arguments split by the given keyword pattern.
      *
-     * @param arg input string.
+     * @param inputArgs input string.
      * @param keyword regex to split arguments.
      * @return array of string.
      */
-    public String[] parseArgs(String arg, String keyword) {
-        return arg.split(keyword + REGEX_DEFAULT);
+    public String[] parseArgs(String inputArgs, String keyword) {
+        return inputArgs.split(keyword + REGEX_DEFAULT);
     }
 
     /**
      * Returns deadline arguments split by `/by`.
      *
-     * @param arg Raw deadline argument string.
+     * @param deadlineArgs Raw deadline argument string.
      * @return Split argument array.
      */
-    private String[] parseSlashDeadline(String arg) {
-        return arg.split(REGEX_DEADLINE);
+    private String[] parseSlashDeadline(String deadlineArgs) {
+        return deadlineArgs.split(REGEX_DEADLINE);
     }
 
     /**
      * Returns event arguments split by `/from` and `/to`.
      *
-     * @param arg Raw event argument string.
+     * @param eventArgs Raw event argument string.
      * @return Split argument array.
      */
-    private String[] parseSlashEvent(String arg) {
-        return arg.split(REGEX_EVENT);
+    private String[] parseSlashEvent(String eventArgs) {
+        return eventArgs.split(REGEX_EVENT);
     }
 
     /**
@@ -160,39 +160,39 @@ public class Parser {
     /**
      * Returns a parsed date-time from the given input string.
      *
-     * @param arg String input.
+     * @param dateString String input.
      * @return LocalDateTime parsed object.
      * @throws TomatoException If unable to parse input.
      */
-    public LocalDateTime parseDate(String arg) throws TomatoException {
+    public LocalDateTime parseDate(String dateString) throws TomatoException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-        String trimmedArg = arg.trim();
+        String trimmedDateString = dateString.trim();
 
         try {
-            return LocalDateTime.parse(trimmedArg, formatter);
+            return LocalDateTime.parse(trimmedDateString, formatter);
         } catch (DateTimeException exception) {
             // move on and try the second parser
         }
 
         try {
-            return LocalDateTime.parse(trimmedArg);
+            return LocalDateTime.parse(trimmedDateString);
         } catch (DateTimeException exception) {
-            throw new TomatoException("Unable to parse date: " + arg + "\n" +
+            throw new TomatoException("Unable to parse date: " + dateString + "\n" +
                     "Please give the datetime in the following format: " +
-                    "DD-MM-YYYY HHMM (e.g. 2/10/2025 1900)", arg);
+                    "DD-MM-YYYY HHMM (e.g. 2/10/2025 1900)", dateString);
         }
     }
 
     /**
      * Returns a zero-based task index parsed from the given task number input.
      *
-     * @param arg Input task number string.
+     * @param taskNumber Input task number string.
      * @return Zero-based task index.
      * @throws TomatoException If the input is not a valid task number.
      */
-    private int parseTaskNo(String arg) throws TomatoException {
+    private int parseTaskNo(String taskNumber) throws TomatoException {
         try {
-            return Integer.parseInt(arg) - 1;
+            return Integer.parseInt(taskNumber) - 1;
         } catch (Exception exception) {
             throw new TomatoException("You must provide a task number!");
         }
@@ -235,9 +235,9 @@ public class Parser {
     private Command handleCreateEvent(String[] args) throws TomatoException {
         String[] eventArgs = parseEvent(args);
         String description = eventArgs[0];
-        LocalDateTime from = parseDate(eventArgs[1]);
-        LocalDateTime to = parseDate(eventArgs[2]);
-        return new EventCommand(description, from, to);
+        LocalDateTime startDateTime = parseDate(eventArgs[1]);
+        LocalDateTime endDateTime = parseDate(eventArgs[2]);
+        return new EventCommand(description, startDateTime, endDateTime);
     }
 
     /**
@@ -295,17 +295,17 @@ public class Parser {
     /**
      * Returns the update argument enum parsed from the given input token.
      *
-     * @param arg Update argument token.
+     * @param updateFieldToken Update argument token.
      * @return Parsed update argument enum.
      */
-    private UpdateCommand.Argument parseUpdateArgument(String arg) {
-        UpdateCommand.Argument enumArg;
+    private UpdateCommand.UpdateField parseUpdateArgument(String updateFieldToken) {
+        UpdateCommand.UpdateField updateField;
         try {
-            enumArg = UpdateCommand.Argument.valueOf(arg.toUpperCase());
+            updateField = UpdateCommand.UpdateField.valueOf(updateFieldToken.toUpperCase());
         } catch (IllegalArgumentException exception) {
             throw new RuntimeException(exception);
         }
-        return enumArg;
+        return updateField;
     }
 
     private int parseUpdateTaskNum(String[] args) throws TomatoException {
@@ -326,33 +326,33 @@ public class Parser {
         String[] timeArgs = updateArgs[2].split(" ", 2);
         checkArgLength(timeArgs, 2, UpdateCommand.MESSAGE_USAGE);
         String[] argAndValues = parseUpdateArgValues(args);
-        String from = argAndValues[1];
-        String to = timeArgs[1];
-        return new String[]{from, to};
+        String startDateTime = argAndValues[1];
+        String endDateTime = timeArgs[1];
+        return new String[]{startDateTime, endDateTime};
     }
     private Command handleUpdateTask(String[] args) throws TomatoException {
         int taskNum = parseUpdateTaskNum(args);
         String[] argAndValues = parseUpdateArgValues(args);
-        UpdateCommand.Argument arg = parseUpdateArgument(argAndValues[0]);
+        UpdateCommand.UpdateField updateField = parseUpdateArgument(argAndValues[0]);
 
-        switch (arg) {
+        switch (updateField) {
             case DESCRIPTION:
                 checkArgLength(argAndValues, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.DESCRIPTION, taskNum, argAndValues[1]);
+                return new UpdateCommand(UpdateCommand.UpdateField.DESCRIPTION, taskNum, argAndValues[1]);
             case BY:
                 checkArgLength(argAndValues, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.BY, taskNum, parseDate(argAndValues[1]));
+                return new UpdateCommand(UpdateCommand.UpdateField.BY, taskNum, parseDate(argAndValues[1]));
             case FROM:
                 checkArgLength(argAndValues, 2, UpdateEventFromCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.FROM, taskNum, parseDate(argAndValues[1]));
+                return new UpdateCommand(UpdateCommand.UpdateField.FROM, taskNum, parseDate(argAndValues[1]));
             case TO:
                 checkArgLength(argAndValues, 2, UpdateEventToCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.TO, taskNum, parseDate(argAndValues[1]));
+                return new UpdateCommand(UpdateCommand.UpdateField.TO, taskNum, parseDate(argAndValues[1]));
             case TIME:
-                String[] fromToValues = parseUpdateTime(args);
-                checkArgLength(fromToValues, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.TIME, taskNum,
-                        parseDate(fromToValues[0]), parseDate(fromToValues[1]));
+                String[] timeRangeValues = parseUpdateTime(args);
+                checkArgLength(timeRangeValues, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.UpdateField.TIME, taskNum,
+                        parseDate(timeRangeValues[0]), parseDate(timeRangeValues[1]));
             default:
                 throw new TomatoException(UpdateCommand.MESSAGE_USAGE);
         }
@@ -400,9 +400,9 @@ public class Parser {
     private Task decodeEvent(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_FROM_TO);
         checkArgLength(splitArgs, 3, EventCommand.MESSAGE_USAGE);
-        LocalDateTime from = parseDate(splitArgs[3]);
-        LocalDateTime to = parseDate(splitArgs[4]);
-        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1), from, to);
+        LocalDateTime startDateTime = parseDate(splitArgs[3]);
+        LocalDateTime endDateTime = parseDate(splitArgs[4]);
+        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1), startDateTime, endDateTime);
     }
 
     /**
