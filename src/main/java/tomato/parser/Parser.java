@@ -31,6 +31,12 @@ import tomato.task.Todo;
  * Parses user input and constructs command objects.
  */
 public class Parser {
+    private static final int COMMAND_SPLIT_LIMIT = 2;
+    private static final int TASK_STATUS_DONE_FLAG = 1;
+    private static final int TASK_NUMBER_OFFSET = 1;
+    private static final int TASK_FIELD_COUNT = 2;
+    private static final int UPDATE_TIME_FIELD_COUNT = 3;
+
     private static final String REGEX_EMPTY = "";
     private static final String REGEX_DEFAULT = "\\|";
     private static final String REGEX_BY = "/by|";
@@ -54,7 +60,7 @@ public class Parser {
      * @throws TomatoException If parsing fails due to invalid arguments.
      */
     public Command parse(String input) throws TomatoException {
-        String[] args = input.split(" ", 2);
+        String[] args = input.split(" ", COMMAND_SPLIT_LIMIT);
         String stringCommand = args[0].toLowerCase();
 
         switch (stringCommand) {
@@ -192,7 +198,7 @@ public class Parser {
      */
     private int parseTaskNo(String taskNumber) throws TomatoException {
         try {
-            return Integer.parseInt(taskNumber) - 1;
+            return Integer.parseInt(taskNumber) - TASK_NUMBER_OFFSET;
         } catch (Exception exception) {
             throw new TomatoException("You must provide a task number!");
         }
@@ -309,22 +315,22 @@ public class Parser {
     }
 
     private int parseUpdateTaskNum(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateCommand.MESSAGE_USAGE);
+        checkArgLength(args, TASK_FIELD_COUNT, UpdateCommand.MESSAGE_USAGE);
         String[] updateArgs = args[1].split(" /");
         return parseTaskNo(updateArgs[0]);
     }
 
     private String[] parseUpdateArgValues(String[] args) throws TomatoException {
         String[] updateArgs = args[1].split(" /");
-        return updateArgs[1].split(" ", 2);
+        return updateArgs[1].split(" ", COMMAND_SPLIT_LIMIT);
     }
 
     private String[] parseUpdateTime(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateCommand.MESSAGE_USAGE);
+        checkArgLength(args, TASK_FIELD_COUNT, UpdateCommand.MESSAGE_USAGE);
         String[] updateArgs = args[1].split(" /");
-        checkArgLength(updateArgs, 3, UpdateCommand.MESSAGE_USAGE);
-        String[] timeArgs = updateArgs[2].split(" ", 2);
-        checkArgLength(timeArgs, 2, UpdateCommand.MESSAGE_USAGE);
+        checkArgLength(updateArgs, UPDATE_TIME_FIELD_COUNT, UpdateCommand.MESSAGE_USAGE);
+        String[] timeArgs = updateArgs[2].split(" ", COMMAND_SPLIT_LIMIT);
+        checkArgLength(timeArgs, TASK_FIELD_COUNT, UpdateCommand.MESSAGE_USAGE);
         String[] argAndValues = parseUpdateArgValues(args);
         String startDateTime = argAndValues[1];
         String endDateTime = timeArgs[1];
@@ -372,8 +378,8 @@ public class Parser {
      */
     private Task decodeTodo(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_EMPTY);
-        checkArgLength(splitArgs, 3, TodoCommand.MESSAGE_USAGE);
-        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1));
+        checkArgLength(splitArgs, UPDATE_TIME_FIELD_COUNT, TodoCommand.MESSAGE_USAGE);
+        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1]) == TASK_STATUS_DONE_FLAG));
     }
 
     /**
@@ -385,9 +391,9 @@ public class Parser {
      */
     private Task decodeDeadline(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_BY);
-        checkArgLength(splitArgs, 2, DeadlineCommand.MESSAGE_USAGE);
+        checkArgLength(splitArgs, TASK_FIELD_COUNT, DeadlineCommand.MESSAGE_USAGE);
         LocalDateTime dateTime = parseDate(splitArgs[3]);
-        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1), dateTime);
+        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1]) == TASK_STATUS_DONE_FLAG), dateTime);
     }
 
     /**
@@ -399,10 +405,11 @@ public class Parser {
      */
     private Task decodeEvent(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_FROM_TO);
-        checkArgLength(splitArgs, 3, EventCommand.MESSAGE_USAGE);
+        checkArgLength(splitArgs, UPDATE_TIME_FIELD_COUNT, EventCommand.MESSAGE_USAGE);
         LocalDateTime startDateTime = parseDate(splitArgs[3]);
         LocalDateTime endDateTime = parseDate(splitArgs[4]);
-        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1), startDateTime, endDateTime);
+        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1]) == TASK_STATUS_DONE_FLAG),
+                startDateTime, endDateTime);
     }
 
     /**

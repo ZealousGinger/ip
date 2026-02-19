@@ -14,6 +14,8 @@ import tomato.ui.MainWindow;
  * Starts the JavaFX GUI for Tomato.
  */
 public class Main extends Application {
+    private static final int MIN_WINDOW_HEIGHT = 220;
+    private static final int MIN_WINDOW_WIDTH = 417;
 
     private final Tomato tomato = new Tomato("data/TaskList.txt");
 
@@ -24,8 +26,8 @@ public class Main extends Application {
             AnchorPane mainWindowPane = fxmlLoader.load();
             Scene scene = new Scene(mainWindowPane);
             stage.setScene(scene);
-            stage.setMinHeight(220);
-            stage.setMinWidth(417);
+            stage.setMinHeight(MIN_WINDOW_HEIGHT);
+            stage.setMinWidth(MIN_WINDOW_WIDTH);
             fxmlLoader.<MainWindow>getController().setTomatoGui(tomato);
             stage.show();
         } catch (IOException exception) {

@@ -14,6 +14,8 @@ import tomato.TomatoException;
  * Handles UI rendering and dialog display for Tomato.
  */
 public class UserInterface {
+    private static final double EXIT_DELAY_SECONDS = 0.5;
+
     @FXML
     private VBox dialogContainer;
     @FXML
@@ -136,7 +138,7 @@ public class UserInterface {
      * Closes the JavaFX application after a short delay.
      */
     private void exitGui() {
-        PauseTransition pause = new PauseTransition(Duration.seconds(.5));
+        PauseTransition pause = new PauseTransition(Duration.seconds(EXIT_DELAY_SECONDS));
         pause.setOnFinished(event -> Platform.exit());
         pause.play();
     }
