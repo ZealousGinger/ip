@@ -1,29 +1,33 @@
-# Tomato project template
+# Tomato
 
-This is a project template for a greenfield Java project. It's named after the Java mascot _Tomato_. Given below are instructions on how to use it.
+Tomato is a task tracking chatbot gui app that helps people manage their tasks. It is optimized for cli usage with a gui display. Given below are instructions on how to use it.
 
-## Setting up in Intellij
+## Quick start
+1. Ensure java `17` is installed.
+2. Download the latest `.jar` file from [here](https://github.com/ZealousGinger/ip/releases).
+3. Copy the file to an empty folder.
+4. Open a terminal, go to the folder, and run `java -jar tomato.jar` to run the app.
+1. `todo work on Tomato readme`: Add a todo task.
+2. `deadline submit cs2103t ip /by 20/2/2026 1600`: Add a deadline task.
+3. `event cs2103t weekly briefing /from 20/2/2026 1600 /to 20/2/2026 1700`: Add an event task.
+4. `mark 1`: Marks task as done.
+5. `find cs2103t`: Finds tasks that matches tasks description with given keyword.
+6. `delete 2`: Deletes tasks.
+7. `list`: Lists all tasks.
+7. `bye`: Exits the app.
+8. `java -jar tomato.jar`: relaunch the app
+9. `list`
+10. `update 2 /to 20/2/2026 1800`: Updates the tasks end datetime.
+11. `unmark 1`: Unmarks task as not done.
+12. `list`
 
-Prerequisites: JDK 17, update Intellij to the most recent version.
-
-1. Open Intellij (if you are not in the welcome screen, click `File` > `Close Project` to close the existing project first)
-1. Open the project into Intellij as follows:
-   1. Click `Open`.
-   1. Select the project directory, and click `OK`.
-   1. If there are any further prompts, accept the defaults.
-1. Configure the project to use **JDK 17** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
-   In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/Tomato.java` file, right-click it, and choose `Run tomato.Tomato.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
-   ```
-   Hello from
-    ____        _        
-   |  _ \ _   _| | _____ 
-   | | | | | | | |/ / _ \
-   | |_| | |_| |   <  __/
-   |____/ \__,_|_|\_\___|
-   ```
-
-**Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
 
 ### References
-- all images from https://unsplash.com/
+- all images from [unsplash](https://unsplash.com/) and [pixabay](https://pixabay.com), specific image reference links are commented before their respective usages.
+- usage of AI to help assist and generate Command class template and gui components and its logic. As well as add, check, fix, and improve code quality, documentation, and standards. See [AI.md](AI.md) for usage details.
+  - Claude (write a few methods/classes)
+    - used for generating Command class template.
+    - generating new gui components such as ErrorDialogBox and its logic.
+  - gpt-5.3-codex (refactor and improve/add on existing codebase)
+    - used for improving code quality and java coding standards according to course given requirements.
+    - used to add on and improve existing Javadoc and comments documentation.
