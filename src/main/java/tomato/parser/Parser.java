@@ -56,45 +56,31 @@ public class Parser {
     public Command parse(String input) throws TomatoException {
         String[] args = input.split(" ", 2);
         String stringCommand = args[0].toLowerCase();
-        Command cmd = null;
 
         switch (stringCommand) {
         case ByeCommand.COMMAND_WORD:
-            cmd = new ByeCommand();
-            break;
+            return new ByeCommand();
         case ListCommand.COMMAND_WORD:
-            cmd = new ListCommand();
-            break;
+            return new ListCommand();
         case FindCommand.COMMAND_WORD:
-            cmd = handleFindTasks(args);
-            break;
+            return handleFindTasks(args);
         case MarkCommand.COMMAND_WORD:
-            cmd = handleMarkTask(args);
-            break;
+            return handleMarkTask(args);
         case UnmarkCommand.COMMAND_WORD:
-            cmd = handleUnmarkTask(args);
-            break;
+            return handleUnmarkTask(args);
         case TodoCommand.COMMAND_WORD:
-            cmd = handleCreateTodo(args);
-            break;
+            return handleCreateTodo(args);
         case DeadlineCommand.COMMAND_WORD:
-            cmd = handleCreateDeadline(args);
-            break;
+            return handleCreateDeadline(args);
         case EventCommand.COMMAND_WORD:
-            cmd = handleCreateEvent(args);
-            break;
+            return handleCreateEvent(args);
         case DeleteCommand.COMMAND_WORD:
-            cmd = handleDeleteTask(args);
-            break;
+            return handleDeleteTask(args);
         case UpdateCommand.COMMAND_WORD:
-            cmd = handleUpdateTask(args);
-            break;
+            return handleUpdateTask(args);
         default:
-            cmd = handleInvalidCommand(args);
-            break;
+            return handleInvalidCommand(args);
         }
-
-        return cmd;
     }
 
     /**

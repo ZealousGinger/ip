@@ -7,8 +7,6 @@ import tomato.ui.Ui;
 
 // Class below is AI generated simple abstract template of the Command class
 public abstract class Command {
-    public static String COMMAND_WORD;
-    public static String MESSAGE_USAGE;
     /**
      * Executes the command with the given task list, UI, and storage.
      *

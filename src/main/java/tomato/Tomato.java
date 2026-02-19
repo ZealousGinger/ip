@@ -67,12 +67,11 @@ public class Tomato {
     public void run() {
         Scanner sc = new Scanner(System.in);
         String input;
-        Command cmd = null;
 
         while (true) {
             input = sc.nextLine();
             try {
-                cmd = parser.parse(input);
+                Command cmd = parser.parse(input);
 
                 if (cmd.isExit()) {
                     break;
