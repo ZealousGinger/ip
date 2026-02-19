@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class UpdateEventTimeCommand extends Command {
     public static final String COMMAND_WORD = "update_event_time";
+    public static final String MESSAGE_USAGE = "update_event_time {task number}|" +
+            "{DD/MM/YYYY HHMM}|{DD/MM/YYYY HHMM}\n" +
+            "e.g.(update_event_from 2|3/3/2024 1900|3/3/2024 2000)";
     private final int taskNum;
     private final LocalDateTime from;
     private final LocalDateTime to;

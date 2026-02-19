@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class UnmarkCommand extends Command {
     public static final String COMMAND_WORD = "unmark";
+    public static final String MESSAGE_USAGE = "unmark {task number} e.g.(unmark 1, unmark 3)";
     private final int taskNum;
 
     public UnmarkCommand(int taskNum) {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class TodoCommand extends Command {
     public static final String COMMAND_WORD = "todo";
+    public static final String MESSAGE_USAGE = "todo {task_description} e.g.(todo read books, todo shopping)";
     private final String taskName;
 
     public TodoCommand(String taskName) {

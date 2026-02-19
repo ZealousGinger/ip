@@ -7,6 +7,7 @@ import ui.Ui;
 
 public class FindCommand extends Command {
     public static final String COMMAND_WORD = "find";
+    public static final String MESSAGE_USAGE = "find {keyword} e.g.(find book, find meeting)";
     private final String keyword;
 
     public FindCommand(String keyword) {

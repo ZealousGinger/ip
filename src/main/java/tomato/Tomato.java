@@ -96,7 +96,7 @@ public class Tomato {
             try {
                 cmd = parser.parse(input);
                 cmd.execute(tasks, ui, storage);
-            } catch (TomatoException e) {
+            } catch (Exception e) {
                 ui.showErrorDialog(e);
             }
     }

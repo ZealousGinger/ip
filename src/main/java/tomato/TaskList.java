@@ -127,7 +127,7 @@ public class TaskList {
      */
     public String updateEventTo(int idx, LocalDateTime to) throws TomatoException {
         Event e = (Event) getTask(idx);
-        e.setDateTimeFrom(to);
+        e.setDateTimeTo(to);
         return "OK! I've updated your event to datetime !" + e;
     }
 

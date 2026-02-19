@@ -96,16 +96,13 @@ public class Parser {
      * Checks argument length to determine if sufficient arguments are given.
      * @param args String array of arguments.
      * @param len length required by the command.
-     * @param commandName string name of the command.
+     * @param cmdUsage string name of the command.
      * @throws TomatoException if insufficient arguments are given.
      */
-    public void checkArgLength(String[] args, int len, String commandName) throws TomatoException {
-        if (args.length < len && commandName.toLowerCase().contains("update")) {
-            throw new TomatoException(commandName + " arguments is required! Please provide it.\n" +
-                    "Separate arguments by '|' e.g. 'update_description 1|buy book'\n" +
-                    "e.g. update_deadline 2|3/3/2024 1900");
-        } else if (args.length < len) {
-            throw new TomatoException(commandName + " arguments is required! Please provide it.");
+    public void checkArgLength(String[] args, int len, String cmdUsage) throws TomatoException {
+        if (args.length < len) {
+            throw new TomatoException("Incorrect number of arguments provided! " +
+                    "Please give the correct arguments.\n" + cmdUsage);
         }
     }
 
@@ -131,17 +128,17 @@ public class Parser {
 
     /** Checks and parses deadline arguments */
     private String[] parseDeadline(String[] args) throws TomatoException {
-        checkArgLength(args, 2, DeadlineCommand.COMMAND_WORD);
+        checkArgLength(args, 2, DeadlineCommand.MESSAGE_USAGE);
         String[] arr = parseSlashDeadline(args[1]);
-        checkArgLength(arr, 2, DeadlineCommand.COMMAND_WORD);
+        checkArgLength(arr, 2, DeadlineCommand.MESSAGE_USAGE);
         return arr;
     }
 
     /** Checks and parses event arguments */
     private String[] parseEvent(String[] args) throws TomatoException {
-        checkArgLength(args, 2, EventCommand.COMMAND_WORD);
+        checkArgLength(args, 2, EventCommand.MESSAGE_USAGE);
         String[] arr = parseSlashEvent(args[1]);
-        checkArgLength(arr, 3, EventCommand.COMMAND_WORD);
+        checkArgLength(arr, 3, EventCommand.MESSAGE_USAGE);
         return arr;
     }
 
@@ -185,7 +182,7 @@ public class Parser {
      * @throws TomatoException if arguments are insufficient or invalid.
      */
     private Command handleCreateTodo(String[] args) throws TomatoException {
-        checkArgLength(args, 2, TodoCommand.COMMAND_WORD);
+        checkArgLength(args, 2, TodoCommand.MESSAGE_USAGE);
         String description = args[1];
         return new TodoCommand(description);
     }
@@ -221,7 +218,7 @@ public class Parser {
      * @throws TomatoException if task number is not provided or invalid.
      */
     private Command handleDeleteTask(String[] args) throws TomatoException {
-        checkArgLength(args, 2, DeleteCommand.COMMAND_WORD);
+        checkArgLength(args, 2, DeleteCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(args[1]);
         return new DeleteCommand(taskNum);
     }
@@ -232,7 +229,7 @@ public class Parser {
      * @throws TomatoException if task number is not provided or invalid.
      */
     private Command handleMarkTask(String[] args) throws TomatoException {
-        checkArgLength(args, 2, MarkCommand.COMMAND_WORD);
+        checkArgLength(args, 2, MarkCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(args[1]);
         return new MarkCommand(taskNum);
     }
@@ -243,7 +240,7 @@ public class Parser {
      * @throws TomatoException if task number is not provided or invalid.
      */
     private Command handleUnmarkTask(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UnmarkCommand.COMMAND_WORD);
+        checkArgLength(args, 2, UnmarkCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(args[1]);
         return new UnmarkCommand(taskNum);
     }
@@ -254,16 +251,16 @@ public class Parser {
      * @throws TomatoException if keyword argument is not provided.
      */
     private Command handleFindTasks(String[] args) throws TomatoException {
-        checkArgLength(args, 2, FindCommand.COMMAND_WORD);
+        checkArgLength(args, 2, FindCommand.MESSAGE_USAGE);
         String keyword = args[1];
         return new FindCommand(keyword);
     }
 
     /** Parses and handles updating of task description */
     private Command handleUpdateDescription(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateDescriptionCommand.COMMAND_WORD);
+        checkArgLength(args, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
         String[] descriptionArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(descriptionArgs, 2, UpdateDescriptionCommand.COMMAND_WORD);
+        checkArgLength(descriptionArgs, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(descriptionArgs[0]);
         String description = descriptionArgs[1];
         return new UpdateDescriptionCommand(taskNum, description);
@@ -271,9 +268,9 @@ public class Parser {
 
     /** Parses and handles updating of deadline by datetime */
     private Command handleUpdateDeadlineBy(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateDeadlineCommand.COMMAND_WORD);
+        checkArgLength(args, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
         String[] deadlineArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(deadlineArgs, 2, UpdateDeadlineCommand.COMMAND_WORD);
+        checkArgLength(deadlineArgs, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(deadlineArgs[0]);
         LocalDateTime dateTime = parseDate(deadlineArgs[1]);
         return new UpdateDeadlineCommand(taskNum, dateTime);
@@ -281,9 +278,9 @@ public class Parser {
 
     /** Parses and handles updating of event from datetime */
     private Command handleUpdateEventFrom(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateEventFromCommand.COMMAND_WORD);
+        checkArgLength(args, 2, UpdateEventFromCommand.MESSAGE_USAGE);
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 2, UpdateEventFromCommand.COMMAND_WORD);
+        checkArgLength(eventArgs, 2, UpdateEventFromCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(eventArgs[0]);
         LocalDateTime dateTime = parseDate(eventArgs[1]);
         return new UpdateEventFromCommand(taskNum, dateTime);
@@ -291,9 +288,9 @@ public class Parser {
 
     /** Parses and handles updating of event to datetime */
     private Command handleUpdateEventTo(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateEventToCommand.COMMAND_WORD);
+        checkArgLength(args, 2, UpdateEventToCommand.MESSAGE_USAGE);
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 2, UpdateEventToCommand.COMMAND_WORD);
+        checkArgLength(eventArgs, 2, UpdateEventToCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(eventArgs[0]);
         LocalDateTime dateTime = parseDate(eventArgs[1]);
         return new UpdateEventToCommand(taskNum, dateTime);
@@ -301,9 +298,9 @@ public class Parser {
 
     /** Parses and handles updating of event from and to datetimes */
     private Command handleUpdateEventTime(String[] args) throws TomatoException {
-        checkArgLength(args, 2, UpdateEventTimeCommand.COMMAND_WORD);
+        checkArgLength(args, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
         String[] eventArgs = args[1].split(REGEX_DEFAULT);
-        checkArgLength(eventArgs, 3, UpdateEventTimeCommand.COMMAND_WORD);
+        checkArgLength(eventArgs, 3, UpdateEventTimeCommand.MESSAGE_USAGE);
         int taskNum = parseTaskNo(eventArgs[0]);
         LocalDateTime from = parseDate(eventArgs[1]);
         LocalDateTime to = parseDate(eventArgs[2]);
@@ -322,7 +319,7 @@ public class Parser {
      */
     private Task decodeTodo(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_EMPTY);
-        checkArgLength(splitArgs, 3, TodoCommand.COMMAND_WORD);
+        checkArgLength(splitArgs, 3, TodoCommand.MESSAGE_USAGE);
         return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
     }
 
@@ -333,7 +330,7 @@ public class Parser {
      */
     private Task decodeDeadline(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_BY);
-        checkArgLength(splitArgs, 2, DeadlineCommand.COMMAND_WORD);
+        checkArgLength(splitArgs, 2, DeadlineCommand.MESSAGE_USAGE);
         LocalDateTime dateTime = parseDate(splitArgs[3]);
         return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
     }
@@ -345,7 +342,7 @@ public class Parser {
      */
     private Task decodeEvent(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_FROM_TO);
-        checkArgLength(splitArgs, 3, EventCommand.COMMAND_WORD);
+        checkArgLength(splitArgs, 3, EventCommand.MESSAGE_USAGE);
         LocalDateTime from = parseDate(splitArgs[3]);
         LocalDateTime to = parseDate(splitArgs[4]);
         return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 public class UpdateDescriptionCommand extends Command {
     public static final String COMMAND_WORD = "update_description";
+    public static final String MESSAGE_USAGE = "update_description {task number}|{new description}\n" +
+            "e.g.(update_description 1|buy book)";
     private final int taskNum;
     private final String description;
 

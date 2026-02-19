@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 public class EventCommand extends Command {
     public static final String COMMAND_WORD = "event";
+    public static final String MESSAGE_USAGE = "event {task_description} /from {DD/MM/YYYY HHMM} " +
+            "/to {DD-MM-YYYY HHMM}\n" +
+            "e.g.(event team meeting /from 2/2/2025 1945 /to 2/2/2025 2045)";
     private final String taskName;
     private final LocalDateTime from;
     private final LocalDateTime to;

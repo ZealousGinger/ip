@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 public class DeadlineCommand extends Command {
     public static final String COMMAND_WORD = "deadline";
+    public static final String MESSAGE_USAGE = "deadline {task_description} /by {DD/MM/YYYY HHMM}\n" +
+            "e.g.(deadline return books /by 2/2/2025 1945)";
     private final String taskName;
     private final LocalDateTime dateTime;
 
