@@ -9,10 +9,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 /**
  * Represents a dialog box consisting of an ImageView to represent the speaker's face
@@ -20,7 +21,8 @@ import javafx.scene.layout.HBox;
  */
 public class DialogBox extends HBox {
     @FXML
-    private Label dialog;
+    private TextFlow dialog;
+
     @FXML
     private ImageView displayPicture;
 
@@ -34,7 +36,8 @@ public class DialogBox extends HBox {
             e.printStackTrace();
         }
 
-        dialog.setText(text);
+//        dialog.setText(text);
+        dialog.getChildren().add(new Text(text));
         displayPicture.setImage(img);
     }
 
@@ -53,9 +56,25 @@ public class DialogBox extends HBox {
      * Sets the dialog box to an error style (red).
      */
     private void setError() {
-        // Code generated from AI
+        // code generated with AI
         dialog.getStyleClass().add("error-label");
-        this.getStyleClass().add("error-box");
+    }
+
+    /**
+     * Sets word of a text as highlighted for errors.
+     */
+    private void highlightErrorWord(String fullText, String errorWord) {
+        // code generated with AI
+        dialog.getChildren().clear();
+        String[] parts = fullText.split("(?=" + errorWord + ")|(?<=" + errorWord + ")");
+
+        for (String part : parts) {
+            Text t = new Text(part);
+            if (part.equals(errorWord)) {
+                t.setStyle("-fx-fill: white; -fx-font-weight: bold;");
+            }
+            dialog.getChildren().add(t);
+        }
     }
 
 
@@ -63,6 +82,14 @@ public class DialogBox extends HBox {
         var db = new DialogBox(text, img);
         db.flip();
         db.setError();
+        return db;
+    }
+
+    public static DialogBox getErrorHighlightedDialog(String text, String errorWord, Image img) {
+        var db = new DialogBox(text, img);
+        db.flip();
+        db.setError();
+        db.highlightErrorWord(text, errorWord);
         return db;
     }
 

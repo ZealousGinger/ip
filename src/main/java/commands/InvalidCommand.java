@@ -20,6 +20,6 @@ public class InvalidCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws TomatoException {
-        throw new TomatoException(errorMessage + invalidCmd + listCommandsMessage);
+        throw new TomatoException(errorMessage + invalidCmd + listCommandsMessage, invalidCmd);
     }
 }

@@ -1,7 +1,7 @@
 .root {
     main-color: rgb(237, 255, 242);       /* Create a looked-up color called "main-color" within root. */
     -fx-background-color: main-color;
-    -fx-background-image: url("../images/tomato_bg.jpg"); /* Set image */
+    -fx-background-image: url("../images/tomato_bg.jpg"); /* Set image from https://unsplash.com/photos/red-cherry-fruits-on-pink-surface-3T4rfR_XZf0 */
     -fx-background-size: stretch;
 }
 

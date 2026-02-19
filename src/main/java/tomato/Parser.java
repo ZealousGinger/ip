@@ -164,7 +164,9 @@ public class Parser {
         try {
             return LocalDateTime.parse(trimmedArg);
         } catch (DateTimeException e) {
-            throw new TomatoException("Unable to parse date!");
+            throw new TomatoException("Unable to parse date: " + arg + "\n" +
+                    "Please give the datetime in the following format: " +
+                    "DD-MM-YYYY HHMM (e.g. 2/10/2025 1900)", arg);
         }
     }
 
