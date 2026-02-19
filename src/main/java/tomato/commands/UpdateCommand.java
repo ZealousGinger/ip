@@ -75,31 +75,26 @@ public class UpdateCommand extends Command {
         this.endDateTime = endDateTime;
     }
 
-    /**
-     * Returns a concrete update command based on the target update argument.
-     *
-     * @return Concrete update command.
-     */
-    private Command handleArgumentToUpdate() {
-        switch (updateField) {
-        case DESCRIPTION:
-            return new UpdateDescriptionCommand(taskNum, taskDescription);
-        case BY:
-            return new UpdateDeadlineCommand(taskNum, datetime);
-        case FROM:
-            return new UpdateEventFromCommand(taskNum, datetime);
-        case TO:
-            return new UpdateEventToCommand(taskNum, datetime);
-        case TIME:
-            return new UpdateEventTimeCommand(taskNum, startDateTime, endDateTime);
-        }
-        assert false : "code should not reach here";
-        return null;
-    }
-
     @Override
     public void execute(TaskList tasks, UserInterface ui, Storage storage) throws TomatoException {
-        Command cmd = handleArgumentToUpdate();
-        cmd.execute(tasks, ui, storage);
+        switch (updateField) {
+        case DESCRIPTION:
+            new UpdateDescriptionCommand(taskNum, taskDescription).execute(tasks, ui, storage);
+            return;
+        case BY:
+            new UpdateDeadlineCommand(taskNum, datetime).execute(tasks, ui, storage);
+            return;
+        case FROM:
+            new UpdateEventFromCommand(taskNum, datetime).execute(tasks, ui, storage);
+            return;
+        case TO:
+            new UpdateEventToCommand(taskNum, datetime).execute(tasks, ui, storage);
+            return;
+        case TIME:
+            new UpdateEventTimeCommand(taskNum, startDateTime, endDateTime).execute(tasks, ui, storage);
+            return;
+        default:
+            assert false : "code should not reach here";
+        }
     }
 }

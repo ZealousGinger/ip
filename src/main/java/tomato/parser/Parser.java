@@ -36,6 +36,14 @@ public class Parser {
     private static final int TASK_NUMBER_OFFSET = 1;
     private static final int TASK_FIELD_COUNT = 2;
     private static final int UPDATE_TIME_FIELD_COUNT = 3;
+    private static final int TODO_STORAGE_FIELD_COUNT = 2;
+    private static final int DEADLINE_STORAGE_FIELD_COUNT = 3;
+    private static final int EVENT_STORAGE_FIELD_COUNT = 4;
+    private static final int STORAGE_STATUS_INDEX = 0;
+    private static final int STORAGE_DESCRIPTION_INDEX = 1;
+    private static final int STORAGE_DEADLINE_INDEX = 2;
+    private static final int STORAGE_EVENT_START_INDEX = 2;
+    private static final int STORAGE_EVENT_END_INDEX = 3;
 
     private static final String REGEX_EMPTY = "";
     private static final String REGEX_DEFAULT = "\\|";
@@ -336,31 +344,67 @@ public class Parser {
         String endDateTime = timeArgs[1];
         return new String[]{startDateTime, endDateTime};
     }
+
+    /**
+     * Returns an update command for task description.
+     */
+    private Command createDescriptionUpdateCommand(int taskNum, String[] updateFieldAndValue) throws TomatoException {
+        checkArgLength(updateFieldAndValue, TASK_FIELD_COUNT, UpdateDescriptionCommand.MESSAGE_USAGE);
+        return new UpdateCommand(UpdateCommand.UpdateField.DESCRIPTION, taskNum, updateFieldAndValue[1]);
+    }
+
+    /**
+     * Returns an update command for deadline due date-time.
+     */
+    private Command createDeadlineUpdateCommand(int taskNum, String[] updateFieldAndValue) throws TomatoException {
+        checkArgLength(updateFieldAndValue, TASK_FIELD_COUNT, UpdateDeadlineCommand.MESSAGE_USAGE);
+        return new UpdateCommand(UpdateCommand.UpdateField.BY, taskNum, parseDate(updateFieldAndValue[1]));
+    }
+
+    /**
+     * Returns an update command for event start date-time.
+     */
+    private Command createEventFromUpdateCommand(int taskNum, String[] updateFieldAndValue) throws TomatoException {
+        checkArgLength(updateFieldAndValue, TASK_FIELD_COUNT, UpdateEventFromCommand.MESSAGE_USAGE);
+        return new UpdateCommand(UpdateCommand.UpdateField.FROM, taskNum, parseDate(updateFieldAndValue[1]));
+    }
+
+    /**
+     * Returns an update command for event end date-time.
+     */
+    private Command createEventToUpdateCommand(int taskNum, String[] updateFieldAndValue) throws TomatoException {
+        checkArgLength(updateFieldAndValue, TASK_FIELD_COUNT, UpdateEventToCommand.MESSAGE_USAGE);
+        return new UpdateCommand(UpdateCommand.UpdateField.TO, taskNum, parseDate(updateFieldAndValue[1]));
+    }
+
+    /**
+     * Returns an update command for event time range.
+     */
+    private Command createEventTimeUpdateCommand(int taskNum, String[] args) throws TomatoException {
+        String[] timeRangeValues = parseUpdateTime(args);
+        checkArgLength(timeRangeValues, TASK_FIELD_COUNT, UpdateEventTimeCommand.MESSAGE_USAGE);
+        return new UpdateCommand(UpdateCommand.UpdateField.TIME, taskNum,
+                parseDate(timeRangeValues[0]), parseDate(timeRangeValues[1]));
+    }
+
     private Command handleUpdateTask(String[] args) throws TomatoException {
         int taskNum = parseUpdateTaskNum(args);
-        String[] argAndValues = parseUpdateArgValues(args);
-        UpdateCommand.UpdateField updateField = parseUpdateArgument(argAndValues[0]);
+        String[] updateFieldAndValue = parseUpdateArgValues(args);
+        UpdateCommand.UpdateField updateField = parseUpdateArgument(updateFieldAndValue[0]);
 
         switch (updateField) {
-            case DESCRIPTION:
-                checkArgLength(argAndValues, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.UpdateField.DESCRIPTION, taskNum, argAndValues[1]);
-            case BY:
-                checkArgLength(argAndValues, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.UpdateField.BY, taskNum, parseDate(argAndValues[1]));
-            case FROM:
-                checkArgLength(argAndValues, 2, UpdateEventFromCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.UpdateField.FROM, taskNum, parseDate(argAndValues[1]));
-            case TO:
-                checkArgLength(argAndValues, 2, UpdateEventToCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.UpdateField.TO, taskNum, parseDate(argAndValues[1]));
-            case TIME:
-                String[] timeRangeValues = parseUpdateTime(args);
-                checkArgLength(timeRangeValues, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.UpdateField.TIME, taskNum,
-                        parseDate(timeRangeValues[0]), parseDate(timeRangeValues[1]));
-            default:
-                throw new TomatoException(UpdateCommand.MESSAGE_USAGE);
+        case DESCRIPTION:
+            return createDescriptionUpdateCommand(taskNum, updateFieldAndValue);
+        case BY:
+            return createDeadlineUpdateCommand(taskNum, updateFieldAndValue);
+        case FROM:
+            return createEventFromUpdateCommand(taskNum, updateFieldAndValue);
+        case TO:
+            return createEventToUpdateCommand(taskNum, updateFieldAndValue);
+        case TIME:
+            return createEventTimeUpdateCommand(taskNum, args);
+        default:
+            throw new TomatoException(UpdateCommand.MESSAGE_USAGE);
         }
     }
 
@@ -378,8 +422,9 @@ public class Parser {
      */
     private Task decodeTodo(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_EMPTY);
-        checkArgLength(splitArgs, UPDATE_TIME_FIELD_COUNT, TodoCommand.MESSAGE_USAGE);
-        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1]) == TASK_STATUS_DONE_FLAG));
+        checkArgLength(splitArgs, TODO_STORAGE_FIELD_COUNT, TodoCommand.MESSAGE_USAGE);
+        return new Todo(splitArgs[STORAGE_DESCRIPTION_INDEX],
+                (Integer.parseInt(splitArgs[STORAGE_STATUS_INDEX]) == TASK_STATUS_DONE_FLAG));
     }
 
     /**
@@ -391,9 +436,10 @@ public class Parser {
      */
     private Task decodeDeadline(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_BY);
-        checkArgLength(splitArgs, TASK_FIELD_COUNT, DeadlineCommand.MESSAGE_USAGE);
-        LocalDateTime dateTime = parseDate(splitArgs[3]);
-        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1]) == TASK_STATUS_DONE_FLAG), dateTime);
+        checkArgLength(splitArgs, DEADLINE_STORAGE_FIELD_COUNT, DeadlineCommand.MESSAGE_USAGE);
+        LocalDateTime dateTime = parseDate(splitArgs[STORAGE_DEADLINE_INDEX]);
+        return new Deadline(splitArgs[STORAGE_DESCRIPTION_INDEX],
+                (Integer.parseInt(splitArgs[STORAGE_STATUS_INDEX]) == TASK_STATUS_DONE_FLAG), dateTime);
     }
 
     /**
@@ -405,10 +451,11 @@ public class Parser {
      */
     private Task decodeEvent(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_FROM_TO);
-        checkArgLength(splitArgs, UPDATE_TIME_FIELD_COUNT, EventCommand.MESSAGE_USAGE);
-        LocalDateTime startDateTime = parseDate(splitArgs[3]);
-        LocalDateTime endDateTime = parseDate(splitArgs[4]);
-        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1]) == TASK_STATUS_DONE_FLAG),
+        checkArgLength(splitArgs, EVENT_STORAGE_FIELD_COUNT, EventCommand.MESSAGE_USAGE);
+        LocalDateTime startDateTime = parseDate(splitArgs[STORAGE_EVENT_START_INDEX]);
+        LocalDateTime endDateTime = parseDate(splitArgs[STORAGE_EVENT_END_INDEX]);
+        return new Event(splitArgs[STORAGE_DESCRIPTION_INDEX],
+                (Integer.parseInt(splitArgs[STORAGE_STATUS_INDEX]) == TASK_STATUS_DONE_FLAG),
                 startDateTime, endDateTime);
     }
 

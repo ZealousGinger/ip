@@ -18,6 +18,9 @@ import tomato.task.Task;
  * Handles loading and saving tasks from persistent storage.
  */
 public class Storage {
+    private static final int STORAGE_FIELD_SPLIT_LIMIT = 2;
+    private static final String STORAGE_FIELD_SPLIT_REGEX = "\\|";
+
     private final Parser parser = new Parser();
     private File taskFile;
     private final String filePath;
@@ -79,7 +82,7 @@ public class Storage {
         ArrayList<Task> tasks = new ArrayList<>();
         while (fileScanner.hasNextLine()) {
             String data = fileScanner.nextLine();
-            String[] args = data.split("|", 2);
+            String[] args = data.split(STORAGE_FIELD_SPLIT_REGEX, STORAGE_FIELD_SPLIT_LIMIT);
             tasks.add(parser.decodeTask(args));
         }
         return tasks;
