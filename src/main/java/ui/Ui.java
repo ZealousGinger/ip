@@ -28,9 +28,6 @@ public class Ui {
     // image from https://pixabay.com/photos/tomatoes-ketchup-sad-food-veggie-1448267/
     private final Image sadTomatoImage = new Image(this.getClass().getResourceAsStream("/images/sad_tomato.png"));
 
-    private static final String SPACER = "   ____________________________________________________________";
-    private static final String TAB = "    ";
-
 
     /**
      * Instantiates the User interface class.
@@ -50,14 +47,14 @@ public class Ui {
      * Gets the start message.
      */
     public static String getStartMessage() {
-        return SPACER + "\n" + TAB + "Hello! I'm Tomato !\n" + TAB + "What can I do for you?\n" + SPACER;
+        return "\n" + "Hello! I'm Tomato !\n" + "What can I do for you?\n";
     }
 
     /**
      * Gets the exit message.
      */
     public static String getExitMessage() {
-        return TAB + "Bye. Hope to see you again soon!\n" + SPACER;
+        return "Bye. Hope to see you again soon!\n";
     }
 
     private void clearInputField() {

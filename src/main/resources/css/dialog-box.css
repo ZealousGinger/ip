@@ -1,12 +1,14 @@
 .dialog-label {
-    -fx-background-color: linear-gradient(to bottom right, #00ffbf, #00ddff);
-    -fx-border-color: #d55e00 #009e73 #cc79a7 #0072b2;
+    -fx-background-color: #98FB98;
+    -fx-border-color: #006400;
     -fx-border-width: 2px;
     -fx-background-radius: 1em 1em 1em 0;
     -fx-border-radius: 1em 1em 1em 0;
+    -fx-padding: 8 12 8 12;
 }
 
 .reply-label {
+    -fx-background-color: #FFFFFF;
     -fx-background-radius: 1em 1em 1em 0;
     -fx-border-radius: 1em 1em 1em 0;
 }
@@ -15,8 +17,6 @@
 .error-label {
     -fx-background-color: #ff4d4d;
     -fx-text-fill: white;
-    -fx-background-radius: 8px;
-    -fx-padding: 6px 10px;
 }
 
 #displayPicture {

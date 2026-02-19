@@ -12,7 +12,6 @@ import java.util.Scanner;
  * Represents an instance of a task tracking chatbot called Tomato.
  */
 public class Tomato {
-    private static final String SPACER = "   ____________________________________________________________";
     private Ui ui;
     private Parser parser;
     private Storage storage;

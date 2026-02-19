@@ -5,9 +5,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.TextFlow?>
 
+<?import javafx.scene.layout.VBox?>
 <fx:root alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="400.0" stylesheets="@../css/dialog-box.css" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <TextFlow fx:id="dialog" minHeight="-Infinity" styleClass="dialog-label"/>
+        <VBox HBox.hgrow="NEVER">
+            <TextFlow fx:id="dialog" minHeight="-Infinity" styleClass="dialog-label"/>
+        </VBox>
         <ImageView fx:id="displayPicture" fitHeight="99.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true" />
     </children>
     <padding>

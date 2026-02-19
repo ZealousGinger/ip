@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -36,9 +37,11 @@ public class DialogBox extends HBox {
             e.printStackTrace();
         }
 
-//        dialog.setText(text);
         dialog.getChildren().add(new Text(text));
         displayPicture.setImage(img);
+
+        // Solution to fix text flow vertical wrapping issues from ai
+        HBox.setHgrow(dialog, Priority.NEVER);
     }
 
     /**

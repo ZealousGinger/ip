@@ -15,7 +15,6 @@ import java.util.List;
  * Methods include creating, un/marking, deleting, counting, listing, tasks.
  */
 public class TaskList {
-    private static final String TAB = "    ";
     private final ArrayList<Task> tasks;
 
     /**
@@ -39,9 +38,9 @@ public class TaskList {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append(TAB + "Here are the tasks in your list:\n");
+        str.append("Here are the tasks in your list:\n");
         for(int i = 0; i < tasks.size(); ++i) {
-            str.append(TAB + (i+1) + "." + tasks.get(i) + "\n");
+            str.append((i+1) + ". " + tasks.get(i) + "\n");
         }
         return str.toString();
     }
@@ -61,7 +60,7 @@ public class TaskList {
     public String markTask(int idx) throws TomatoException {
         Task t = getTask(idx);
         t.setDone();
-        return TAB + "Nice! I've marked this task as done:" + TAB + t;
+        return "Nice! I've marked this task as done:" + t;
     }
 
     /**
@@ -72,7 +71,7 @@ public class TaskList {
     public String unmarkTask(int idx) throws TomatoException {
         Task t = getTask(idx);
         t.setNotDone();
-        return TAB + "OK! I've marked this task as not done yet:" + TAB + t;
+        return "OK! I've marked this task as not done yet:" + t;
     }
 
     /**
@@ -88,7 +87,7 @@ public class TaskList {
         }
         Task t = getTask(idx);
         t.setDescription(description);
-        return TAB + "OK! I've updated your description !" + TAB + t;
+        return "OK! I've updated your description !" + t;
     }
 
     /**
@@ -101,7 +100,7 @@ public class TaskList {
     public String updateDeadlineTime(int idx, LocalDateTime by) throws TomatoException {
         Deadline d = (Deadline) getTask(idx);
         d.setDateTimeBy(by);
-        return TAB + "OK! I've updated your deadline due datetime !" + TAB + d;
+        return "OK! I've updated your deadline due datetime !" + d;
     }
 
     /**
@@ -114,7 +113,7 @@ public class TaskList {
     public String updateEventFrom(int idx, LocalDateTime from) throws TomatoException {
         Event e = (Event) getTask(idx);
         e.setDateTimeFrom(from);
-        return TAB + "OK! I've updated your event from datetime !" + TAB + e;
+        return "OK! I've updated your event from datetime !" + e;
     }
 
     /**
@@ -127,7 +126,7 @@ public class TaskList {
     public String updateEventTo(int idx, LocalDateTime to) throws TomatoException {
         Event e = (Event) getTask(idx);
         e.setDateTimeFrom(to);
-        return TAB + "OK! I've updated your event to datetime !" + TAB + e;
+        return "OK! I've updated your event to datetime !" + e;
     }
 
     /**
@@ -142,7 +141,7 @@ public class TaskList {
         Event e = (Event) getTask(idx);
         e.setDateTimeFrom(from);
         e.setDateTimeTo(to);
-        return TAB + "OK! I've updated your event datetime !" + TAB + e;
+        return "OK! I've updated your event datetime !" + e;
     }
 
     /**
@@ -155,8 +154,8 @@ public class TaskList {
         String taskName = t.toString();
         StringBuilder str = new StringBuilder();
         if(tasks.remove(t)) {
-            str.append(TAB + "Noted. I've removed this task:\n");
-            str.append(TAB + taskName + "\n");
+            str.append("Noted. I've removed this task:\n");
+            str.append(taskName + "\n");
             str.append(numOfTasks() + "\n");
         }
         return str.toString();
@@ -169,7 +168,7 @@ public class TaskList {
     private String addTask(Task t) {
         StringBuilder str = new StringBuilder();
         tasks.add(t);
-        str.append(TAB + "Got it. I've added this task:\n" + TAB + t.toString() + "\n");
+        str.append("Got it. I've added this task:\n" + t.toString() + "\n");
         str.append(numOfTasks() + "\n");
         return str.toString();
     }
@@ -209,7 +208,7 @@ public class TaskList {
      * @return number of tasks.
      */
     public String numOfTasks() {
-        return TAB + "Now you have " + tasks.size() + " tasks in the list.";
+        return "Now you have " + tasks.size() + " tasks in the list.";
     }
 
     /**
@@ -223,9 +222,9 @@ public class TaskList {
     public String printMatchingTasks(String keyword) {
         StringBuilder str = new StringBuilder();
         ArrayList<Task> matchingTasks = getMatchingTasks(keyword);
-        str.append(TAB + "Here are the matching tasks in your list:" + "\n");
+        str.append("Here are the matching tasks in your list:" + "\n");
         for(int i = 0; i < matchingTasks.size(); ++i) {
-            str.append(TAB + (i+1) + "." + matchingTasks.get(i) + "\n");
+            str.append((i+1) + "." + matchingTasks.get(i) + "\n");
         }
         return str.toString();
     }
