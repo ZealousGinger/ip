@@ -1,14 +1,12 @@
-package ui;
+package tomato.ui;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.animation.PauseTransition;
-import javafx.util.Duration;
+
 import tomato.Tomato;
 
 /**
@@ -25,23 +23,29 @@ public class MainWindow extends AnchorPane {
     private Button sendButton;
 
     private Tomato tomato;
-    private Ui ui;
+    private UserInterface ui;
 
+    /**
+     * Initializes the scroll pane bindings after FXML injection.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
-    /** Injects the Tomato instance and instantiate Ui class and dialog */
+    /**
+     * Sets the Tomato instance and initializes the UI adapter.
+     *
+     * @param t Tomato instance.
+     */
     public void setTomatoGui(Tomato t) {
         tomato = t;
-        ui = new Ui(dialogContainer, userInput);
+        ui = new UserInterface(dialogContainer, userInput);
         t.setGui(ui);
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Tomato's reply and then appends them to
-     * the dialog container. Clears the user input after processing.
+     * Handles text entered by the user.
      */
     @FXML
     private void handleUserInput() {

@@ -1,16 +1,17 @@
-package task;
+package tomato.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Represents a Deadline Task object.
+ * Represents a deadline task.
  */
 public class Deadline extends Task {
     protected LocalDateTime by;
 
     /**
-     * Instantiates Deadline object with description, and deadline.
+     * Creates a deadline task with the specified description and due date-time.
+     *
      * @param description String to describe task.
      * @param by LocalDateTime of deadline.
      */
@@ -21,9 +22,10 @@ public class Deadline extends Task {
     }
 
     /**
-     * Instantiates Deadline object with description, status, and deadline, used when loading tasks from storage.
+     * Creates a deadline task with the specified description, status, and due date-time.
+     *
      * @param description String to describe task.
-     * @param isDone boolean status
+     * @param isDone boolean status.
      * @param by LocalDateTime of deadline.
      */
     public Deadline(String description, boolean isDone, LocalDateTime by) {
@@ -33,7 +35,9 @@ public class Deadline extends Task {
     }
 
     /**
-     * Sets LocalDateTime by.
+     * Sets the due date-time of this deadline task.
+     *
+     * @param by New due date-time.
      */
     public void setDateTimeBy(LocalDateTime by) {
         this.by = by;
@@ -46,7 +50,8 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns string representation for storage format of task for saving.
+     * Returns the storage format representation of this deadline task.
+     *
      * @return storage string representation.
      */
     public String toSave() {

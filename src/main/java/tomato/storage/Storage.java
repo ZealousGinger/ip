@@ -1,6 +1,4 @@
-package tomato;
-
-import task.Task;
+package tomato.storage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,16 +10,24 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import tomato.TomatoException;
+import tomato.parser.Parser;
+import tomato.task.Task;
+
 /**
- * Represents the storage class.
+ * Handles loading and saving tasks from persistent storage.
  */
 public class Storage {
+    private static final int STORAGE_FIELD_SPLIT_LIMIT = 2;
+    private static final String STORAGE_FIELD_SPLIT_REGEX = "\\|";
+
     private final Parser parser = new Parser();
     private File taskFile;
     private final String filePath;
 
     /**
-     * Instantiates the storage class with a specified file path for storage file.
+     * Creates a storage instance for the specified task file path.
+     *
      * @param filePath string of file path to store the task file.
      */
     public Storage(String filePath) {
@@ -30,14 +36,14 @@ public class Storage {
     }
 
     /**
-     * Checks the previously specified file path, and loads it if exists.
+     * Returns whether the configured task file exists and loads it when present.
      */
-    private boolean loadTaskFile() {
+    private boolean isTaskFileLoaded() {
         String root = System.getProperty("user.dir");
         Path path = Paths.get(root, filePath);
         boolean isExists = Files.exists(path);
 
-        if(!isExists) {
+        if (!isExists) {
             return false;
         }
         taskFile = path.toFile();
@@ -45,7 +51,8 @@ public class Storage {
     }
 
     /**
-     * Creates the relevant directories and file according the previously specified file path.
+     * Creates directories and the task file for the configured storage path.
+     *
      * @throws IOException If an input output error has occurred while trying to create the file.
      */
     private void createTaskFile() throws IOException {
@@ -64,19 +71,26 @@ public class Storage {
         taskFile = taskListPath.toFile();
     }
 
-    /** Scans task file and returns the arraylist of tasks */
-    private ArrayList<Task> scanFile(Scanner sc) throws TomatoException {
+    /**
+     * Returns tasks decoded from the given file scanner.
+     *
+     * @param fileScanner Scanner over the task file.
+     * @return List of decoded tasks.
+     * @throws TomatoException If a line cannot be decoded into a task.
+     */
+    private ArrayList<Task> scanFile(Scanner fileScanner) throws TomatoException {
         ArrayList<Task> tasks = new ArrayList<>();
-        while (sc.hasNextLine()) {
-            String data = sc.nextLine();
-            String[] args = data.split("|", 2);
+        while (fileScanner.hasNextLine()) {
+            String data = fileScanner.nextLine();
+            String[] args = data.split(STORAGE_FIELD_SPLIT_REGEX, STORAGE_FIELD_SPLIT_LIMIT);
             tasks.add(parser.decodeTask(args));
         }
         return tasks;
     }
 
     /**
-     * Returns an arraylist of tasks decoded from the stored task file.
+     * Returns tasks decoded from the currently loaded task file.
+     *
      * @return Arraylist of tasks.
      * @throws FileNotFoundException If file does not exist.
      * @throws TomatoException If unable to create task file or load tasks from file.
@@ -90,26 +104,33 @@ public class Storage {
     /**
      * Returns an arraylist of tasks loaded from the stored task file if it exists.
      * If task file does not exist or cannot be read, creates a new task file and throws an exception.
+     *
      * @return arraylist of tasks.
      * @throws FileNotFoundException If file does not exist.
      * @throws TomatoException If unable to create task file or load tasks from file.
      * or If an error occurred from parsing the task file or if unable to create task object.
      */
     public ArrayList<Task> load() throws FileNotFoundException, TomatoException {
-        boolean isLoaded = loadTaskFile();
-        if (!isLoaded) {
-            try {
-                createTaskFile();
-                throw new TomatoException("Missing task file!");
-            } catch (IOException e) {
-                throw new TomatoException("Error, Unable to create new task file!");
-            }
+        if (isTaskFileLoaded()) {
+            assert taskFile != null : "task file should not be null here";
+            return loadTasks();
         }
-        assert taskFile != null : "task file should not be null here";
-        return loadTasks();
+
+        try {
+            createTaskFile();
+        } catch (IOException exception) {
+            throw new TomatoException("Error, Unable to create new task file!");
+        }
+
+        throw new TomatoException("Missing task file!");
     }
 
-    /** Writes array of tasks to file */
+    /**
+     * Writes the given task list to the currently loaded task file.
+     *
+     * @param tasks List of tasks to write.
+     * @throws IOException If an input output error occurs while writing.
+     */
     private void writeToFile(ArrayList<Task> tasks) throws IOException {
         FileWriter taskWriter = new FileWriter(taskFile);
         for (Task task : tasks) {
@@ -120,14 +141,16 @@ public class Storage {
 
 
     /**
-     * Saves given array list of tasks into the task file.
+     * Saves the given task list into storage.
+     *
      * @param tasks Array list of Task objects.
+     * @throws TomatoException If writing tasks to storage fails.
      */
     public void saveToDisk(ArrayList<Task> tasks) throws TomatoException {
         assert taskFile != null : "task file should not be null";
         try {
             writeToFile(tasks);
-        } catch (IOException e) {
+        } catch (IOException exception) {
             throw new TomatoException("IO error, unable to write to file.");
         }
     }

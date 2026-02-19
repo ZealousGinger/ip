@@ -1,17 +1,18 @@
-package task;
+package tomato.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Represents a Event Task object.
+ * Represents an event task.
  */
 public class Event extends Task {
     protected LocalDateTime from;
     protected LocalDateTime to;
 
     /**
-     * Instantiates Event object with description, starting and ending datetime.
+     * Creates an event task with the specified description and time range.
+     *
      * @param description String to describe task.
      * @param from LocalDateTime of start of event.
      * @param to LocalDateTime of end of event.
@@ -25,10 +26,10 @@ public class Event extends Task {
     }
 
     /**
-     * Instantiates Event object with description, starting and ending datetime.
-     * Used when loading tasks from storage.
+     * Creates an event task with the specified description, status, and time range.
+     *
      * @param description String to describe task.
-     * @param isDone boolean status
+     * @param isDone boolean status.
      * @param from LocalDateTime of start of event.
      * @param to LocalDateTime of end of event.
      */
@@ -41,14 +42,18 @@ public class Event extends Task {
     }
 
     /**
-     * Sets LocalDateTime from.
+     * Sets the start date-time of this event task.
+     *
+     * @param from New start date-time.
      */
     public void setDateTimeFrom(LocalDateTime from) {
         this.from = from;
     }
 
     /**
-     * Sets LocalDateTime to.
+     * Sets the end date-time of this event task.
+     *
+     * @param to New end date-time.
      */
     public void setDateTimeTo(LocalDateTime to) {
         this.to = to;
@@ -62,7 +67,8 @@ public class Event extends Task {
     }
 
     /**
-     * Returns string representation for storage format of task for saving.
+     * Returns the storage format representation of this event task.
+     *
      * @return storage string representation.
      */
     public String toSave() {

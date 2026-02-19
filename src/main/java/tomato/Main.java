@@ -7,12 +7,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import ui.MainWindow;
+
+import tomato.ui.MainWindow;
 
 /**
- * A GUI for Tomato using FXML.
+ * Starts the JavaFX GUI for Tomato.
  */
 public class Main extends Application {
+    private static final int MIN_WINDOW_HEIGHT = 220;
+    private static final int MIN_WINDOW_WIDTH = 417;
 
     private final Tomato tomato = new Tomato("data/TaskList.txt");
 
@@ -20,15 +23,15 @@ public class Main extends Application {
     public void start(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
-            AnchorPane ap = fxmlLoader.load();
-            Scene scene = new Scene(ap);
+            AnchorPane mainWindowPane = fxmlLoader.load();
+            Scene scene = new Scene(mainWindowPane);
             stage.setScene(scene);
-            stage.setMinHeight(220);
-            stage.setMinWidth(417);
+            stage.setMinHeight(MIN_WINDOW_HEIGHT);
+            stage.setMinWidth(MIN_WINDOW_WIDTH);
             fxmlLoader.<MainWindow>getController().setTomatoGui(tomato);
             stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 }

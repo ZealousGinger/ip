@@ -2,9 +2,11 @@ package tomato;
 
 import org.junit.jupiter.api.Test;
 
+import tomato.data.TaskList;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TaskListTest {
@@ -92,8 +94,8 @@ public class TaskListTest {
         try {
             tasks.markTask(0);
             tasks.markTask(1);
-        } catch (TomatoException e) {
-            System.out.println(e.getMessage());
+        } catch (TomatoException exception) {
+            System.out.println(exception.getMessage());
         }
 
         assertEquals("X", tasks.getTaskList().get(0).getStatusIcon());
