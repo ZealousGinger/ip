@@ -69,7 +69,7 @@ public class Parser {
      * @throws TomatoException If parsing fails due to invalid arguments.
      */
     public Command parse(String input) throws TomatoException {
-        String[] args = input.split(" ", COMMAND_SPLIT_LIMIT);
+        String[] args = input.trim().split(" ", COMMAND_SPLIT_LIMIT);
         String stringCommand = args[0].toLowerCase();
 
         switch (stringCommand) {
@@ -194,7 +194,7 @@ public class Parser {
         } catch (DateTimeException exception) {
             throw new TomatoException("Unable to parse date: " + dateString + "\n" +
                     "Please give the datetime in the following format: " +
-                    "DD-MM-YYYY HHMM (e.g. 2/10/2025 1900)", dateString);
+                    "DD/MM/YYYY HHMM (e.g. 2/10/2025 1900)", dateString);
         }
     }
 
