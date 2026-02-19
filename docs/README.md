@@ -194,20 +194,20 @@ Bye. Hope to see you again soon!
 ## Command summary
 
 
-| Command | Format | Example |
-|---|---|---|
-| `todo` | `todo {TASK_DESCRIPTION}` | `todo cs2103t week 6 quiz` |
-| `deadline` | `deadline {TASK_DESCRIPTION} /by {DEADLINE_DATETIME}` | `deadline submit cs2103t ip /by 20/2/2026 1600` |
-| `event` | `event {TASK_DESCRIPTION} /from {START_DATETIME} /to {END_DATETIME}` | `event cs2103t weekly briefing /from 20/2/2026 1600 /to 20/2/2026 1700` |
-| `update` | `update {TASK_NUMBER} /description {NEW_DESCRIPTION}` | `update 1 /description cs2103t week 7 quiz` |
-| `update` | `update {TASK_NUMBER} /by {NEW_DEADLINE_DATETIME}` | `update 2 /by 20/2/2026 1800` |
-| `update` | `update {TASK_NUMBER} /from {NEW_START_DATETIME}` | `update 3 /from 20/2/2026 1800` |
-| `update` | `update {TASK_NUMBER} /to {NEW_END_DATETIME}` | `update 3 /to 20/2/2026 2000` |
-| `update` | `update {TASK_NUMBER} /time {NEW_START_DATETIME} /to {NEW_END_DATETIME}` | `update 3 /time 20/2/2026 1800 /to 20/2/2026 2000` |
-| `mark` | `mark {TASK_NUMBER}` | `mark 1` |
-| `unmark` | `unmark {TASK_NUMBER}` | `unmark 2` |
-| `delete` | `delete {TASK_NUMBER}` | `delete 1` |
-| `find` | `find {KEYWORD}` | `find cs2103t` |
-| `list` | `list` | `list` |
-| `bye` | `bye` | `bye` |
+| Command    | Format                                                                   | Example                                                                 |
+| ---------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `todo`     | `todo {TASK_DESCRIPTION}`                                                | `todo cs2103t week 6 quiz`                                              |
+| `deadline` | `deadline {TASK_DESCRIPTION} /by {DEADLINE_DATETIME}`                    | `deadline submit cs2103t ip /by 20/2/2026 1600`                         |
+| `event`    | `event {TASK_DESCRIPTION} /from {START_DATETIME} /to {END_DATETIME}`     | `event cs2103t weekly briefing /from 20/2/2026 1600 /to 20/2/2026 1700` |
+| `update`   | `update {TASK_NUMBER} /description {NEW_DESCRIPTION}`                    | `update 1 /description cs2103t week 7 quiz`                             |
+| `update`   | `update {TASK_NUMBER} /by {NEW_DEADLINE_DATETIME}`                       | `update 2 /by 20/2/2026 1800`                                           |
+| `update`   | `update {TASK_NUMBER} /from {NEW_START_DATETIME}`                        | `update 3 /from 20/2/2026 1800`                                         |
+| `update`   | `update {TASK_NUMBER} /to {NEW_END_DATETIME}`                            | `update 3 /to 20/2/2026 2000`                                           |
+| `update`   | `update {TASK_NUMBER} /time {NEW_START_DATETIME} /to {NEW_END_DATETIME}` | `update 3 /time 20/2/2026 1800 /to 20/2/2026 2000`                      |
+| `mark`     | `mark {TASK_NUMBER}`                                                     | `mark 1`                                                                |
+| `unmark`   | `unmark {TASK_NUMBER}`                                                   | `unmark 2`                                                              |
+| `delete`   | `delete {TASK_NUMBER}`                                                   | `delete 1`                                                              |
+| `find`     | `find {KEYWORD}`                                                         | `find cs2103t`                                                          |
+| `list`     | `list`                                                                   | `list`                                                                  |
+| `bye`      | `bye`                                                                    | `bye`                                                                   |
 
