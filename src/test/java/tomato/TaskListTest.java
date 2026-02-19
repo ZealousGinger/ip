@@ -93,8 +93,8 @@ public class TaskListTest {
         try {
             tasks.markTask(0);
             tasks.markTask(1);
-        } catch (TomatoException e) {
-            System.out.println(e.getMessage());
+        } catch (TomatoException exception) {
+            System.out.println(exception.getMessage());
         }
 
         assertEquals("X", tasks.getTaskList().get(0).getStatusIcon());

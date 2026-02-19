@@ -20,13 +20,15 @@ public class Ui {
 
 
     // happy user image from https://unsplash.com/photos/smiley-ball-zDDdoYqQ64U
-    private final Image happyUserImage = new Image(this.getClass().getResourceAsStream("/images/happy_user.jpg"));
+    private final Image happyUserImage = new Image(
+            this.getClass().getResourceAsStream("/images/happy_user.jpg"));
 
     // image from https://unsplash.com/photos/red-tomato-on-gray-concrete-surface-OlXUUQedQyM
     private final Image tomatoImage = new Image(this.getClass().getResourceAsStream("/images/tomato.jpg"));
 
     // image from https://pixabay.com/photos/tomatoes-ketchup-sad-food-veggie-1448267/
-    private final Image sadTomatoImage = new Image(this.getClass().getResourceAsStream("/images/sad_tomato.png"));
+    private final Image sadTomatoImage = new Image(
+            this.getClass().getResourceAsStream("/images/sad_tomato.png"));
 
 
     /**
@@ -73,13 +75,16 @@ public class Ui {
         if (e instanceof TomatoException && ((TomatoException) e).getErrorWord() != null) {
             showErrorHighlightedDialog(e);
         } else {
-            dialogContainer.getChildren().addAll(DialogBox.getErrorDialog("ERROR!\n" + e.getMessage(), sadTomatoImage));
+            dialogContainer.getChildren().addAll(
+                    DialogBox.getErrorDialog("ERROR!\n" + e.getMessage(), sadTomatoImage));
         }
     }
 
     public void showErrorHighlightedDialog(Exception e) {
         TomatoException te = ((TomatoException) e);
-        dialogContainer.getChildren().addAll(DialogBox.getErrorHighlightedDialog("ERROR!\n" + e.getMessage(), te.getErrorWord(), sadTomatoImage));
+        dialogContainer.getChildren().addAll(
+                DialogBox.getErrorHighlightedDialog("ERROR!\n" + e.getMessage(), te.getErrorWord(),
+                        sadTomatoImage));
     }
 
     public void showTomatoDialog(String s) {
@@ -96,8 +101,9 @@ public class Ui {
         );
     }
 
-    // Solution below adapted from https://stackoverflow.com/questions/12153622/how-to-close-a-javafx-application-on-window-close
-    // and https://stackoverflow.com/questions/76696287/how-do-i-pause-a-javafx-program-without-causing-the-program-to-run-in-a-laggy-fa
+    // Solution below adapted from:
+    // https://stackoverflow.com/questions/12153622/how-to-close-a-javafx-application-on-window-close
+    // https://stackoverflow.com/questions/76696287/how-do-i-pause-a-javafx-program-without-causing-the-program-to-run-in-a-laggy-fa
     // to exit JavaFX Gui programmatically.
     private void exitGui() {
         PauseTransition pause = new PauseTransition(Duration.seconds(.5));

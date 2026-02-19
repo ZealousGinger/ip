@@ -168,13 +168,13 @@ public class Parser {
 
         try {
             return LocalDateTime.parse(trimmedArg, formatter);
-        } catch (DateTimeException e) {
+        } catch (DateTimeException exception) {
             // move on and try the second parser
         }
 
         try {
             return LocalDateTime.parse(trimmedArg);
-        } catch (DateTimeException e) {
+        } catch (DateTimeException exception) {
             throw new TomatoException("Unable to parse date: " + arg + "\n" +
                     "Please give the datetime in the following format: " +
                     "DD-MM-YYYY HHMM (e.g. 2/10/2025 1900)", arg);
@@ -191,7 +191,7 @@ public class Parser {
     private int parseTaskNo(String arg) throws TomatoException {
         try {
             return Integer.parseInt(arg) - 1;
-        } catch (Exception e) {
+        } catch (Exception exception) {
             throw new TomatoException("You must provide a task number!");
         }
     }
@@ -294,8 +294,8 @@ public class Parser {
         UpdateCommand.Argument enumArg;
         try {
             enumArg = UpdateCommand.Argument.valueOf(arg.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
+        } catch (IllegalArgumentException exception) {
+            throw new RuntimeException(exception);
         }
         return enumArg;
     }
@@ -343,7 +343,8 @@ public class Parser {
             case TIME:
                 String[] fromToValues = parseUpdateTime(args);
                 checkArgLength(fromToValues, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.TIME, taskNum, parseDate(fromToValues[0]), parseDate(fromToValues[1]));
+                return new UpdateCommand(UpdateCommand.Argument.TIME, taskNum,
+                        parseDate(fromToValues[0]), parseDate(fromToValues[1]));
             default:
                 throw new TomatoException(UpdateCommand.MESSAGE_USAGE);
         }
@@ -364,7 +365,7 @@ public class Parser {
     private Task decodeTodo(String args) throws TomatoException {
         String[] splitArgs = parseArgs(args, REGEX_EMPTY);
         checkArgLength(splitArgs, 3, TodoCommand.MESSAGE_USAGE);
-        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1])==1));
+        return new Todo(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1));
     }
 
     /**
@@ -378,7 +379,7 @@ public class Parser {
         String[] splitArgs = parseArgs(args, REGEX_BY);
         checkArgLength(splitArgs, 2, DeadlineCommand.MESSAGE_USAGE);
         LocalDateTime dateTime = parseDate(splitArgs[3]);
-        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), dateTime);
+        return new Deadline(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1), dateTime);
     }
 
     /**
@@ -393,7 +394,7 @@ public class Parser {
         checkArgLength(splitArgs, 3, EventCommand.MESSAGE_USAGE);
         LocalDateTime from = parseDate(splitArgs[3]);
         LocalDateTime to = parseDate(splitArgs[4]);
-        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1])==1), from, to);
+        return new Event(splitArgs[2], (Integer.parseInt(splitArgs[1]) == 1), from, to);
     }
 
     /**

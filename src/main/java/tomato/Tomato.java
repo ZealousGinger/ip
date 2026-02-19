@@ -28,7 +28,7 @@ public class Tomato {
         TaskList t;
         try {
             t = new TaskList(s.load());
-        } catch (FileNotFoundException | TomatoException e) {
+        } catch (FileNotFoundException | TomatoException exception) {
             t = new TaskList();
         }
         return t;
@@ -69,16 +69,18 @@ public class Tomato {
         String input;
         Command cmd = null;
 
-        while(true) {
+        while (true) {
             input = sc.nextLine();
             try {
                 cmd = parser.parse(input);
+
                 if (cmd.isExit()) {
                     break;
                 }
+
                 cmd.execute(tasks, ui, storage);
-            } catch (TomatoException e) {
-                ui.showErrorDialog(e);
+            } catch (TomatoException exception) {
+                ui.showErrorDialog(exception);
             }
         }
     }
@@ -101,12 +103,13 @@ public class Tomato {
      */
     public void parseAndExecuteResponse(String input) {
         Command cmd;
-            try {
-                cmd = parser.parse(input);
-                cmd.execute(tasks, ui, storage);
-            } catch (Exception e) {
-                ui.showErrorDialog(e);
-            }
+        try {
+            cmd = parser.parse(input);
+
+            cmd.execute(tasks, ui, storage);
+        } catch (Exception exception) {
+            ui.showErrorDialog(exception);
+        }
     }
 
 }

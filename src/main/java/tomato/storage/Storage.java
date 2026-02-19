@@ -40,7 +40,7 @@ public class Storage {
         Path path = Paths.get(root, filePath);
         boolean isExists = Files.exists(path);
 
-        if(!isExists) {
+        if (!isExists) {
             return false;
         }
         taskFile = path.toFile();
@@ -113,7 +113,7 @@ public class Storage {
             try {
                 createTaskFile();
                 throw new TomatoException("Missing task file!");
-            } catch (IOException e) {
+            } catch (IOException exception) {
                 throw new TomatoException("Error, Unable to create new task file!");
             }
         }
@@ -146,7 +146,7 @@ public class Storage {
         assert taskFile != null : "task file should not be null";
         try {
             writeToFile(tasks);
-        } catch (IOException e) {
+        } catch (IOException exception) {
             throw new TomatoException("IO error, unable to write to file.");
         }
     }

@@ -71,8 +71,8 @@ public class StorageTest {
 
         try {
             Files.deleteIfExists(Path.of(TASK_FILE_MISSING));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        } catch (IOException exception) {
+            System.out.println(exception.getMessage());
         }
     }
 
@@ -85,8 +85,8 @@ public class StorageTest {
 
         try {
             storage.load();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
         }
 
         assertDoesNotThrow(() -> {
@@ -101,8 +101,8 @@ public class StorageTest {
 
         try {
             storage.load();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
         }
 
         assertDoesNotThrow(() -> {
@@ -116,8 +116,8 @@ public class StorageTest {
 
         try {
             storage.load();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
         }
 
         assertThrowsExactly(NullPointerException.class, () -> {
