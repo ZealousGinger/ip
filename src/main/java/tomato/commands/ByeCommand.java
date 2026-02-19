@@ -1,8 +1,8 @@
-package commands;
+package tomato.commands;
 
-import tomato.Storage;
-import tomato.TaskList;
-import ui.Ui;
+import tomato.storage.Storage;
+import tomato.data.TaskList;
+import tomato.ui.Ui;
 
 public class ByeCommand extends Command {
     public static final String COMMAND_WORD = "bye";

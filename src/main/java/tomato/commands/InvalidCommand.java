@@ -1,13 +1,13 @@
-package commands;
+package tomato.commands;
 
-import tomato.Storage;
-import tomato.TaskList;
+import tomato.storage.Storage;
+import tomato.data.TaskList;
 import tomato.TomatoException;
-import ui.Ui;
+import tomato.ui.Ui;
 
 public class InvalidCommand extends Command {
-    private static final String errorMessage = "Invalid command given: ";
-    private static final String listCommandsMessage = "\nPlease try a given command: " +
+    private static final String ERROR_MESSAGE = "Invalid command given: ";
+    private static final String LIST_COMMANDS_MESSAGE = "\nPlease try a given command: " +
             "[bye, list, mark, todo, deadline, event, delete, find, " +
             "update]. ";
 
@@ -19,6 +19,6 @@ public class InvalidCommand extends Command {
 
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws TomatoException {
-        throw new TomatoException(errorMessage + invalidCmd + listCommandsMessage, invalidCmd);
+        throw new TomatoException(ERROR_MESSAGE + invalidCmd + LIST_COMMANDS_MESSAGE, invalidCmd);
     }
 }

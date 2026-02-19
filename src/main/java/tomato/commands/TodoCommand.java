@@ -1,10 +1,10 @@
-package commands;
+package tomato.commands;
 
-import task.Task;
-import tomato.Storage;
-import tomato.TaskList;
+import tomato.task.Task;
+import tomato.storage.Storage;
+import tomato.data.TaskList;
 import tomato.TomatoException;
-import ui.Ui;
+import tomato.ui.Ui;
 
 import java.util.ArrayList;
 

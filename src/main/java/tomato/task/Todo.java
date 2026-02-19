@@ -1,4 +1,4 @@
-package task;
+package tomato.task;
 
 /**
  * Represents a todo task.

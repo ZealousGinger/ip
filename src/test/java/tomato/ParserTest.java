@@ -1,8 +1,11 @@
 package tomato;
 
-import commands.Command;
-import task.Task;
-import ui.Ui;
+import tomato.commands.Command;
+import tomato.data.TaskList;
+import tomato.parser.Parser;
+import tomato.storage.Storage;
+import tomato.task.Task;
+import tomato.ui.Ui;
 
 import org.junit.jupiter.api.Test;
 

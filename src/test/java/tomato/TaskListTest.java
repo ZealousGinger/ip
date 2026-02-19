@@ -1,6 +1,7 @@
 package tomato;
 
 import org.junit.jupiter.api.Test;
+import tomato.data.TaskList;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;

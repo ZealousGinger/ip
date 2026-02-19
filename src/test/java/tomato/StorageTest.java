@@ -1,6 +1,8 @@
 package tomato;
 
 import org.junit.jupiter.api.Test;
+import tomato.data.TaskList;
+import tomato.storage.Storage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 public class StorageTest {
-    private static final String FILE_DIR = "src/test/data/";
-    private static final String VALID_FILE = FILE_DIR + "TaskListValid.txt";
-    private static final String VALID_FILE_SAVE = FILE_DIR + "TaskListValidSave.txt";
-    private static final String INVALID_DATETIME = FILE_DIR + "TaskListInvalidDatetime.txt";
-    private static final String INVALID_SEPARATOR = FILE_DIR + "TaskListInvalidSeparator.txt";
-    private static final String MISSING_FILE = FILE_DIR + "doesNotExists.txt";
-    private static final String DUMMY_FILE = FILE_DIR + "TaskListDummy.txt";
+    private static final String TASK_FILE_DIR = "src/test/data/";
+    private static final String TASK_FILE_VALID = TASK_FILE_DIR + "TaskListValid.txt";
+    private static final String TASK_FILE_VALID_SAVE = TASK_FILE_DIR + "TaskListValidSave.txt";
+    private static final String TASK_FILE_INVALID_DATETIME = TASK_FILE_DIR + "TaskListInvalidDatetime.txt";
+    private static final String TASK_FILE_INVALID_SEPARATOR = TASK_FILE_DIR + "TaskListInvalidSeparator.txt";
+    private static final String TASK_FILE_MISSING = TASK_FILE_DIR + "doesNotExists.txt";
+    private static final String TASK_FILE_DUMMY = TASK_FILE_DIR + "TaskListDummy.txt";
 
     @Test
     public void constructor_nullFilePath_exceptionThrown(){
@@ -38,7 +40,7 @@ public class StorageTest {
 
     @Test
     public void load_validFile_success(){
-        Storage storage = new Storage(VALID_FILE);
+        Storage storage = new Storage(TASK_FILE_VALID);
         assertDoesNotThrow(() -> {
             storage.load();
         });
@@ -46,7 +48,7 @@ public class StorageTest {
 
     @Test
     public void load_invalidDatetimeFormat_exceptionThrown(){
-        Storage storage = new Storage(INVALID_DATETIME);
+        Storage storage = new Storage(TASK_FILE_INVALID_DATETIME);
         assertThrowsExactly(TomatoException.class, () -> {
             storage.load();
         });
@@ -54,7 +56,7 @@ public class StorageTest {
 
     @Test
     public void load_invalidSeparatorFormat_exceptionThrown(){
-        Storage storage = new Storage(INVALID_SEPARATOR);
+        Storage storage = new Storage(TASK_FILE_INVALID_SEPARATOR);
         assertThrowsExactly(TomatoException.class, () -> {
             storage.load();
         });
@@ -62,13 +64,13 @@ public class StorageTest {
 
     @Test
     public void load_missingFile_exceptionThrown(){
-        Storage storage = new Storage(MISSING_FILE);
+        Storage storage = new Storage(TASK_FILE_MISSING);
         assertThrowsExactly(TomatoException.class, () -> {
             storage.load();
         });
 
         try {
-            Files.deleteIfExists(Path.of(MISSING_FILE));
+            Files.deleteIfExists(Path.of(TASK_FILE_MISSING));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -76,7 +78,7 @@ public class StorageTest {
 
     @Test
     public void saveToDisk_validTaskList(){
-        Storage storage = new Storage(VALID_FILE_SAVE);
+        Storage storage = new Storage(TASK_FILE_VALID_SAVE);
         TaskList tasks = new TaskList();
         tasks.createTodo("buy books");
         tasks.createTodo("return books to library");
@@ -94,7 +96,7 @@ public class StorageTest {
 
     @Test
     public void saveToDisk_validEmptyTaskList(){
-        Storage storage = new Storage(VALID_FILE_SAVE);
+        Storage storage = new Storage(TASK_FILE_VALID_SAVE);
         TaskList tasks = new TaskList();
 
         try {
@@ -110,7 +112,7 @@ public class StorageTest {
 
     @Test
     public void saveToDisk_nullTaskList_exceptionThrown(){
-        Storage storage = new Storage(DUMMY_FILE);
+        Storage storage = new Storage(TASK_FILE_DUMMY);
 
         try {
             storage.load();

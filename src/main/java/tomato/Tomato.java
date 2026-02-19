@@ -1,11 +1,12 @@
 package tomato;
 
-import commands.ByeCommand;
-import commands.Command;
-import ui.Ui;
+import tomato.commands.Command;
+import tomato.data.TaskList;
+import tomato.parser.Parser;
+import tomato.storage.Storage;
+import tomato.ui.Ui;
 
 import java.io.FileNotFoundException;
-import java.util.Objects;
 import java.util.Scanner;
 
 /**

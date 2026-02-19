@@ -1,9 +1,9 @@
-package commands;
+package tomato.commands;
 
-import tomato.Storage;
-import tomato.TaskList;
+import tomato.storage.Storage;
+import tomato.data.TaskList;
 import tomato.TomatoException;
-import ui.Ui;
+import tomato.ui.Ui;
 
 public class DeleteCommand extends Command {
     public static final String COMMAND_WORD = "delete";

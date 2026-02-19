@@ -1,10 +1,11 @@
-package tomato;
+package tomato.parser;
 
-import commands.*;
-import task.Deadline;
-import task.Event;
-import task.Task;
-import task.Todo;
+import tomato.TomatoException;
+import tomato.commands.*;
+import tomato.task.Deadline;
+import tomato.task.Event;
+import tomato.task.Task;
+import tomato.task.Todo;
 
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
@@ -135,9 +136,9 @@ public class Parser {
      */
     private String[] parseDeadline(String[] args) throws TomatoException {
         checkArgLength(args, 2, DeadlineCommand.MESSAGE_USAGE);
-        String[] arr = parseSlashDeadline(args[1]);
-        checkArgLength(arr, 2, DeadlineCommand.MESSAGE_USAGE);
-        return arr;
+        String[] parsedArgs = parseSlashDeadline(args[1]);
+        checkArgLength(parsedArgs, 2, DeadlineCommand.MESSAGE_USAGE);
+        return parsedArgs;
     }
 
     /**
@@ -149,9 +150,9 @@ public class Parser {
      */
     private String[] parseEvent(String[] args) throws TomatoException {
         checkArgLength(args, 2, EventCommand.MESSAGE_USAGE);
-        String[] arr = parseSlashEvent(args[1]);
-        checkArgLength(arr, 3, EventCommand.MESSAGE_USAGE);
-        return arr;
+        String[] parsedArgs = parseSlashEvent(args[1]);
+        checkArgLength(parsedArgs, 3, EventCommand.MESSAGE_USAGE);
+        return parsedArgs;
     }
 
     /**
@@ -316,33 +317,33 @@ public class Parser {
         checkArgLength(updateArgs, 3, UpdateCommand.MESSAGE_USAGE);
         String[] timeArgs = updateArgs[2].split(" ", 2);
         checkArgLength(timeArgs, 2, UpdateCommand.MESSAGE_USAGE);
-        String[] argAndValue = parseUpdateArgValues(args);
-        String from = argAndValue[1];
+        String[] argAndValues = parseUpdateArgValues(args);
+        String from = argAndValues[1];
         String to = timeArgs[1];
         return new String[]{from, to};
     }
     private Command handleUpdateTask(String[] args) throws TomatoException {
         int taskNum = parseUpdateTaskNum(args);
-        String[] argAndValue = parseUpdateArgValues(args);
-        UpdateCommand.Argument arg = parseUpdateArgument(argAndValue[0]);
+        String[] argAndValues = parseUpdateArgValues(args);
+        UpdateCommand.Argument arg = parseUpdateArgument(argAndValues[0]);
 
         switch (arg) {
             case DESCRIPTION:
-                checkArgLength(argAndValue, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.DESCRIPTION, taskNum, argAndValue[1]);
+                checkArgLength(argAndValues, 2, UpdateDescriptionCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.DESCRIPTION, taskNum, argAndValues[1]);
             case BY:
-                checkArgLength(argAndValue, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.BY, taskNum, parseDate(argAndValue[1]));
+                checkArgLength(argAndValues, 2, UpdateDeadlineCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.BY, taskNum, parseDate(argAndValues[1]));
             case FROM:
-                checkArgLength(argAndValue, 2, UpdateEventFromCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.FROM, taskNum, parseDate(argAndValue[1]));
+                checkArgLength(argAndValues, 2, UpdateEventFromCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.FROM, taskNum, parseDate(argAndValues[1]));
             case TO:
-                checkArgLength(argAndValue, 2, UpdateEventToCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.TO, taskNum, parseDate(argAndValue[1]));
+                checkArgLength(argAndValues, 2, UpdateEventToCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.TO, taskNum, parseDate(argAndValues[1]));
             case TIME:
-                String[] fromTo = parseUpdateTime(args);
-                checkArgLength(fromTo, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
-                return new UpdateCommand(UpdateCommand.Argument.TIME, taskNum, parseDate(fromTo[0]), parseDate(fromTo[1]));
+                String[] fromToValues = parseUpdateTime(args);
+                checkArgLength(fromToValues, 2, UpdateEventTimeCommand.MESSAGE_USAGE);
+                return new UpdateCommand(UpdateCommand.Argument.TIME, taskNum, parseDate(fromToValues[0]), parseDate(fromToValues[1]));
             default:
                 throw new TomatoException(UpdateCommand.MESSAGE_USAGE);
         }

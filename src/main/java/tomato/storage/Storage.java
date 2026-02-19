@@ -1,6 +1,8 @@
-package tomato;
+package tomato.storage;
 
-import task.Task;
+import tomato.TomatoException;
+import tomato.parser.Parser;
+import tomato.task.Task;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +35,7 @@ public class Storage {
     /**
      * Returns whether the configured task file exists and loads it when present.
      */
-    private boolean loadTaskFile() {
+    private boolean isTaskFileLoaded() {
         String root = System.getProperty("user.dir");
         Path path = Paths.get(root, filePath);
         boolean isExists = Files.exists(path);
@@ -106,7 +108,7 @@ public class Storage {
      * or If an error occurred from parsing the task file or if unable to create task object.
      */
     public ArrayList<Task> load() throws FileNotFoundException, TomatoException {
-        boolean isLoaded = loadTaskFile();
+        boolean isLoaded = isTaskFileLoaded();
         if (!isLoaded) {
             try {
                 createTaskFile();

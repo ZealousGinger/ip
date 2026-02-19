@@ -1,4 +1,4 @@
-package ui;
+package tomato.ui;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
