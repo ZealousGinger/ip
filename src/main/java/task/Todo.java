@@ -1,12 +1,13 @@
 package task;
 
 /**
- * Represents a Todo Task object.
+ * Represents a todo task.
  */
 public class Todo extends Task {
 
     /**
-     * Instantiates Todo object with description.
+     * Creates a todo task with the specified description.
+     *
      * @param description String to describe task.
      */
     public Todo(String description) {
@@ -14,9 +15,10 @@ public class Todo extends Task {
     }
 
     /**
-     * Instantiates Todo object with description and status, used when loading tasks from storage.
+     * Creates a todo task with the specified description and completion status.
+     *
      * @param description String to describe task.
-     * @param isDone boolean status
+     * @param isDone boolean status.
      */
     public Todo(String description, boolean isDone) {
         super(description, isDone);
@@ -28,7 +30,8 @@ public class Todo extends Task {
     }
 
     /**
-     * Returns string representation for storage format of task for saving.
+     * Returns the storage format representation of this todo task.
+     *
      * @return storage string representation.
      */
     public String toSave() {

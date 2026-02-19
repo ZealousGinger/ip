@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import ui.MainWindow;
 
 /**
- * A GUI for Tomato using FXML.
+ * Starts the JavaFX GUI for Tomato.
  */
 public class Main extends Application {
 

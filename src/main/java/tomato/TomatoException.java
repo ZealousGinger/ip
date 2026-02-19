@@ -1,7 +1,7 @@
 package tomato;
 
 /**
- * Represents TomatoException thrown by Tomato class.
+ * Represents an exception thrown by Tomato operations.
  */
 public class TomatoException extends Exception {
     private String errorWord;

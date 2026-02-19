@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * Represents an instance of a task tracking chatbot called Tomato.
+ * Represents the Tomato chatbot application.
  */
 public class Tomato {
     private Ui ui;
@@ -18,7 +18,8 @@ public class Tomato {
     private TaskList tasks;
 
     /**
-     * Loads the tasklist from storage or create a new one.
+     * Returns a loaded task list, or a new empty list when loading fails.
+     *
      * @param s Storage object to load the file from.
      * @return TaskList object.
      */
@@ -33,7 +34,8 @@ public class Tomato {
     }
 
     /**
-     * Instantiates an instance of Tomato chatbot with the specified storage file location.
+     * Creates a Tomato chatbot with the specified storage file path.
+     *
      * @param filePath file path location (e.g. "data/TaskList.txt" ) to save tasks into.
      */
     public Tomato(String filePath) {
@@ -49,7 +51,8 @@ public class Tomato {
     }
 
     /**
-     * Represents an entry point to instantiate an instance of the Tomato chatbot class.
+     * Starts the Tomato chatbot in text UI mode.
+     *
      * @param args arguments.
      */
     public static void main(String[] args) {
@@ -58,7 +61,7 @@ public class Tomato {
     }
 
     /**
-     * Instantiates and executes the looping chatbot interface.
+     * Runs the text UI input loop for the chatbot.
      */
     public void run() {
         Scanner sc = new Scanner(System.in);
@@ -81,7 +84,9 @@ public class Tomato {
 
 
     /**
-     * Handles a response for the user's chat message.
+     * Handles a single user message in the GUI.
+     *
+     * @param input User input text.
      */
     public void handleResponse(String input) {
         ui.showUserDialog(input);
@@ -89,7 +94,9 @@ public class Tomato {
     }
 
     /**
-     * Parses and executes the user's response.
+     * Parses and executes a single user input message.
+     *
+     * @param input User input text.
      */
     public void parseAndExecuteResponse(String input) {
         Command cmd;

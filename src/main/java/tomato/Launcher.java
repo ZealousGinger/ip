@@ -3,7 +3,7 @@ package tomato;
 import javafx.application.Application;
 
 /**
- * A launcher class to workaround classpath issues.
+ * Launches Tomato with a classpath-safe entry point.
  */
 public class Launcher {
     public static void main(String[] args) {

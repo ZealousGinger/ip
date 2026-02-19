@@ -17,8 +17,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 /**
- * Represents a dialog box consisting of an ImageView to represent the speaker's face
- * and a label containing text from the speaker.
+ * Represents a dialog box with speaker text and profile image.
  */
 public class DialogBox extends HBox {
     @FXML
@@ -56,7 +55,7 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Sets the dialog box to an error style (red).
+     * Applies error styling to this dialog box.
      */
     private void setError() {
         // code generated with AI
@@ -64,7 +63,10 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Sets word of a text as highlighted for errors.
+     * Highlights the provided error word in the given text.
+     *
+     * @param fullText Full text to render.
+     * @param errorWord Word to highlight.
      */
     private void highlightErrorWord(String fullText, String errorWord) {
         // code generated with AI
@@ -81,6 +83,13 @@ public class DialogBox extends HBox {
     }
 
 
+    /**
+     * Returns an error-styled dialog box.
+     *
+     * @param text Dialog text.
+     * @param img Speaker image.
+     * @return Error dialog box.
+     */
     public static DialogBox getErrorDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();
@@ -88,6 +97,14 @@ public class DialogBox extends HBox {
         return db;
     }
 
+    /**
+     * Returns an error-styled dialog box with a highlighted error word.
+     *
+     * @param text Dialog text.
+     * @param errorWord Word to highlight.
+     * @param img Speaker image.
+     * @return Error dialog box with highlight.
+     */
     public static DialogBox getErrorHighlightedDialog(String text, String errorWord, Image img) {
         var db = new DialogBox(text, img);
         db.flip();
@@ -96,10 +113,24 @@ public class DialogBox extends HBox {
         return db;
     }
 
+    /**
+     * Returns a dialog box for user messages.
+     *
+     * @param text Dialog text.
+     * @param img Speaker image.
+     * @return User dialog box.
+     */
     public static DialogBox getUserDialog(String text, Image img) {
         return new DialogBox(text, img);
     }
 
+    /**
+     * Returns a dialog box for Tomato messages.
+     *
+     * @param text Dialog text.
+     * @param img Speaker image.
+     * @return Tomato dialog box.
+     */
     public static DialogBox getTomatoDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();

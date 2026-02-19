@@ -11,21 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a list of Task(s) instances along with relevant methods to maintain the list.
- * Methods include creating, un/marking, deleting, counting, listing, tasks.
+ * Represents a task list and operations over its tasks.
  */
 public class TaskList {
     private final ArrayList<Task> tasks;
 
     /**
-     * Instantiates the class with an empty list.
+     * Creates an empty task list.
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
     /**
-     * Instantiates the class with the specified array list of tasks.
+     * Creates a task list with the given tasks.
+     *
      * @param tasks ArrayList of Task instances from storage task file.
      */
     public TaskList(ArrayList<Task> tasks) {
@@ -33,7 +33,7 @@ public class TaskList {
     }
 
     /**
-     * returns all the tasks in the current list in a human-readable format along with tasks information.
+     * Returns all tasks in this list as a formatted string.
      */
     @Override
     public String toString() {
@@ -55,8 +55,10 @@ public class TaskList {
     }
 
     /**
-     * Modifies the state of a specified Task instance marked.
-     * @param idx integer task index
+     * Returns a success message after marking the specified task as done.
+     *
+     * @param idx integer task index.
+     * @return Result message.
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String markTask(int idx) throws TomatoException {
@@ -66,8 +68,10 @@ public class TaskList {
     }
 
     /**
-     * Modifies the state of a specified Task instance unmarked.
-     * @param idx integer task index
+     * Returns a success message after marking the specified task as not done.
+     *
+     * @param idx integer task index.
+     * @return Result message.
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String unmarkTask(int idx) throws TomatoException {
@@ -77,7 +81,8 @@ public class TaskList {
     }
 
     /**
-     * Updates the description of a task.
+     * Returns a success message after updating the task description.
+     *
      * @param idx integer task index.
      * @param description new description to update.
      * @return String result.
@@ -93,7 +98,8 @@ public class TaskList {
     }
 
     /**
-     * Updates the due datetime of a deadline.
+     * Returns a success message after updating a deadline's due date-time.
+     *
      * @param idx integer task index.
      * @param by new datetime to update.
      * @return String result.
@@ -110,7 +116,8 @@ public class TaskList {
     }
 
     /**
-     * Updates from datetime of an event.
+     * Returns a success message after updating an event's start date-time.
+     *
      * @param idx integer task index.
      * @param from new datetime to update.
      * @return String result.
@@ -127,7 +134,8 @@ public class TaskList {
     }
 
     /**
-     * Updates to datetime of an event.
+     * Returns a success message after updating an event's end date-time.
+     *
      * @param idx integer task index.
      * @param to new datetime to update.
      * @return String result.
@@ -144,7 +152,8 @@ public class TaskList {
     }
 
     /**
-     * Updates from and to datetimes of an event.
+     * Returns a success message after updating an event's start and end date-times.
+     *
      * @param idx integer task index.
      * @param from new from datetime to update.
      * @param to new to datetime to update.
@@ -163,8 +172,10 @@ public class TaskList {
     }
 
     /**
-     * Deletes an instance of a specified Task instance of the list of tasks.
-     * @param idx integer task index
+     * Returns a success message after deleting the specified task.
+     *
+     * @param idx integer task index.
+     * @return Result message.
      * @throws TomatoException If a given task index is invalid/out of bound, i.e. <0 or > number of tasks in list.
      */
     public String deleteTask(int idx) throws TomatoException {
@@ -180,8 +191,10 @@ public class TaskList {
     }
 
     /**
-     * Adds an instance of a task object into the list of tasks.
+     * Returns a success message after adding the given task.
+     *
      * @param t Task instance to add.
+     * @return Result message.
      */
     private String addTask(Task t) {
         StringBuilder str = new StringBuilder();
@@ -192,8 +205,10 @@ public class TaskList {
     }
 
     /**
-     * Creates an instance of Todo object and adds it into the list of tasks.
+     * Returns a success message after creating and adding a todo task.
+     *
      * @param args String description of the Todo task.
+     * @return Result message.
      */
     public String createTodo(String args) {
         Task t = new Todo(args);
@@ -201,9 +216,11 @@ public class TaskList {
     }
 
     /**
-     * Creates an instance of Deadline object and adds it into the list of tasks.
+     * Returns a success message after creating and adding a deadline task.
+     *
      * @param description string description of task.
      * @param by datetime of deadline.
+     * @return Result message.
      */
     public String createDeadline(String description, LocalDateTime by) {
         Task t = new Deadline(description, by);
@@ -211,10 +228,12 @@ public class TaskList {
     }
 
     /**
-     * Creates an instance of Event object and adds it into the list of tasks.
+     * Returns a success message after creating and adding an event task.
+     *
      * @param description string description of task.
      * @param from datetime of start of event.
      * @param to datetime of end of event.
+     * @return Result message.
      */
     public String createEvent(String description, LocalDateTime from, LocalDateTime to) {
         Task t = new Event(description, from, to);
@@ -222,7 +241,8 @@ public class TaskList {
     }
 
     /**
-     * Returns the number of tasks in the list.
+     * Returns a message containing the number of tasks in this list.
+     *
      * @return number of tasks.
      */
     public String numOfTasks() {
@@ -230,7 +250,8 @@ public class TaskList {
     }
 
     /**
-     * Returns the ArrayList of Tasks.
+     * Returns the backing task list.
+     *
      * @return array list of tasks.
      */
     public ArrayList<Task> getTaskList() {
@@ -247,7 +268,12 @@ public class TaskList {
         return str.toString();
     }
 
-    /** Returns tasks matching with given keyword */
+    /**
+     * Returns tasks that contain the given keyword.
+     *
+     * @param keyword Keyword to match.
+     * @return Matching tasks.
+     */
     private ArrayList<Task> getMatchingTasks(String keyword) {
         List<Task> matchingTasks = tasks.stream()
                 .filter(t -> t.toString().contains(keyword))

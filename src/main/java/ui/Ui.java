@@ -10,7 +10,7 @@ import javafx.util.Duration;
 import tomato.TomatoException;
 
 /**
- * Represents the User Interface class.
+ * Handles UI rendering and dialog display for Tomato.
  */
 public class Ui {
     @FXML
@@ -30,13 +30,16 @@ public class Ui {
 
 
     /**
-     * Instantiates the User interface class.
+     * Creates a UI instance without JavaFX bindings.
      */
     public Ui() {
     }
 
     /**
-     * Instantiates the User interface class with JavaFX GUI components
+     * Creates a UI instance bound to JavaFX components.
+     *
+     * @param dialogContainer Container for dialog nodes.
+     * @param userInput User input text field.
      */
     public Ui(VBox dialogContainer, TextField userInput) {
         this.dialogContainer = dialogContainer;
@@ -44,14 +47,14 @@ public class Ui {
     }
 
     /**
-     * Gets the start message.
+     * Returns the start message.
      */
     public static String getStartMessage() {
         return "\n" + "Hello! I'm Tomato !\n" + "What can I do for you?\n";
     }
 
     /**
-     * Gets the exit message.
+     * Returns the exit message.
      */
     public static String getExitMessage() {
         return "Bye. Hope to see you again soon!\n";
