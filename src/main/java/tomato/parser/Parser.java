@@ -292,6 +292,12 @@ public class Parser {
         return new FindCommand(keyword);
     }
 
+    /**
+     * Returns the update argument enum parsed from the given input token.
+     *
+     * @param arg Update argument token.
+     * @return Parsed update argument enum.
+     */
     private UpdateCommand.Argument parseUpdateArgument(String arg) {
         UpdateCommand.Argument enumArg;
         try {

@@ -75,6 +75,11 @@ public class UpdateCommand extends Command {
         this.to = to;
     }
 
+    /**
+     * Returns a concrete update command based on the target update argument.
+     *
+     * @return Concrete update command.
+     */
     private Command handleArgumentToUpdate() {
         switch (argToUpdate) {
         case DESCRIPTION:

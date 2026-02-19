@@ -132,6 +132,9 @@ public class Ui {
     // https://stackoverflow.com/questions/12153622/how-to-close-a-javafx-application-on-window-close
     // https://stackoverflow.com/questions/76696287/how-do-i-pause-a-javafx-program-without-causing-the-program-to-run-in-a-laggy-fa
     // to exit JavaFX Gui programmatically.
+    /**
+     * Closes the JavaFX application after a short delay.
+     */
     private void exitGui() {
         PauseTransition pause = new PauseTransition(Duration.seconds(.5));
         pause.setOnFinished(event -> Platform.exit());

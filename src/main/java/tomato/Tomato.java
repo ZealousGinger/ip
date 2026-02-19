@@ -19,6 +19,18 @@ public class Tomato {
     private TaskList tasks;
 
     /**
+     * Creates a Tomato chatbot with the specified storage file path.
+     *
+     * @param filePath file path location (e.g. "data/TaskList.txt" ) to save tasks into.
+     */
+    public Tomato(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        tasks = loadTaskList(storage);
+        parser = new Parser();
+    }
+
+    /**
      * Returns a loaded task list, or a new empty list when loading fails.
      *
      * @param s Storage object to load the file from.
@@ -32,18 +44,6 @@ public class Tomato {
             t = new TaskList();
         }
         return t;
-    }
-
-    /**
-     * Creates a Tomato chatbot with the specified storage file path.
-     *
-     * @param filePath file path location (e.g. "data/TaskList.txt" ) to save tasks into.
-     */
-    public Tomato(String filePath) {
-        ui = new Ui();
-        storage = new Storage(filePath);
-        tasks = loadTaskList(storage);
-        parser = new Parser();
     }
 
     /**

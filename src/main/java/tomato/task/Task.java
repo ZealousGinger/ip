@@ -17,7 +17,7 @@ public class Task {
         assert !description.isBlank() : "Description should not be blank";
 
         this.description = description;
-        this.isDone = false;
+        isDone = false;
     }
 
     /**
