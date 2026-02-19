@@ -192,6 +192,7 @@ Bye. Hope to see you again soon!
 
 
 ## Command summary
+
 | Command | Format | Example |
 |---|---|---|
 | `todo` | `todo {TASK_DESCRIPTION}` | `todo cs2103t week 6 quiz` |
