@@ -111,17 +111,18 @@ public class Storage {
      * or If an error occurred from parsing the task file or if unable to create task object.
      */
     public ArrayList<Task> load() throws FileNotFoundException, TomatoException {
-        boolean isLoaded = isTaskFileLoaded();
-        if (!isLoaded) {
-            try {
-                createTaskFile();
-                throw new TomatoException("Missing task file!");
-            } catch (IOException exception) {
-                throw new TomatoException("Error, Unable to create new task file!");
-            }
+        if (isTaskFileLoaded()) {
+            assert taskFile != null : "task file should not be null here";
+            return loadTasks();
         }
-        assert taskFile != null : "task file should not be null here";
-        return loadTasks();
+
+        try {
+            createTaskFile();
+        } catch (IOException exception) {
+            throw new TomatoException("Error, Unable to create new task file!");
+        }
+
+        throw new TomatoException("Missing task file!");
     }
 
     /**

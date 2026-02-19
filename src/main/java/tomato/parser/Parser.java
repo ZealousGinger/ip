@@ -4,6 +4,7 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import tomato.Tomato;
 import tomato.TomatoException;
 import tomato.commands.ByeCommand;
 import tomato.commands.Command;
@@ -312,12 +313,13 @@ public class Parser {
      * @param updateFieldToken Update argument token.
      * @return Parsed update argument enum.
      */
-    private UpdateCommand.UpdateField parseUpdateArgument(String updateFieldToken) {
+    private UpdateCommand.UpdateField parseUpdateArgument(String updateFieldToken) throws TomatoException {
         UpdateCommand.UpdateField updateField;
         try {
             updateField = UpdateCommand.UpdateField.valueOf(updateFieldToken.toUpperCase());
         } catch (IllegalArgumentException exception) {
-            throw new RuntimeException(exception);
+            throw new TomatoException("Invalid argument given: " + updateFieldToken +
+                    "\nPlease choose from [description, by, from, to, time].", updateFieldToken);
         }
         return updateField;
     }
