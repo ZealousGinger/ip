@@ -9,6 +9,9 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that updates an event task's end date-time.
+ */
 public class UpdateEventToCommand extends Command {
     public static final String COMMAND_WORD = "to";
     public static final String MESSAGE_USAGE = "update {task number} /to {DD/MM/YYYY HHMM}\nlis" +
@@ -16,6 +19,12 @@ public class UpdateEventToCommand extends Command {
     private final int taskNum;
     private final LocalDateTime dateTime;
 
+    /**
+     * Creates an event end-time update command.
+     *
+     * @param taskNum Index of the task to update.
+     * @param dateTime New end date-time.
+     */
     public UpdateEventToCommand(int taskNum, LocalDateTime dateTime) {
         this.taskNum = taskNum;
         this.dateTime = dateTime;
@@ -30,4 +39,3 @@ public class UpdateEventToCommand extends Command {
         ui.showTomatoDialog(res);
     }
 }
-

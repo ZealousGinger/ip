@@ -9,6 +9,9 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that creates an event task.
+ */
 public class EventCommand extends Command {
     public static final String COMMAND_WORD = "event";
     public static final String MESSAGE_USAGE = "event {task_description} /from {DD/MM/YYYY HHMM} " +
@@ -18,6 +21,13 @@ public class EventCommand extends Command {
     private final LocalDateTime from;
     private final LocalDateTime to;
 
+    /**
+     * Creates an event creation command.
+     *
+     * @param taskName Description of the event task.
+     * @param from Start date-time of the event task.
+     * @param to End date-time of the event task.
+     */
     public EventCommand(String taskName, LocalDateTime from, LocalDateTime to) {
         this.taskName = taskName;
         this.from = from;

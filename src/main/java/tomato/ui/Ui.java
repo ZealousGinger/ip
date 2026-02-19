@@ -20,14 +20,14 @@ public class Ui {
     private TextField userInput;
 
 
-    // happy user image from https://unsplash.com/photos/smiley-ball-zDDdoYqQ64U
+    // Happy user image source: https://unsplash.com/photos/smiley-ball-zDDdoYqQ64U
     private final Image happyUserImage = new Image(
             this.getClass().getResourceAsStream("/images/happy_user.jpg"));
 
-    // image from https://unsplash.com/photos/red-tomato-on-gray-concrete-surface-OlXUUQedQyM
+    // Tomato image source: https://unsplash.com/photos/red-tomato-on-gray-concrete-surface-OlXUUQedQyM
     private final Image tomatoImage = new Image(this.getClass().getResourceAsStream("/images/tomato.jpg"));
 
-    // image from https://pixabay.com/photos/tomatoes-ketchup-sad-food-veggie-1448267/
+    // Sad tomato image source: https://pixabay.com/photos/tomatoes-ketchup-sad-food-veggie-1448267/
     private final Image sadTomatoImage = new Image(
             this.getClass().getResourceAsStream("/images/sad_tomato.png"));
 
@@ -67,11 +67,21 @@ public class Ui {
         userInput.clear();
     }
 
+    /**
+     * Shows the user's message in the dialog container.
+     *
+     * @param s User input text.
+     */
     public void showUserDialog(String s) {
         dialogContainer.getChildren().addAll(DialogBox.getUserDialog(s, happyUserImage));
         clearInputField();
     }
 
+    /**
+     * Shows an error dialog for the provided exception.
+     *
+     * @param e Exception to display.
+     */
     public void showErrorDialog(Exception e) {
         if (e instanceof TomatoException && ((TomatoException) e).getErrorWord() != null) {
             showErrorHighlightedDialog(e);
@@ -81,6 +91,11 @@ public class Ui {
         }
     }
 
+    /**
+     * Shows an error dialog with highlighted error text.
+     *
+     * @param e Exception containing the highlight token.
+     */
     public void showErrorHighlightedDialog(Exception e) {
         TomatoException te = ((TomatoException) e);
         dialogContainer.getChildren().addAll(
@@ -88,14 +103,25 @@ public class Ui {
                         sadTomatoImage));
     }
 
+    /**
+     * Shows a Tomato response dialog.
+     *
+     * @param s Tomato response text.
+     */
     public void showTomatoDialog(String s) {
         dialogContainer.getChildren().addAll(DialogBox.getTomatoDialog(s, tomatoImage));
     }
 
+    /**
+     * Shows the startup dialog.
+     */
     public void showStartDialog() {
         dialogContainer.getChildren().addAll(DialogBox.getTomatoDialog(getStartMessage(), tomatoImage));
     }
 
+    /**
+     * Shows the exit dialog.
+     */
     public void showExitDialog() {
         dialogContainer.getChildren().addAll(
                 DialogBox.getTomatoDialog(Ui.getExitMessage(), tomatoImage)
@@ -112,6 +138,9 @@ public class Ui {
         pause.play();
     }
 
+    /**
+     * Shows exit messages and closes the GUI.
+     */
     public void exit() {
         showExitDialog();
         exitGui();

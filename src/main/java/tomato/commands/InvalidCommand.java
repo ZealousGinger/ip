@@ -5,6 +5,9 @@ import tomato.data.TaskList;
 import tomato.storage.Storage;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that reports invalid user input.
+ */
 public class InvalidCommand extends Command {
     private static final String ERROR_MESSAGE = "Invalid command given: ";
     private static final String LIST_COMMANDS_MESSAGE = "\nPlease try a given command: " +
@@ -13,6 +16,11 @@ public class InvalidCommand extends Command {
 
     private final String invalidCmd;
 
+    /**
+     * Creates an invalid-command response command.
+     *
+     * @param invalidCmd Invalid command entered by the user.
+     */
     public InvalidCommand(String invalidCmd) {
         this.invalidCmd = invalidCmd;
     }

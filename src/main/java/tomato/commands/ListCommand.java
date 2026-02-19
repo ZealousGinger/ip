@@ -5,9 +5,15 @@ import tomato.data.TaskList;
 import tomato.storage.Storage;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that lists all tasks.
+ */
 public class ListCommand extends Command {
     public static final String COMMAND_WORD = "list";
 
+    /**
+     * Creates a list command.
+     */
     public ListCommand() {
     }
 

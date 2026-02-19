@@ -25,6 +25,9 @@ public class MainWindow extends AnchorPane {
     private Tomato tomato;
     private Ui ui;
 
+    /**
+     * Initializes the scroll pane bindings after FXML injection.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());

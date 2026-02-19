@@ -7,11 +7,18 @@ import tomato.data.TaskList;
 import tomato.storage.Storage;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that updates one or more fields of an existing task.
+ */
 public class UpdateCommand extends Command {
     public static final String COMMAND_WORD = "update";
     public static final String MESSAGE_USAGE = "update {task number} /{argument to update} {new argument}\n" +
             "e.g.(update 2 /by 3/3/2024 1900)";
     private final int taskNum;
+
+    /**
+     * Represents updatable task fields.
+     */
     public static enum Argument {
         DESCRIPTION,
         BY,
@@ -27,21 +34,40 @@ public class UpdateCommand extends Command {
     private LocalDateTime to;
 
 
-    // for description
+    /**
+     * Creates an update command for task description.
+     *
+     * @param argToUpdate Field to update.
+     * @param taskNum Index of the task to update.
+     * @param taskDescription New description value.
+     */
     public UpdateCommand(Argument argToUpdate, int taskNum, String taskDescription) {
         this.argToUpdate = argToUpdate;
         this.taskNum = taskNum;
         this.taskDescription = taskDescription;
     }
 
-    // for by, from , to alone
+    /**
+     * Creates an update command for a single date-time field.
+     *
+     * @param argToUpdate Field to update.
+     * @param taskNum Index of the task to update.
+     * @param datetime New date-time value.
+     */
     public UpdateCommand(Argument argToUpdate, int taskNum, LocalDateTime datetime) {
         this.argToUpdate = argToUpdate;
         this.taskNum = taskNum;
         this.datetime = datetime;
     }
 
-    // for from and to
+    /**
+     * Creates an update command for an event time range.
+     *
+     * @param argToUpdate Field to update.
+     * @param taskNum Index of the task to update.
+     * @param from New start date-time.
+     * @param to New end date-time.
+     */
     public UpdateCommand(Argument argToUpdate, int taskNum, LocalDateTime from, LocalDateTime to) {
         this.argToUpdate = argToUpdate;
         this.taskNum = taskNum;

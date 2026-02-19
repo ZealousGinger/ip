@@ -46,6 +46,11 @@ public class Tomato {
         parser = new Parser();
     }
 
+    /**
+     * Sets the GUI adapter used by Tomato.
+     *
+     * @param gui UI adapter instance.
+     */
     public void setGui(Ui gui) {
         ui = gui;
         ui.showStartDialog();

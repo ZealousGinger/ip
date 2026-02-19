@@ -9,6 +9,9 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that updates an event task's start date-time.
+ */
 public class UpdateEventFromCommand extends Command {
     public static final String COMMAND_WORD = "from";
     public static final String MESSAGE_USAGE = "update {task number} /from {DD/MM/YYYY HHMM}\n" +
@@ -16,6 +19,12 @@ public class UpdateEventFromCommand extends Command {
     private final int taskNum;
     private final LocalDateTime dateTime;
 
+    /**
+     * Creates an event start-time update command.
+     *
+     * @param taskNum Index of the task to update.
+     * @param dateTime New start date-time.
+     */
     public UpdateEventFromCommand(int taskNum, LocalDateTime dateTime) {
         this.taskNum = taskNum;
         this.dateTime = dateTime;

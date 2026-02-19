@@ -9,6 +9,9 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that updates an event task's full time range.
+ */
 public class UpdateEventTimeCommand extends Command {
     public static final String COMMAND_WORD = "time";
     public static final String MESSAGE_USAGE = "update_event_time {task number} /time " +
@@ -18,6 +21,13 @@ public class UpdateEventTimeCommand extends Command {
     private final LocalDateTime from;
     private final LocalDateTime to;
 
+    /**
+     * Creates an event time-range update command.
+     *
+     * @param taskNum Index of the task to update.
+     * @param from New start date-time.
+     * @param to New end date-time.
+     */
     public UpdateEventTimeCommand(int taskNum, LocalDateTime from, LocalDateTime to) {
         this.taskNum = taskNum;
         this.from = from;
@@ -33,4 +43,3 @@ public class UpdateEventTimeCommand extends Command {
         ui.showTomatoDialog(res);
     }
 }
-

@@ -8,11 +8,19 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that marks a task as not done.
+ */
 public class UnmarkCommand extends Command {
     public static final String COMMAND_WORD = "unmark";
     public static final String MESSAGE_USAGE = "unmark {task number} e.g.(unmark 1, unmark 3)";
     private final int taskNum;
 
+    /**
+     * Creates an unmark command.
+     *
+     * @param taskNum Index of the task to unmark.
+     */
     public UnmarkCommand(int taskNum) {
         this.taskNum = taskNum;
     }

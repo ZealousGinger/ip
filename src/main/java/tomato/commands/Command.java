@@ -5,7 +5,9 @@ import tomato.data.TaskList;
 import tomato.storage.Storage;
 import tomato.ui.Ui;
 
-// Class below is AI generated simple abstract template of the Command class
+/**
+ * Represents an executable command in Tomato.
+ */
 public abstract class Command {
     /**
      * Executes the command with the given task list, UI, and storage.

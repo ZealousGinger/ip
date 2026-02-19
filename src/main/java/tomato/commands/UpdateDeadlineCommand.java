@@ -9,6 +9,9 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that updates a deadline task's due date-time.
+ */
 public class UpdateDeadlineCommand extends Command {
     public static final String COMMAND_WORD = "deadline";
     public static final String MESSAGE_USAGE = "update {task number} /by {DD/MM/YYYY HHMM}\n" +
@@ -16,6 +19,12 @@ public class UpdateDeadlineCommand extends Command {
     private final int taskNum;
     private final LocalDateTime dateTime;
 
+    /**
+     * Creates a deadline update command.
+     *
+     * @param taskNum Index of the task to update.
+     * @param dateTime New due date-time.
+     */
     public UpdateDeadlineCommand(int taskNum, LocalDateTime dateTime) {
         this.taskNum = taskNum;
         this.dateTime = dateTime;

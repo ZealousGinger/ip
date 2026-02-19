@@ -5,11 +5,19 @@ import tomato.data.TaskList;
 import tomato.storage.Storage;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that deletes a task.
+ */
 public class DeleteCommand extends Command {
     public static final String COMMAND_WORD = "delete";
     public static final String MESSAGE_USAGE = "delete {task number} e.g.(delete 1, delete 3)";
     private final int taskNum;
 
+    /**
+     * Creates a delete command.
+     *
+     * @param taskNum Index of the task to delete.
+     */
     public DeleteCommand(int taskNum) {
         this.taskNum = taskNum;
     }

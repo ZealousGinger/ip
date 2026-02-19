@@ -8,6 +8,9 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that updates a task description.
+ */
 public class UpdateDescriptionCommand extends Command {
     public static final String COMMAND_WORD = "description";
     public static final String MESSAGE_USAGE = "update {task number} /description {new description}\n" +
@@ -15,6 +18,12 @@ public class UpdateDescriptionCommand extends Command {
     private final int taskNum;
     private final String description;
 
+    /**
+     * Creates a description update command.
+     *
+     * @param taskNum Index of the task to update.
+     * @param description New description value.
+     */
     public UpdateDescriptionCommand(int taskNum, String description) {
         this.taskNum = taskNum;
         this.description = description;

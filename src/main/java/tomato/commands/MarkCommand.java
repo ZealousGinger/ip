@@ -8,11 +8,19 @@ import tomato.storage.Storage;
 import tomato.task.Task;
 import tomato.ui.Ui;
 
+/**
+ * Represents a command that marks a task as done.
+ */
 public class MarkCommand extends Command {
     public static final String COMMAND_WORD = "mark";
     public static final String MESSAGE_USAGE = "mark {task number} e.g.(mark 1, mark 3)";
     private final int taskNum;
 
+    /**
+     * Creates a mark command.
+     *
+     * @param taskNum Index of the task to mark.
+     */
     public MarkCommand(int taskNum) {
         this.taskNum = taskNum;
     }
